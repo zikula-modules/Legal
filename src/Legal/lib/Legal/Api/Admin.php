@@ -29,7 +29,7 @@ class Legal_Api_Admin extends Zikula_Api
         }
 
         // Get database setup
-        $pntable = System::dbGetTables();
+        $pntable = DBUtil::getTables();
         $userscolumn = $pntable['users_column'];
 
         if ($args['gid']==0) {
