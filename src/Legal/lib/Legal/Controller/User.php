@@ -4,11 +4,11 @@
  *
  * @copyright (c) 2001, Zikula Development Team
  * @link http://www.zikula.org
- * @version $Id$
+ * @version $Id: User.php 6 2010-06-15 15:50:00Z drak $
  * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
-class Legal_User extends Zikula_Controller
+class Legal_Controller_User extends Zikula_Controller
 {
 
     /**

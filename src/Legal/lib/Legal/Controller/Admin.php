@@ -7,7 +7,7 @@
  * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
-class Legal_Admin extends Zikula_Controller
+class Legal_Controller_Admin extends Zikula_Controller
 {
     /**
      * the main administration function
