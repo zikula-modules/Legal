@@ -23,7 +23,7 @@ class Legal_Controller_User extends Zikula_Controller
         }
 
         // Create output object
-        $renderer = Renderer::getInstance('legal');
+        $renderer = Zikula_View::getInstance('Legal');
 
         return $renderer->fetch('legal_user_main.htm');
     }
@@ -45,7 +45,7 @@ class Legal_Controller_User extends Zikula_Controller
         }
 
         // Create output object
-        $renderer = Renderer::getInstance('legal');
+        $renderer = Zikula_View::getInstance('legal');
 
         // get the current users language
         $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
@@ -83,7 +83,7 @@ class Legal_Controller_User extends Zikula_Controller
         }
 
         // Create output object
-        $renderer = Renderer::getInstance('legal');
+        $renderer = Zikula_View::getInstance('legal');
 
         // get the current users language
         $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
@@ -121,7 +121,7 @@ class Legal_Controller_User extends Zikula_Controller
         }
 
         // Create output object
-        $renderer = Renderer::getInstance('legal');
+        $renderer = Zikula_View::getInstance('legal');
 
         // get the current users language
         $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
