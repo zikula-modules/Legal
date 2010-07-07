@@ -16,7 +16,7 @@ class Legal_Version extends Zikula_Version
         $meta['description']    = __("Provides an interface for managing the site's 'Terms of use', 'Privacy statement' and 'Accessibility statement'.");
         //! module name that appears in URL
         $meta['url']            = __('legalmod');
-        $meta['version']        = '1.6';
+        $meta['version']        = '1.6.0';
         $meta['contact']        = 'http://zikula.org/';
         $meta['securityschema'] = array('Legal::' => '::',
                 'Legal::termsofuse' => '::',
