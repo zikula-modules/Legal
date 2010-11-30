@@ -18,14 +18,11 @@ class Legal_Controller_User extends Zikula_Controller
     public function main()
     {
         // Security check
-        if (!SecurityUtil::checkPermission('legal::', '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission('Legal::', '::', ACCESS_OVERVIEW)) {
             return LogUtil::registerPermissionError();
         }
 
-        // Create output object
-        $renderer = Zikula_View::getInstance('Legal');
-
-        return $renderer->fetch('legal_user_main.htm');
+        return $this->view->fetch('legal_user_main.htm');
     }
 
     /**
@@ -35,35 +32,26 @@ class Legal_Controller_User extends Zikula_Controller
     public function termsofuse()
     {
         // Security check
-        if (!SecurityUtil::checkPermission('legal::termsofuse', '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission('Legal::termsofuse', '::', ACCESS_OVERVIEW)) {
             return LogUtil::registerPermissionError();
         }
 
         // check the option is active
-        if (!ModUtil::getVar('legal', 'termsofuse')) {
+        if (!$this->getVar('termsofuse')) {
             return LogUtil::registerError($this->__("'Terms of use' not activated."));
         }
-
-        // Create output object
-        $renderer = Zikula_View::getInstance('legal');
 
         // get the current users language
         $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
 
         // work out the template path
-        if ($renderer->template_exists($lang.'/legal_user_termsofuse.htm')) {
+        if ($this->view->template_exists($lang.'/legal_user_termsofuse.htm')) {
             $template = $lang.'/legal_user_termsofuse.htm';
         } else {
             $template = 'en/legal_user_termsofuse.htm';
         }
 
-        // check out if the contents are cached.
-        // If this is the case, we do not need to make DB queries.
-        if ($renderer->is_cached($template)) {
-            return $renderer->fetch($template);
-        }
-
-        return $renderer->fetch($template);
+        return $this->view->fetch($template);
     }
 
     /**
@@ -73,35 +61,26 @@ class Legal_Controller_User extends Zikula_Controller
     public function privacy()
     {
         // Security check
-        if (!SecurityUtil::checkPermission('legal::privacy', '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission('Legal::privacy', '::', ACCESS_OVERVIEW)) {
             return LogUtil::registerPermissionError();
         }
 
         // check the option is active
-        if (!ModUtil::getVar('legal', 'privacypolicy')) {
+        if (!$this->getVar('privacypolicy')) {
             return LogUtil::registerError($this->__("'Privacy policy' not activated."));
         }
-
-        // Create output object
-        $renderer = Zikula_View::getInstance('legal');
 
         // get the current users language
         $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
 
         // work out the template path
-        if ($renderer->template_exists($lang.'/legal_user_privacy.htm')) {
+        if ($this->view->template_exists($lang.'/legal_user_privacy.htm')) {
             $template = $lang.'/legal_user_privacy.htm';
         } else {
             $template = 'en/legal_user_privacy.htm';
         }
 
-        // check out if the contents are cached.
-        // If this is the case, we do not need to make DB queries.
-        if ($renderer->is_cached($template)) {
-            return $renderer->fetch($template);
-        }
-
-        return $renderer->fetch($template);
+        return $this->view->fetch($template);
     }
 
     /**
@@ -111,34 +90,25 @@ class Legal_Controller_User extends Zikula_Controller
     public function accessibilitystatement()
     {
         // Security check
-        if (!SecurityUtil::checkPermission('legal::accessibilitystatement', '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission('Legal::accessibilitystatement', '::', ACCESS_OVERVIEW)) {
             return LogUtil::registerPermissionError();
         }
 
         // check the option is active
-        if (!ModUtil::getVar('legal', 'accessibilitystatement')) {
+        if (!ModUtil::getVar('Legal', 'accessibilitystatement')) {
             return LogUtil::registerError($this->__("'Accessibility statement' not activated."));
         }
-
-        // Create output object
-        $renderer = Zikula_View::getInstance('legal');
 
         // get the current users language
         $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
 
         // work out the template path
-        if ($renderer->template_exists($lang.'/legal_user_accessibilitystatement.htm')) {
+        if ($this->view->template_exists($lang.'/legal_user_accessibilitystatement.htm')) {
             $template = $lang.'/legal_user_accessibilitystatement.htm';
         } else {
             $template = 'en/legal_user_accessibilitystatement.htm';
         }
 
-        // check out if the contents are cached.
-        // If this is the case, we do not need to make DB queries.
-        if ($renderer->is_cached($template)) {
-            return $renderer->fetch($template);
-        }
-
-        return $renderer->fetch($template);
+        return $this->view->fetch($template);
     }
 }

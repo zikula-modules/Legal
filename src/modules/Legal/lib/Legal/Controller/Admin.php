@@ -84,7 +84,7 @@ class Legal_Controller_Admin extends Zikula_Controller
     public function updateconfig()
     {
         // Security check
-        if (!SecurityUtil::checkPermission('legal::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission('Legal::', '::', ACCESS_ADMIN)) {
             return LogUtil::registerPermissionError();
         }
 
@@ -95,29 +95,22 @@ class Legal_Controller_Admin extends Zikula_Controller
 
         // set our module variables
         $termsofuse = (bool)FormUtil::getPassedValue('termsofuse', false, 'POST');
-        ModUtil::setVar('legal', 'termsofuse', $termsofuse);
+        $this->setVar('termsofuse', $termsofuse);
         $privacypolicy = (bool)FormUtil::getPassedValue('privacypolicy', false, 'POST');
-        ModUtil::setVar('legal', 'privacypolicy', $privacypolicy);
+        $this->setVar('privacypolicy', $privacypolicy);
         $accessibilitystatement = (bool)FormUtil::getPassedValue('accessibilitystatement', false, 'POST');
-        ModUtil::setVar('legal', 'accessibilitystatement', $accessibilitystatement);
+        $this->setVar('accessibilitystatement', $accessibilitystatement);
 
         $resetagreement = (int)FormUtil::getPassedValue('resetagreement', -1, 'POST');
         if ($resetagreement<>-1) {
             ModUtil::apiFunc('Legal', 'admin', 'resetagreement', array('gid' => $resetagreement));
         }
 
-        // The configuration has been changed, so we clear all caches for
-        // this module.
-        $renderer = Zikula_View::getInstance('legal', false);
-
         // the module configuration has been updated successfuly
         LogUtil::registerStatus($this->__('Done! Saved module configuration.'));
 
-        // Let any other modules know that the modules configuration has been updated
-        ModUtil::callHooks('module','updateconfig', 'legal', array('module' => 'legal'));
-
         // This function generated no output, and so now it is complete we redirect
         // the user to an appropriate page for them to carry on their work
-        return System::redirect(ModUtil::url('legal', 'admin', 'main'));
+        return System::redirect(ModUtil::url('Legal', 'admin', 'main'));
     }
 }
