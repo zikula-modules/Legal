@@ -8,7 +8,7 @@
  * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
-class Legal_Api_Admin extends Zikula_Api
+class Legal_Api_Admin extends Zikula_AbstractApi
 {
 
     /**

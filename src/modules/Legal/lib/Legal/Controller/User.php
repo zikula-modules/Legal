@@ -8,7 +8,7 @@
  * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
-class Legal_Controller_User extends Zikula_Controller
+class Legal_Controller_User extends Zikula_AbstractController
 {
 
     /**

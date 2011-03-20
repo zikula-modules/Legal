@@ -7,7 +7,7 @@
  * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
  */
 
-class Legal_Version extends Zikula_Version
+class Legal_Version extends Zikula_AbstractVersion
 {
     public function getMetaData()
     {

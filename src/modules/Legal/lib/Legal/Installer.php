@@ -10,7 +10,7 @@
  * @subpackage legal
  */
 
-class Legal_Installer extends Zikula_Installer
+class Legal_Installer extends Zikula_AbstractInstaller
 {
 
     /**
