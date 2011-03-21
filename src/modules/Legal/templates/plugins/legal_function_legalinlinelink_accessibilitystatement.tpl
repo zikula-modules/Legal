@@ -1,0 +1,1 @@
+<a class="legal_inlinelink_accessibilitystatement" href="{modurl modname='Legal::MODNAME'|constant type='user' func='accessibilityStatement'}" target="{$target}">{gt text='Accessibility Statement'}</a>

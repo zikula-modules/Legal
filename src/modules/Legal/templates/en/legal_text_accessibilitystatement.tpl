@@ -1,7 +1,3 @@
-{include file=legal_user_menu.htm}
-{pagesetvar name=title value='Accessibility statement'}
-<h1>Accessibility statement for {configgetvar name=sitename}</h1>
-
 <p>This page is the site accessibility statement for {configgetvar name=sitename}. If you have any questions or comments, please feel free to <a href="mailto:{configgetvar name=adminmail}">contact the site administrator</a>.</p>
 <h2>Access keys</h2>
 <p>Most browsers support jumping to specific links by typing keys defined on the site. Under the Microsoft Windows operating system, you can press the 'Alt' key plus an access key; on an Apple Macintosh operating system, you can press the 'Control' key plus an access key.</p>

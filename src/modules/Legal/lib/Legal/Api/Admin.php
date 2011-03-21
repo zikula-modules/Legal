@@ -70,4 +70,20 @@ class Legal_Api_Admin extends Zikula_AbstractApi
         }
         return true;
     }
+
+    /**
+     * Get available admin panel links.
+     *
+     * @return array Array of admin links.
+     */
+    public function getLinks()
+    {
+        $links = array();
+
+        if (SecurityUtil::checkPermission('Users::', '::', ACCESS_ADMIN)) {
+            $links[] = array('url' => ModUtil::url($this->name, 'admin', 'modifyConfig'), 'text' => $this->__('Settings'), 'class' => 'z-icon-es-config');
+        }
+
+        return $links;
+    }
 }

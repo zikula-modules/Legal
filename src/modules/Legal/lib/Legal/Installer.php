@@ -1,58 +1,92 @@
 <?php
 /**
- * Zikula Application Framework
+ * Copyright 2001 Zikula Foundation.
  *
- * @copyright (c) 2001, Zikula Development Team
- * @link http://www.zikula.org
- * @version $Id$
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package Zikula_System_Modules
- * @subpackage legal
+ * This work is contributed to the Zikula Foundation under one or more
+ * Contributor Agreements and licensed to You under the following license:
+ *
+ * @license GNU/LGPLv3 (or at your option, any later version).
+ * @package Legal
+ *
+ * Please see the NOTICE file distributed with this source code for further
+ * information regarding copyright and licensing.
  */
 
+/**
+ * Installs, upgrades, and uninstalls the Legal module.
+ */
 class Legal_Installer extends Zikula_AbstractInstaller
 {
 
     /**
-     * initialise the template module
-     * This function is only ever called once during the lifetime of a particular
-     * module instance
+     * Install the module.
      *
-     * @author Mark West
      * @return bool true if successful, false otherwise
      */
     function install()
     {
-        $this->setVar('termsofuse', true);
-        $this->setVar('privacypolicy', true);
-        $this->setVar('accessibilitystatement', true);
+        // Set default values for the module variables
+        $this->setVar(Legal::MODVAR_TERMS_ACTIVE, true);
+        $this->setVar(Legal::MODVAR_PRIVACY_ACTIVE, true);
+        $this->setVar(Legal::MODVAR_ACCESSIBILITY_ACTIVE, true);
+        $this->setVar(Legal::MODVAR_MINIMUM_AGE, 13);
 
-        // Initialisation successful
+        // Set up the persistent event handler, hook bundles, and any other event-related features.
+        EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
+        HookUtil::registerHookProviderBundles($this->version);
+
+        // Initialization successful
         return true;
     }
 
     /**
-     * upgrade the module from an old version
+     * Upgrade the module from a prior version.
      *
      * This function must consider all the released versions of the module!
      * If the upgrade fails at some point, it returns the last upgraded version.
      *
-     * @param        string   $oldVersion   version number string to upgrade from
-     * @return       mixed    true on success, last valid version string or false if fails
+     * @param string $oldVersion The version number string from which the upgrade starting.
+     *
+     * @return boolean|string True if the module is successfully upgraded to the current version; last valid version string or false if the upgrade fails.
      */
-    function upgrade($oldversion)
+    function upgrade($oldVersion)
     {
         // Upgrade dependent on old version number
-        switch ($oldversion)
+        switch ($oldVersion)
         {
             case '1.1':
+                // Upgrade 1.1 -> 1.2
                 $this->setVar('termsofuse', true);
                 $this->setVar('privacypolicy', true);
                 $this->setVar('accessibilitystatement', true);
 
             case '1.2':
+                // Upgrade 1.2 -> 1.3
+                // Nothing to do.
+
             case '1.3':
-            // future upgrade routines
+                // Upgrade 1.3 -> 2.0.0
+                // Convert the module variables to the new names
+                $this->setVar(Legal::MODVAR_TERMS_ACTIVE, $this->getVar('termsofuse', true));
+                $this->delVar('termsofuse');
+                $this->setVar(Legal::MODVAR_PRIVACY_ACTIVE, $this->getVar('privacypolicy', true));
+                $this->delVar('privacypolicy');
+                $this->setVar(Legal::MODVAR_ACCESSIBILITY_ACTIVE, $this->getVar('accessibilitystatement', true));
+                $this->delVar('accessibilitystatement');
+
+                // Set the new module variable
+                $this->setVar(Legal::MODVAR_MININUMAGE, 13);
+
+                // Set up the new persistent event handler, hook bundles, and any other event-related features.
+                EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
+                HookUtil::upgradeHookProviderBundles($this->version);
+
+            case '2.0.0':
+                // Upgrade 2.0.0 -> ?.?.?
+
+            default:
+                $this->registerError($this->__f('Upgrading the Legal module from version %1$s to %2$s is not supported.', array($oldVersion, $this->version->getVersion())));
+                return $oldVersion;
         }
 
         // Update successful
@@ -60,11 +94,9 @@ class Legal_Installer extends Zikula_AbstractInstaller
     }
 
     /**
-     * delete the Legal module
-     * This function is only ever called once during the lifetime of a particular
-     * module instance
+     * Delete the Legal module.
      *
-     * @return bool true if successful, false otherwise
+     * @return bool True if successful; otherwise false.
      */
     function uninstall()
     {

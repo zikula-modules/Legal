@@ -1,114 +1,285 @@
 <?php
 /**
- * Zikula Application Framework
+ * Copyright Zikula Foundation 2001 - Zikula Application Framework
  *
- * @copyright (c) 2001, Zikula Development Team
- * @link http://www.zikula.org
- * @version $Id: User.php 6 2010-06-15 15:50:00Z drak $
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * This work is contributed to the Zikula Foundation under one or more
+ * Contributor Agreements and licensed to You under the following license:
+ *
+ * @license GNU/LGPLv3 (or at your option, any later version).
+ * @package Legal
+ *
+ * Please see the NOTICE file distributed with this source code for further
+ * information regarding copyright and licensing.
  */
 
+/**
+ * Module controller for user-related operations.
+ */
 class Legal_Controller_User extends Zikula_AbstractController
 {
 
     /**
      * Legal Module main user function
+     *
      * @return string HTML output string
      */
     public function main()
     {
-        // Security check
-        if (!SecurityUtil::checkPermission('Legal::', '::', ACCESS_OVERVIEW)) {
-            return LogUtil::registerPermissionError();
-        }
-
-        return $this->view->fetch('legal_user_main.htm');
+        $this->redirect(ModUtil::url($this->name, 'User', 'termsOfUse'));
     }
 
     /**
      * Display Terms of Use
+     *
      * @return string HTML output string
      */
     public function termsofuse()
     {
         // Security check
-        if (!SecurityUtil::checkPermission('Legal::termsofuse', '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission($this->name . '::termsofuse', '::', ACCESS_OVERVIEW)) {
             return LogUtil::registerPermissionError();
         }
 
-        // check the option is active
-        if (!$this->getVar('termsofuse')) {
-            return LogUtil::registerError($this->__("'Terms of use' not activated."));
-        }
-
-        // get the current users language
-        $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
         // work out the template path
-        if ($this->view->template_exists($lang.'/legal_user_termsofuse.htm')) {
-            $template = $lang.'/legal_user_termsofuse.htm';
+        if (!$this->getVar(Legal::MODVAR_TERMS_ACTIVE)) {
+            $template = 'legal_user_policynotactive.tpl';
         } else {
-            $template = 'en/legal_user_termsofuse.htm';
+            $template = 'legal_user_termsofuse.tpl';
+
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+
+            if (!$this->view->template_exists($languageCode.'/legal_text_termsofuse.tpl')) {
+                $languageCode = 'en';
+            }
         }
 
-        return $this->view->fetch($template);
+        return $this->view->assign('languageCode', $languageCode)
+                ->fetch($template);
     }
 
     /**
      * Display Privacy Policy
+     *
+     * @deprecated Since 1.6.1
+     *
      * @return string HTML output string
      */
     public function privacy()
     {
+        $this->redirect(ModUtil::url($this->name, 'user', 'privacyPolicy'));
+    }
+
+    /**
+     * Display Privacy Policy
+     *
+     * @return string HTML output string
+     */
+    public function privacyPolicy()
+    {
         // Security check
-        if (!SecurityUtil::checkPermission('Legal::privacy', '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission($this->name . '::privacy', '::', ACCESS_OVERVIEW)) {
             return LogUtil::registerPermissionError();
         }
 
-        // check the option is active
-        if (!$this->getVar('privacypolicy')) {
-            return LogUtil::registerError($this->__("'Privacy policy' not activated."));
-        }
-
-        // get the current users language
-        $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
         // work out the template path
-        if ($this->view->template_exists($lang.'/legal_user_privacy.htm')) {
-            $template = $lang.'/legal_user_privacy.htm';
+        if (!$this->getVar(Legal::MODVAR_PRIVACY_ACTIVE)) {
+            $template = 'legal_user_policynotactive.tpl';
         } else {
-            $template = 'en/legal_user_privacy.htm';
+            $template = 'legal_user_privacypolicy.tpl';
+
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+
+            if (!$this->view->template_exists($languageCode.'/legal_text_privacypolicy.tpl')) {
+                $languageCode = 'en';
+            }
         }
 
-        return $this->view->fetch($template);
+        return $this->view->assign('languageCode', $languageCode)
+                ->fetch($template);
     }
 
     /**
      * Display Accessibility statement
+     * 
      * @return string HTML output string
      */
     public function accessibilitystatement()
     {
         // Security check
-        if (!SecurityUtil::checkPermission('Legal::accessibilitystatement', '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission($this->name . '::accessibilitystatement', '::', ACCESS_OVERVIEW)) {
             return LogUtil::registerPermissionError();
         }
 
-        // check the option is active
-        if (!ModUtil::getVar('Legal', 'accessibilitystatement')) {
-            return LogUtil::registerError($this->__("'Accessibility statement' not activated."));
-        }
-
-        // get the current users language
-        $lang = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
         // work out the template path
-        if ($this->view->template_exists($lang.'/legal_user_accessibilitystatement.htm')) {
-            $template = $lang.'/legal_user_accessibilitystatement.htm';
+        if (!$this->getVar(Legal::MODVAR_ACCESSIBILITY_ACTIVE)) {
+            $template = 'legal_user_policynotactive.tpl';
         } else {
-            $template = 'en/legal_user_accessibilitystatement.htm';
+            $template = 'legal_user_accessibilitystatement.tpl';
+
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+
+            if (!$this->view->template_exists($languageCode.'/legal_text_accessibilitystatement.tpl')) {
+                $languageCode = 'en';
+            }
         }
 
-        return $this->view->fetch($template);
+        return $this->view->assign('languageCode', $languageCode)
+                ->fetch($template);
+    }
+
+    /**
+     * Allow the user to accept active terms of use and/or privacy policy.
+     *
+     * This function is currently used by the Legal module's handler for the users.login.veto event.
+     *
+     * @return string The rendered output from the template.
+     */
+    public function acceptPolicies()
+    {
+        // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
+        // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
+        $sessionVars = $this->request->getSession()->get('Legal_Controller_User_acceptPolicies', null, $this->name);
+        $this->request->getSession()->del('Legal_Controller_User_acceptPolicies', $this->name);
+
+        if ($this->request->isGet()) {
+            $isLogin = $this->request->getGet()->get('login', false);
+        } else {
+            throw new Zikula_Exception_Forbidden();
+        }
+
+        // If we are coming here from the login process, then there are certain things that must have been
+        // send along in the session variable. If not, then error.
+        if ($isLogin && (!isset($sessionVars['user_obj']) || !is_array($sessionVars['user_obj'])
+                || !isset($sessionVars['authentication_info']) || !is_array($sessionVars['authentication_info'])
+                || !isset($sessionVars['authentication_method']) || !is_array($sessionVars['authentication_method']))
+                ) {
+            throw new Zikula_Exception_Fatal();
+        }
+
+        if ($isLogin) {
+            $uid = $sessionVars['user_obj']['uid'];
+        } else {
+            $uid = UserUtil::getVar('uid');
+        }
+
+        if (!$uid || empty($uid)) {
+            throw new Zikula_Exception_Fatal();
+        }
+
+        $fieldErrors = array();
+        if (isset($sessionVars['fieldErrors']) && !empty($sessionVars['fieldErrors']) && is_array($sessionVars['fieldErrors'])) {
+            $fieldErrors = $sessionVars['fieldErrors'];
+        }
+        unset($sessionVars['fieldErrors']);
+
+        if ($isLogin) {
+            // Pass along the session vars to updateAcceptance. We didn't want to just keep them in the session variable
+            // Legal_Controller_User_acceptPolicies because if we hit an exception or got redirected, then the data
+            // would have been orphaned, and it contains some sensitive information.
+            SessionUtil::requireSession();
+            $this->request->getSession()->set('Legal_Controller_User_updateAcceptance', $sessionVars, $this->name);
+        }
+
+        $templateVars = array(
+            'login'         => $isLogin,
+            'uid'           => $uid,
+            'policies'      => array(
+                'termsOfUse'    => $this->getVar(Legal::MODVAR_TERMS_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $uid, false),
+                'privacyPolicy' => $this->getVar(Legal::MODVAR_PRIVACY_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $uid, false),
+            ),
+            'fieldErrors'   => $fieldErrors,
+        );
+
+        return $this->view->assign($templateVars)
+                ->fetch('legal_user_acceptpolicies.tpl');
+    }
+
+    /**
+     * Update the user's acceptance of terms of use and/or privacy policy.
+     *
+     * Available Post Parameters:
+     * - array acceptPolicies The array of form values posted.
+     *
+     * @return void The user is redirected.
+     */
+    public function updatePolicyAcceptance()
+    {
+        $sessionVars = $this->request->getSession()->get('Legal_Controller_User_updateAcceptance', null, $this->name);
+        $this->request->getSession()->del('Legal_Controller_User_updateAcceptance', null, $this->name);
+
+        if (!$this->request->isPost()) {
+            throw new Zikula_Exception_Forbidden();
+        }
+
+        $this->checkCsrfToken();
+
+        $isLogin = isset($sessionVars) && !empty($sessionVars);
+
+        if (!$isLogin && !UserUtil::isLoggedIn()) {
+            throw new Zikula_Exception_Forbidden();
+        } elseif ($isLogin && UserUtil::isLoggedIn()) {
+            throw new Zikula_Exception_Fatal();
+        }
+
+        $acceptedPolicies = $this->request->getPost()->get('acceptPolicies', array());
+
+        if (!isset($acceptedPolicies['uid']) || empty($acceptedPolicies['uid']) || !is_numeric($acceptedPolicies['uid'])) {
+            throw new Zikula_Exception_Fatal();
+        }
+
+        $policies = array(
+            'termsOfUse'    => $this->getVar(Legal::MODVAR_TERMS_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $acceptedPolicies['uid'], false),
+            'privacyPolicy' => $this->getVar(Legal::MODVAR_PRIVACY_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $acceptedPolicies['uid'], false),
+        );
+
+        $processed = false;
+        $fieldErrors = array();
+
+        if ($policies['termsOfUse'] && !$acceptedPolicies['termsOfUse']) {
+            $fieldErrors['termsOfUse'][] = $this->__('You must accept this site\'s Terms of Use in order to proceed.');
+        }
+
+        if ($policies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy']) {
+            $fieldErrors['termsOfUse'][] = $this->__('You must accept this site\'s Privacy Policy in order to proceed.');
+        }
+
+        if (empty($fieldErrors)) {
+            $now = new DateTime('now', new DateTimeZone('UTC'));
+            $nowStr = $now->format(DateTime::ISO8601);
+
+            if ($policies['termsOfUse']) {
+                $termsOfUseProcessed = UserUtil::setVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $acceptedPolicies['uid']);
+            } else {
+                $termsOfUseProcessed = true;
+            }
+
+            if ($policies['privacyPolicy']) {
+                $privacyPolicyProcessed = UserUtil::setVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $acceptedPolicies['uid']);
+            } else {
+                $privacyPolicyProcessed = true;
+            }
+
+            $processed = $termsOfUseProcessed && $privacyPolicyProcessed;
+        }
+
+        if ($processed) {
+            if ($isLogin) {
+                $loginArgs = $this->request->getSession()->get('Users_Controller_User_login', array(), 'Zikula_Users');
+                $loginArgs['authentication_method'] = $sessionVars['authentication_method'];
+                $loginArgs['authentication_info']   = $sessionVars['authentication_info'];
+                $loginArgs['rememberme']            = $sessionVars['rememberme'];
+                return ModUtil::func('Users', 'user', 'login', $loginArgs);
+            } else {
+                $this->redirect(System::getHomepageUrl());
+            }
+        } else {
+            $sessionVars['fieldErrors'] = $fieldErrors;
+            SessionUtil::requireSession();
+            $this->request->getSession()->set('Legal_Controller_User_acceptPolicies', $sessionVars, $this->name);
+            $this->redirect(ModUtil::url($this->name, 'User', 'acceptPolicies', array('login' => $isLogin)));
+        }
     }
 }

@@ -1,0 +1,1 @@
+<a class="legal_inlinelink_termsofuse" href="{modurl modname='Legal::MODNAME'|constant type='user' func='termsOfUse'}" target="{$target}">{gt text='Terms of Use'}</a>
