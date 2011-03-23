@@ -40,7 +40,7 @@ class Legal_Listener_UsersLoginVeto
         $privacyPolicyActive = ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_PRIVACY_ACTIVE, false);
         $agePolicyActive = (ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_MINIMUM_AGE, 0) > 0);
 
-        if ($termsOfUseActive || $privacyPolicyActive) {
+        if ($termsOfUseActive || $privacyPolicyActive || $agePolicyActive) {
             $userObj = $event->getSubject();
 
             if (isset($userObj) && ($userObj['uid'] > 2)) {

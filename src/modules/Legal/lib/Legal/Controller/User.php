@@ -144,8 +144,87 @@ class Legal_Controller_User extends Zikula_AbstractController
         $sessionVars = $this->request->getSession()->get('Legal_Controller_User_acceptPolicies', null, $this->name);
         $this->request->getSession()->del('Legal_Controller_User_acceptPolicies', $this->name);
 
-        if ($this->request->isGet()) {
+        $processed = false;
+        $helper = new Legal_Helper_AcceptPolicies();
+        
+        if ($this->request->isPost()) {
+            $this->checkCsrfToken();
+
+            $isLogin = isset($sessionVars) && !empty($sessionVars);
+
+            if (!$isLogin && !UserUtil::isLoggedIn()) {
+                throw new Zikula_Exception_Forbidden();
+            } elseif ($isLogin && UserUtil::isLoggedIn()) {
+                throw new Zikula_Exception_Fatal();
+            }
+
+            $policiesUid = $this->request->getPost()->get('acceptedpolicies_uid', false);
+            $acceptedPolicies = array(
+                'termsOfUse'    => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy'     => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+            );
+
+            if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
+                throw new Zikula_Exception_Fatal();
+            }
+            
+            $activePolicies = $helper->getActivePolicies();
+            $originalAcceptedPolicies = $helper->getAcceptedPolicies($policiesUid);
+
+            $fieldErrors = array();
+
+            if ($activePolicies['termsOfUse'] && !$originalAcceptedPolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']) {
+                $fieldErrors['termsofuse'] = $this->__('You must accept this site\'s Terms of Use in order to proceed.');
+            }
+
+            if ($activePolicies['privacyPolicy'] && !$originalAcceptedPolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy']) {
+                $fieldErrors['privacypolicy'] = $this->__('You must accept this site\'s Privacy Policy in order to proceed.');
+            }
+
+            if ($activePolicies['agePolicy'] && !$originalAcceptedPolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
+                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal::MODVAR_MINIMUM_AGE, 0)));
+            }
+
+            if (empty($fieldErrors)) {
+                $now = new DateTime('now', new DateTimeZone('UTC'));
+                $nowStr = $now->format(DateTime::ISO8601);
+
+                if ($activePolicies['termsOfUse'] && $acceptedPolicies['termsOfUse']) {
+                    $termsOfUseProcessed = UserUtil::setVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $policiesUid);
+                } else {
+                    $termsOfUseProcessed = !$activePolicies['termsOfUse'] || $originalAcceptedPolicies['termsOfUse'];
+                }
+
+                if ($activePolicies['privacyPolicy'] && $acceptedPolicies['privacyPolicy']) {
+                    $privacyPolicyProcessed = UserUtil::setVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $policiesUid);
+                } else {
+                    $privacyPolicyProcessed = !$activePolicies['privacyPolicy'] || $originalAcceptedPolicies['privacyPolicy'];
+                }
+
+                if ($activePolicies['agePolicy'] && $acceptedPolicies['agePolicy']) {
+                    $agePolicyProcessed = UserUtil::setVar(Legal::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr, $policiesUid);
+                } else {
+                    $agePolicyProcessed = !$activePolicies['agePolicy'] || $originalAcceptedPolicies['agePolicy'];
+                }
+
+                $processed = $termsOfUseProcessed && $privacyPolicyProcessed && $agePolicyProcessed;
+            }
+
+            if ($processed) {
+                if ($isLogin) {
+                    $loginArgs = $this->request->getSession()->get('Users_Controller_User_login', array(), 'Zikula_Users');
+                    $loginArgs['authentication_method'] = $sessionVars['authentication_method'];
+                    $loginArgs['authentication_info']   = $sessionVars['authentication_info'];
+                    $loginArgs['rememberme']            = $sessionVars['rememberme'];
+                    return ModUtil::func('Users', 'user', 'login', $loginArgs);
+                } else {
+                    $this->redirect(System::getHomepageUrl());
+                }
+            }
+        } elseif ($this->request->isGet()) {
             $isLogin = $this->request->getGet()->get('login', false);
+            $fieldErrors = array();
         } else {
             throw new Zikula_Exception_Forbidden();
         }
@@ -160,37 +239,30 @@ class Legal_Controller_User extends Zikula_AbstractController
         }
 
         if ($isLogin) {
-            $uid = $sessionVars['user_obj']['uid'];
+            $policiesUid = $sessionVars['user_obj']['uid'];
         } else {
-            $uid = UserUtil::getVar('uid');
+            $policiesUid = UserUtil::getVar('uid');
         }
 
-        if (!$uid || empty($uid)) {
+        if (!$policiesUid || empty($policiesUid)) {
             throw new Zikula_Exception_Fatal();
         }
-
-        $fieldErrors = array();
-        if (isset($sessionVars['fieldErrors']) && !empty($sessionVars['fieldErrors']) && is_array($sessionVars['fieldErrors'])) {
-            $fieldErrors = $sessionVars['fieldErrors'];
-        }
-        unset($sessionVars['fieldErrors']);
 
         if ($isLogin) {
             // Pass along the session vars to updateAcceptance. We didn't want to just keep them in the session variable
             // Legal_Controller_User_acceptPolicies because if we hit an exception or got redirected, then the data
             // would have been orphaned, and it contains some sensitive information.
             SessionUtil::requireSession();
-            $this->request->getSession()->set('Legal_Controller_User_updateAcceptance', $sessionVars, $this->name);
+            $this->request->getSession()->set('Legal_Controller_User_acceptPolicies', $sessionVars, $this->name);
         }
-
+        
         $templateVars = array(
-            'login'         => $isLogin,
-            'uid'           => $uid,
-            'policies'      => array(
-                'termsOfUse'    => $this->getVar(Legal::MODVAR_TERMS_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $uid, false),
-                'privacyPolicy' => $this->getVar(Legal::MODVAR_PRIVACY_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $uid, false),
-            ),
-            'fieldErrors'   => $fieldErrors,
+            'login'                     => $isLogin,
+            'policiesUid'               => $policiesUid,
+            'activePolicies'            => $helper->getActivePolicies(),
+            'acceptedPolicies'          => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
+            'originalAcceptedPolicies'  => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
+            'fieldErrors'               => $fieldErrors,
         );
 
         return $this->view->assign($templateVars)
@@ -207,79 +279,5 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function updatePolicyAcceptance()
     {
-        $sessionVars = $this->request->getSession()->get('Legal_Controller_User_updateAcceptance', null, $this->name);
-        $this->request->getSession()->del('Legal_Controller_User_updateAcceptance', null, $this->name);
-
-        if (!$this->request->isPost()) {
-            throw new Zikula_Exception_Forbidden();
-        }
-
-        $this->checkCsrfToken();
-
-        $isLogin = isset($sessionVars) && !empty($sessionVars);
-
-        if (!$isLogin && !UserUtil::isLoggedIn()) {
-            throw new Zikula_Exception_Forbidden();
-        } elseif ($isLogin && UserUtil::isLoggedIn()) {
-            throw new Zikula_Exception_Fatal();
-        }
-
-        $acceptedPolicies = $this->request->getPost()->get('acceptPolicies', array());
-
-        if (!isset($acceptedPolicies['uid']) || empty($acceptedPolicies['uid']) || !is_numeric($acceptedPolicies['uid'])) {
-            throw new Zikula_Exception_Fatal();
-        }
-
-        $policies = array(
-            'termsOfUse'    => $this->getVar(Legal::MODVAR_TERMS_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $acceptedPolicies['uid'], false),
-            'privacyPolicy' => $this->getVar(Legal::MODVAR_PRIVACY_ACTIVE, false) && !UserUtil::getVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $acceptedPolicies['uid'], false),
-        );
-
-        $processed = false;
-        $fieldErrors = array();
-
-        if ($policies['termsOfUse'] && !$acceptedPolicies['termsOfUse']) {
-            $fieldErrors['termsOfUse'][] = $this->__('You must accept this site\'s Terms of Use in order to proceed.');
-        }
-
-        if ($policies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy']) {
-            $fieldErrors['termsOfUse'][] = $this->__('You must accept this site\'s Privacy Policy in order to proceed.');
-        }
-
-        if (empty($fieldErrors)) {
-            $now = new DateTime('now', new DateTimeZone('UTC'));
-            $nowStr = $now->format(DateTime::ISO8601);
-
-            if ($policies['termsOfUse']) {
-                $termsOfUseProcessed = UserUtil::setVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $acceptedPolicies['uid']);
-            } else {
-                $termsOfUseProcessed = true;
-            }
-
-            if ($policies['privacyPolicy']) {
-                $privacyPolicyProcessed = UserUtil::setVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $acceptedPolicies['uid']);
-            } else {
-                $privacyPolicyProcessed = true;
-            }
-
-            $processed = $termsOfUseProcessed && $privacyPolicyProcessed;
-        }
-
-        if ($processed) {
-            if ($isLogin) {
-                $loginArgs = $this->request->getSession()->get('Users_Controller_User_login', array(), 'Zikula_Users');
-                $loginArgs['authentication_method'] = $sessionVars['authentication_method'];
-                $loginArgs['authentication_info']   = $sessionVars['authentication_info'];
-                $loginArgs['rememberme']            = $sessionVars['rememberme'];
-                return ModUtil::func('Users', 'user', 'login', $loginArgs);
-            } else {
-                $this->redirect(System::getHomepageUrl());
-            }
-        } else {
-            $sessionVars['fieldErrors'] = $fieldErrors;
-            SessionUtil::requireSession();
-            $this->request->getSession()->set('Legal_Controller_User_acceptPolicies', $sessionVars, $this->name);
-            $this->redirect(ModUtil::url($this->name, 'User', 'acceptPolicies', array('login' => $isLogin)));
-        }
     }
 }

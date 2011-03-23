@@ -1,17 +1,5 @@
-{if $policies.termsOfUse && $policies.privacyPolicy}
-    {gt text='Terms of Use and Privacy Policy' assign='templatetitle'}
-    {gt text='Terms of Use and Privacy Policy' assign='policyText'}
-    {legalinlinelink policyType='termsOfUse' target='_blank' assign='termsOfUseLink'}
-    {legalinlinelink policyType='privacyPolicy' target='_blank' assign='privacyPolicyLink'}
-{elseif $policies.termsOfUse}
-    {gt text='Terms of Use' assign='templatetitle'}
-    {gt text='Terms of Use' assign='policyText'}
-    {legalinlinelink policyType='termsOfUse' target='_blank' assign='termsOfUseLink'}
-{elseif $policies.privacyPolicy}
-    {gt text='Privacy Policy' assign='templatetitle'}
-    {gt text='privacy Policy' assign='policyText'}
-    {legalinlinelink policyType='privacyPolicy' target='_blank' assign='privacyPolicyLink'}
-{/if}
+{* TODO - Use Zikula.UI to display policies in a pop-up window. *}
+{gt text='Site policies' assign='templatetitle'}
 {pagesetvar name='title' value=$templatetitle}
 <h2>{$templatetitle}</h2>
 
@@ -19,42 +7,66 @@
 
 {if $login}
     <div class="z-warningmsg">
-        <p>{gt text='Before logging in, the site administrator has asked that you accept the site\'s %1$s.' tag1=$policyText}</p>
-        <p>{gt text='If you leave this page without successfully accepting the %1$s, then you will not be logged in.' tag1=$policyText}</p>
+        {gt text='In order to log in you must accept this site\'s policies. If you have accepted the site\'s policies in the past, then they have been updated and we ask that you review the changes.'}
+        <hr />
+        {gt text='If you leave this page without successfully accepting the policies, then you will not be logged in.'}
     </div>
 {/if}
 
-<form id="legal_user_acceptpolicies" class="z-form" action="{modurl modname="Legal" type="user" func="updatePolicyAcceptance"}" method="post">
+<form id="legal_user_acceptpolicies" class="z-form" action="{modurl modname="Legal" type="user" func="acceptPolicies"}" method="post">
     <div>
         <input type="hidden" id="acceptpolicies_csrftoken" name="csrftoken" value="{insert name='csrftoken'}" />
-        <input type="hidden" id="acceptpolicies_uid" name="acceptPolicies[uid]" value="{$uid}" />
+        <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="{$policiesUid}" />
         <fieldset>
+        {if $activePolicies.termsOfUse && !$originalAcceptedPolicies.termsOfUse}
+            {modurl modname='Legal' type='user' func='termsofuse' assign='policyUrl'}
+            {gt text='Terms of Use' assign='policyName'}
+            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="z-formrow">
+                <label for="acceptpolicies_termsofuse">{gt text='Terms of Use'}</label>
                 <span class="z-formlist">
-                    <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptPolicies[termsOfUse]" class="{if isset($fieldErrors.termsOfUse) && !empty($fieldErrors.termsOfUse)}z-form-error{/if}" value="1" />
-                    <label for="acceptpolicies_termsofuse">{gt text="Check this box to indicate your acceptance of this site's %s."|sprintf:$termsOfUseLink}</label>
+                    <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptedpolicies_termsofuse" class="{if isset($fieldErrors.termsOfUse) && !empty($fieldErrors.termsOfUse)}z-form-error{/if}" {if $acceptedPolicies.termsOfUse}checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_termsofuse">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</label>
                 </span>
-                {if isset($fieldErrors.termsOfUse) && !empty($fieldErrors.termsOfUse)}
-                <div class="z-formnote z-errormsg">
-                    {foreach from=$fieldErrors.termsOfUse item='message' name='messages'}
-                    <p>{$message}</p>
-                    {/foreach}
-                </div>
-                {/if}
+                <p id="acceptpolicies_termsofuse_error" class="z-formnote z-errormsg {if !isset($fieldErrors.termsofuse) || empty($fieldErrors.termsofuse)}z-hide{/if}">
+                    {$fieldErrors.termsofuse|default:''|safetext}
+                </p>
             </div>
+        {/if}
+        {if $activePolicies.privacyPolicy && !$originalAcceptedPolicies.privacyPolicy}
+            {modurl modname='Legal' type='user' func='privacypolicy' assign='policyUrl'}
+            {gt text='Privacy Policy' assign='policyName'}
+            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="z-formrow">
+                <label for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}</label>
                 <span class="z-formlist">
-                    <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptPolicies[privacyPolicy]" class="{if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)}z-form-error{/if}" value="1" />
-                    <label for="acceptpolicies_privacypolicy">{gt text="Check this box to indicate your acceptance of this site's %s."|sprintf:$privacyPolicyLink}</label>
+                    <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy" class="{if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)}z-form-error{/if}" {if $acceptedPolicies.privacyPolicy}checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_privacypolicy">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</label>
                 </span>
-                {if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)}
-                <div class="z-formnote z-errormsg">
-                    {foreach from=$fieldErrors.privacyPolicy item='message' name='messages'}
-                    <p>{$message}</p>
-                    {/foreach}
-                </div>
-                {/if}
+                <p id="acceptpolicies_privacypolicy_error" class="z-formnote z-errormsg {if !isset($fieldErrors.privacypolicy) || empty($fieldErrors.privacypolicy)}z-hide{/if}">
+                    {$fieldErrors.privacypolicy|default:''|safetext}
+                </p>
             </div>
+        {/if}
+        {if $activePolicies.agePolicy && !$originalAcceptedPolicies.agePolicy}
+            {modurl modname='Legal' type='user' func='termsofuse' assign='policyUrl'}
+            {gt text='Terms of Use' assign='policyName'}
+            {assign var='termsOfUseLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
+            {modurl modname='Legal' type='user' func='privacypolicy' assign='policyUrl'}
+            {gt text='Privacy Policy' assign='policyName'}
+            {assign var='privacyPolicyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
+            <div class="z-formrow">
+                <label for="acceptpolicies_agepolicy">{gt text='Minimum Age'}</label>
+                <span class="z-formlist">
+                    <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy" class="{if isset($fieldErrors.agePolicy) && !empty($fieldErrors.agePolicy)}z-form-error{/if}" {if $acceptedPolicies.agePolicy}checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_agepolicy">{gt text='Check this box to indicate that you are %1$s years of age or older.' tag1=$modvars.Legal.minimumAge}</label>
+                </span>
+                <em class="z-formnote z-sub">{gt text='Information on our minimum age policy, and on how we handle personally identifiable information can be found in our %1$s and in our %2$s.' tag1=$termsOfUseLink tag2=$privacyPolicyLink}</em>
+                <p id="acceptpolicies_agepolicy_error" class="z-formnote z-errormsg {if !isset($fieldErrors.agepolicy) || empty($fieldErrors.agepolicy)}z-hide{/if}">
+                    {$fieldErrors.agepolicy|default:''|safetext}
+                </p>
+            </div>
+        {/if}
         </fieldset>
         <div class="z-formbuttons z-buttons">
             {if $login}

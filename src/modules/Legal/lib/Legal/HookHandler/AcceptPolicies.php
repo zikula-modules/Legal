@@ -15,7 +15,7 @@
 /**
  * Handles hook notifications from log-in and registration for the acceptance of policies.
  */
-class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
+class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
 {
     /**
      * The area that this handler handles.
@@ -44,7 +44,19 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
      * @var Zikula_Request_Request
      */
     protected $request;
+    
+    /**
+     * Access to the helper.
+     *
+     * @param Legal_Helper_AcceptPolicies
+     */
+    protected $helper;
 
+    /**
+     * Constructs a new instance of this class.
+     *
+     * @param Zikula_ServiceManager $serviceManager The current service manager instance.
+     */
     public function  __construct(Zikula_ServiceManager $serviceManager)
     {
         parent::__construct($serviceManager);
@@ -53,90 +65,10 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
         $this->view = Zikula_View::getInstance($this->name);
         $this->request = $this->serviceManager->getService('request');
         $this->domain = ZLanguage::getModuleDomain($this->name);
+        
+        $this->helper = new Legal_Helper_AcceptPolicies();
     }
 
-    private function getActivePolicies()
-    {
-        $termsOfUseActive = ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = (ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_MINIMUM_AGE, 0) != 0);
-        
-        return array(
-            'termsOfUse'    => $termsOfUseActive,
-            'privacyPolicy' => $privacyPolicyActive,
-            'agePolicy'     => $agePolicyActive,
-        );
-    }
-
-    private function getAcceptedPolicies($uid = null)
-    {
-        if (isset($uid)) {
-            $isRegistration = UserUtil::isRegistration($uid);
-        } else {
-            $isRegistration = false;
-        }
-        
-        $termsOfUseAcceptedDateStr      = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $uid, false, $isRegistration)  : false;
-        $privacyPolicyAcceptedDateStr   = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $uid, false, $isRegistration): false;
-        $agePolicyConfirmedDateStr      = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal::ATTRIBUTE_AGEPOLICY_CONFIRMED, $uid, false, $isRegistration)  : false;
-        
-        $termsOfUseAcceptedDate     = $termsOfUseAcceptedDateStr    ? new DateTime($termsOfUseAcceptedDateStr)      : false;
-        $privacyPolicyAcceptedDate  = $privacyPolicyAcceptedDateStr ? new DateTime($privacyPolicyAcceptedDateStr)   : false;
-        $agePolicyConfirmedDate     = $agePolicyConfirmedDateStr    ? new DateTime($agePolicyConfirmedDateStr)      : false;
-        
-        $now = new DateTime();
-        
-        $termsOfUseAccepted     = $termsOfUseAcceptedDate   ? ($termsOfUseAcceptedDate <= $now)     : false;
-        $privacyPolicyAccepted  = $privacyPolicyAcceptedDate? ($privacyPolicyAcceptedDate <= $now)  : false;
-        $agePolicyConfirmed     = $agePolicyConfirmedDate   ? ($agePolicyConfirmedDate <= $now)     : false;
-        
-        return array(
-            'termsOfUse'    => $termsOfUseAccepted,
-            'privacyPolicy' => $privacyPolicyAccepted,
-            'agePolicy'     => $agePolicyConfirmed,
-        );
-    }
-
-    /**
-     * Determine whether the current user can view the acceptance/confirmation status of certain policies.
-     * 
-     * If the current user is the subject user, then the user can always see his status for each policy. If the current user is not the
-     * same as the subject user, then the current user can only see the status if he has ACCESS_MODERATE access for the policy.
-     *
-     * @param numeric $uid The uid of the subject account record (not the current user, but the subject user); optional.
-     * 
-     * @return array An array containing flags indicating whether the current user is permitted to view the specified policy.
-     */
-    private function getViewablePolicies($uid = null)
-    {
-        $currentUid = UserUtil::getVar('uid');
-        
-        return array(
-            'termsOfUse'    => (isset($uid) && ($uid == $currentUid)) ? true : SecurityUtil::checkPermission($this->name . '::termsofuse', '::', ACCESS_MODERATE),
-            'privacyPolicy' => (isset($uid) && ($uid == $currentUid)) ? true : SecurityUtil::checkPermission($this->name . '::privacypolicy', '::', ACCESS_MODERATE),
-            'agePolicy'     => (isset($uid) && ($uid == $currentUid)) ? true : SecurityUtil::checkPermission($this->name . '::agepolicy', '::', ACCESS_MODERATE),
-        );
-    }
-    
-    /**
-     * Determine whether the current user can edit the acceptance/confirmation status of certain policies.
-     * 
-     * The current user can only edit the status if he has ACCESS_EDIT access for the policy, whether he is the subject user or not. The ability to edit
-     * status for login and new registrations is handled differently, and does not count on the output of this function.
-     *
-     * @param numeric $uid The uid of the subject account record (not the current user, but the subject user); optional.
-     * 
-     * @return array An array containing flags indicating whether the current user is permitted to edit the specified policy.
-     */
-    private function getEditablePolicies()
-    {
-        return array(
-            'termsOfUse'    => SecurityUtil::checkPermission($this->name . '::termsofuse', '::', ACCESS_EDIT),
-            'privacyPolicy' => SecurityUtil::checkPermission($this->name . '::privacypolicy', '::', ACCESS_EDIT),
-            'agePolicy'     => SecurityUtil::checkPermission($this->name . '::agepolicy', '::', ACCESS_EDIT),
-        );
-    }
-    
     /**
      * Responds to ui.view hook notifications.
      *
@@ -144,15 +76,15 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
      */
     public function uiView(Zikula_Event $event)
     {
-        $activePolicies = $this->getActivePolicies();
+        $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         
         $user = $event->getSubject();
         
         if (isset($user) && !empty($user) && ($activePolicyCount > 0)) {
             $showPolicies = false;
-            $acceptedPolicies = $this->getAcceptedPolicies($user['uid']);
-            $viewablePolicies = $this->getViewablePolicies($user['uid']);
+            $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
+            $viewablePolicies = $this->helper->getViewablePolicies($user['uid']);
                 
             if (array_sum($viewablePolicies) > 0) {
                 $templateVars = array(
@@ -174,7 +106,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
      */
     public function uiEdit(Zikula_Event $event)
     {
-        $activePolicies = $this->getActivePolicies();
+        $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         if ($activePolicyCount > 0) {
             $showPolicies = false;
@@ -201,7 +133,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
                     // It is not shown unless the formType is 'page' indicating that we are not looking at a block,
                     // and then only if we have a user record (meaning that the first log-in attempt was vetoed.
                     if (($formType == 'page') && isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
-                        $acceptedPolicies = $this->getAcceptedPolicies($user['uid']);
+                        $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
 
                         // We only show the policies if one or more active policies have not been accepted by the user.
                         if (($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse'])
@@ -221,7 +153,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
                         }
                     }
                 } else {
-                    $acceptedPolicies = (isset($this->validation)) ? $this->validation->getObject() : $this->getAcceptedPolicies();
+                    $acceptedPolicies = (isset($this->validation)) ? $this->validation->getObject() : $this->helper->getAcceptedPolicies();
                     
                     $templateVars = array(
                         'activePolicies'    => $activePolicies,
@@ -242,11 +174,11 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
                 if (isset($this->validation)) {
                     $acceptedPolicies = $this->validation->getObject();
                 } else {
-                    $acceptedPolicies = $this->getAcceptedPolicies(isset($user) ? $user['uid'] : null);
+                    $acceptedPolicies = $this->helper->getAcceptedPolicies(isset($user) ? $user['uid'] : null);
                 }
                 
-                $viewablePolicies = $this->getViewablePolicies(isset($user) ? $user['uid'] : null);
-                $editablePolicies = $this->getEditablePolicies();
+                $viewablePolicies = $this->helper->getViewablePolicies(isset($user) ? $user['uid'] : null);
+                $editablePolicies = $this->helper->getEditablePolicies();
                 
                 if ((array_sum($viewablePolicies) > 0) || (array_sum($editablePolicies) > 0)) {
                     $templateVars = array(
@@ -272,7 +204,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
      */
     public function validateEdit(Zikula_Event $event)
     {
-        $activePolicies = $this->getActivePolicies();
+        $activePolicies = $this->helper->getActivePolicies();
         $eventName = $event->getName();
         
         if (!UserUtil::isLoggedIn()) {
@@ -301,7 +233,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
                     // login information, so not only should we not validate what was posted, we should not allow the user
                     // to proceed with this login attempt at all.
                     if ($goodUidUser && $goodUidAcceptPolicies && ($user['uid'] == $uid)) {
-                        $acceptedPolicies = $this->getAcceptedPolicies($uid);
+                        $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
 
                         $this->validation = new Zikula_Provider_HookValidation($uid, $policiesAcceptedAtRegistration);
 
@@ -368,7 +300,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
                 $isNewUser = (!isset($user['uid']) || empty($user['uid']));
                 $isRegistration = !$isNewUser && UserUtil::isRegistration($user['uid']);
 
-                $editablePolicies = $this->getEditablePolicies();
+                $editablePolicies = $this->helper->getEditablePolicies();
                 $policiesAcceptedAtRegistration = array(
                     'termsOfUse'    => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
                     'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
@@ -426,7 +358,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
      */
     public function processEdit(Zikula_Event $event)
     {
-        $activePolicies = $this->getActivePolicies();
+        $activePolicies = $this->helper->getActivePolicies();
         $eventName = $event->getName();
         
         if (isset($this->validation) && !$this->validation->hasErrors()) {
@@ -491,7 +423,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_HookHandler
                 }
 
                 $policiesAcceptedAtRegistration = $this->validation->getObject();
-                $editablePolicies = $this->getEditablePolicies();
+                $editablePolicies = $this->helper->getEditablePolicies();
 
                 $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
                 $nowUTCStr = $nowUTC->format(DateTime::ISO8601);

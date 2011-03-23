@@ -1,6 +1,8 @@
 {* TODO - Use Zikula.UI to display policies in a pop-up window. *}
+{gt text='Site policies' assign='templatetitle'}
+{pagesetvar name='title' value=$templatetitle}
 <fieldset>
-    <legend>{gt text='Site policies'}</legend>
+    <legend>{$templatetitle}</legend>
     <div class="z-warningmsg">
         {gt text='In order to log in you must accept this site\'s policies. If you have accepted the site\'s policies in the past, then they have been updated and we ask that you review the changes.'}
     </div>
@@ -28,7 +30,7 @@
         <div class="z-formrow">
             <label for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}</label>
             <span class="z-formlist">
-                <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy" class="{if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)}z-form-error{/if}" {if $acceptedPolicies.privacyPolicy}checked="checked"{/if} value="1" />
+                <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy" class="{if isset($fieldErrors.agePolicy) && !empty($fieldErrors.privacyPolicy)}z-form-error{/if}" {if $acceptedPolicies.privacyPolicy}checked="checked"{/if} value="1" />
                 <label for="acceptpolicies_privacypolicy">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</label>
             </span>
             <p id="acceptpolicies_privacypolicy_error" class="z-formnote z-errormsg {if !isset($fieldErrors.privacypolicy) || empty($fieldErrors.privacypolicy)}z-hide{/if}">
