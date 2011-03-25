@@ -26,10 +26,10 @@ class Legal_Installer extends Zikula_AbstractInstaller
     function install()
     {
         // Set default values for the module variables
-        $this->setVar(Legal::MODVAR_TERMS_ACTIVE, true);
-        $this->setVar(Legal::MODVAR_PRIVACY_ACTIVE, true);
-        $this->setVar(Legal::MODVAR_ACCESSIBILITY_ACTIVE, true);
-        $this->setVar(Legal::MODVAR_MINIMUM_AGE, 13);
+        $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, true);
+        $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, true);
+        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, true);
+        $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, 13);
 
         // Set up the persistent event handler, hook bundles, and any other event-related features.
         EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
@@ -67,15 +67,15 @@ class Legal_Installer extends Zikula_AbstractInstaller
             case '1.3':
                 // Upgrade 1.3 -> 2.0.0
                 // Convert the module variables to the new names
-                $this->setVar(Legal::MODVAR_TERMS_ACTIVE, $this->getVar('termsofuse', true));
+                $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, $this->getVar('termsofuse', true));
                 $this->delVar('termsofuse');
-                $this->setVar(Legal::MODVAR_PRIVACY_ACTIVE, $this->getVar('privacypolicy', true));
+                $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, $this->getVar('privacypolicy', true));
                 $this->delVar('privacypolicy');
-                $this->setVar(Legal::MODVAR_ACCESSIBILITY_ACTIVE, $this->getVar('accessibilitystatement', true));
+                $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, $this->getVar('accessibilitystatement', true));
                 $this->delVar('accessibilitystatement');
 
                 // Set the new module variable
-                $this->setVar(Legal::MODVAR_MINIMUM_AGE, 13);
+                $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, 13);
 
                 // Set up the new persistent event handler, hook bundles, and any other event-related features.
                 EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));

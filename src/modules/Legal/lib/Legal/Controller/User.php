@@ -41,7 +41,7 @@ class Legal_Controller_User extends Zikula_AbstractController
         }
 
         // work out the template path
-        if (!$this->getVar(Legal::MODVAR_TERMS_ACTIVE)) {
+        if (!$this->getVar(Legal_Constant::MODVAR_TERMS_ACTIVE)) {
             $template = 'legal_user_policynotactive.tpl';
         } else {
             $template = 'legal_user_termsofuse.tpl';
@@ -83,7 +83,7 @@ class Legal_Controller_User extends Zikula_AbstractController
         }
 
         // work out the template path
-        if (!$this->getVar(Legal::MODVAR_PRIVACY_ACTIVE)) {
+        if (!$this->getVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE)) {
             $template = 'legal_user_policynotactive.tpl';
         } else {
             $template = 'legal_user_privacypolicy.tpl';
@@ -113,7 +113,7 @@ class Legal_Controller_User extends Zikula_AbstractController
         }
 
         // work out the template path
-        if (!$this->getVar(Legal::MODVAR_ACCESSIBILITY_ACTIVE)) {
+        if (!$this->getVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE)) {
             $template = 'legal_user_policynotactive.tpl';
         } else {
             $template = 'legal_user_accessibilitystatement.tpl';
@@ -183,7 +183,7 @@ class Legal_Controller_User extends Zikula_AbstractController
             }
 
             if ($activePolicies['agePolicy'] && !$originalAcceptedPolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
-                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal::MODVAR_MINIMUM_AGE, 0)));
+                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)));
             }
 
             if (empty($fieldErrors)) {
@@ -191,19 +191,19 @@ class Legal_Controller_User extends Zikula_AbstractController
                 $nowStr = $now->format(DateTime::ISO8601);
 
                 if ($activePolicies['termsOfUse'] && $acceptedPolicies['termsOfUse']) {
-                    $termsOfUseProcessed = UserUtil::setVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $policiesUid);
+                    $termsOfUseProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $policiesUid);
                 } else {
                     $termsOfUseProcessed = !$activePolicies['termsOfUse'] || $originalAcceptedPolicies['termsOfUse'];
                 }
 
                 if ($activePolicies['privacyPolicy'] && $acceptedPolicies['privacyPolicy']) {
-                    $privacyPolicyProcessed = UserUtil::setVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $policiesUid);
+                    $privacyPolicyProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $policiesUid);
                 } else {
                     $privacyPolicyProcessed = !$activePolicies['privacyPolicy'] || $originalAcceptedPolicies['privacyPolicy'];
                 }
 
                 if ($activePolicies['agePolicy'] && $acceptedPolicies['agePolicy']) {
-                    $agePolicyProcessed = UserUtil::setVar(Legal::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr, $policiesUid);
+                    $agePolicyProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr, $policiesUid);
                 } else {
                     $agePolicyProcessed = !$activePolicies['agePolicy'] || $originalAcceptedPolicies['agePolicy'];
                 }

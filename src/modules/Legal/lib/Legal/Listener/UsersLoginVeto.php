@@ -34,32 +34,32 @@ class Legal_Listener_UsersLoginVeto
      */
     public static function acceptPoliciesListener(Zikula_Event $event)
     {
-        $domain = ZLanguage::getModuleDomain(Legal::MODNAME);
+        $domain = ZLanguage::getModuleDomain(Legal_Constant::MODNAME);
 
-        $termsOfUseActive = ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = (ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_MINIMUM_AGE, 0) > 0);
+        $termsOfUseActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false);
+        $privacyPolicyActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false);
+        $agePolicyActive = (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_MINIMUM_AGE, 0) > 0);
 
         if ($termsOfUseActive || $privacyPolicyActive || $agePolicyActive) {
             $userObj = $event->getSubject();
 
             if (isset($userObj) && ($userObj['uid'] > 2)) {
                 if ($termsOfUseActive) {
-                    $termsOfUseAcceptedDateTimeStr = UserUtil::getVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $userObj['uid'], false);
+                    $termsOfUseAcceptedDateTimeStr = UserUtil::getVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $userObj['uid'], false);
                     $termsOfUseAccepted = isset($termsOfUseAcceptedDateTimeStr) && !empty($termsOfUseAcceptedDateTimeStr);
                 } else {
                     $termsOfUseAccepted = true;
                 }
 
                 if ($privacyPolicyActive) {
-                    $privacyPolicyAcceptedDateTimeStr = UserUtil::getVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $userObj['uid'], false);
+                    $privacyPolicyAcceptedDateTimeStr = UserUtil::getVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $userObj['uid'], false);
                     $privacyPolicyAccepted = isset($privacyPolicyAcceptedDateTimeStr) && !empty($privacyPolicyAcceptedDateTimeStr);
                 } else {
                     $privacyPolicyAccepted = true;
                 }
 
                 if ($agePolicyActive) {
-                    $agePolicyAcceptedDateTimeStr = UserUtil::getVar(Legal::ATTRIBUTE_AGEPOLICY_CONFIRMED, $userObj['uid'], false);
+                    $agePolicyAcceptedDateTimeStr = UserUtil::getVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $userObj['uid'], false);
                     $agePolicyAccepted = isset($agePolicyAcceptedDateTimeStr) && !empty($agePolicyAcceptedDateTimeStr);
                 } else {
                     $agePolicyAccepted = true;
@@ -70,7 +70,7 @@ class Legal_Listener_UsersLoginVeto
                     if (!HookUtil::bindingBetweenAreas('modulehook_area.users.login', 'modulehook_area.legal.acceptpolicies')) {
                         // Only force the redirect if the Legal module's acceptpolicies hook area is not bound to the Users module.
                         $event->data['redirectFunc']  = array(
-                            'modname'   => Legal::MODNAME,
+                            'modname'   => Legal_Constant::MODNAME,
                             'type'      => 'user',
                             'func'      => 'acceptPolicies',
                             'args'      => array(
@@ -78,7 +78,7 @@ class Legal_Listener_UsersLoginVeto
                             ),
                             'session'   => array(
                                 'var'       => 'Legal_Controller_User_acceptPolicies',
-                                'namespace' => Legal::MODNAME,
+                                'namespace' => Legal_Constant::MODNAME,
                             )
                         );
                     } else {

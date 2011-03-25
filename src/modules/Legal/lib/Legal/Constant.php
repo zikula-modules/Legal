@@ -15,9 +15,9 @@
 /**
  * Module-wide constants for the Legal module.
  *
- * NOTE: Do not define anything other than constants in this interface! Do not convert it to a class!
+ * NOTE: Do not define anything other than constants in this class!
  */
-interface Legal
+class Legal_Constant
 {
     /**
      * The official internal module name.

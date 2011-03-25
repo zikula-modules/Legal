@@ -36,11 +36,11 @@ function smarty_function_legaluserlinks($params, &$view)
 {
     $templateVariables = array(
         'policies'  => array(
-            'termsofuse'            => ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_TERMS_ACTIVE, false),
-            'privacypolicy'         => ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_PRIVACY_ACTIVE, false),
-            'accessibilitystatement'=> ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_ACCESSIBILITY_ACTIVE, false),
+            'termsofuse'            => ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false),
+            'privacypolicy'         => ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false),
+            'accessibilitystatement'=> ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false),
         ),
-        'domain'    => ZLanguage::getModuleDomain(Legal::MODNAME),
+        'domain'    => ZLanguage::getModuleDomain(Legal_Constant::MODNAME),
         'start'     => isset($params['start'])     ? $params['start']     : '',
         'end'       => isset($params['end'])       ? $params['end']       : '',
         'seperator' => isset($params['seperator']) ? $params['seperator'] : '',

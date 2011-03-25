@@ -94,17 +94,17 @@ class Legal_Controller_Admin extends Zikula_AbstractController
         }
 
         // set our module variables
-        $termsOfUseActive = (bool)FormUtil::getPassedValue(Legal::MODVAR_TERMS_ACTIVE, false, 'POST');
-        $this->setVar(Legal::MODVAR_TERMS_ACTIVE, $termsOfUseActive);
+        $termsOfUseActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_TERMS_ACTIVE, false, 'POST');
+        $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, $termsOfUseActive);
 
-        $privacyPolicyActive = (bool)FormUtil::getPassedValue(Legal::MODVAR_PRIVACY_ACTIVE, false, 'POST');
-        $this->setVar(Legal::MODVAR_PRIVACY_ACTIVE, $privacyPolicyActive);
+        $privacyPolicyActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_PRIVACY_ACTIVE, false, 'POST');
+        $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, $privacyPolicyActive);
 
-        $accessibilityStmtActive = (bool)FormUtil::getPassedValue(Legal::MODVAR_ACCESSIBILITY_ACTIVE, false, 'POST');
-        $this->setVar(Legal::MODVAR_ACCESSIBILITY_ACTIVE, $accessibilityStmtActive);
+        $accessibilityStmtActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false, 'POST');
+        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, $accessibilityStmtActive);
 
-        $minimumAge = (int)FormUtil::getPassedValue(Legal::MODVAR_MINIMUM_AGE, 0, 'POST');
-        $this->setVar(Legal::MODVAR_MINIMUM_AGE, $minimumAge);
+        $minimumAge = (int)FormUtil::getPassedValue(Legal_Constant::MODVAR_MINIMUM_AGE, 0, 'POST');
+        $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, $minimumAge);
 
         $resetagreement = (int)FormUtil::getPassedValue('resetagreement', -1, 'POST');
         if ($resetagreement != -1) {
