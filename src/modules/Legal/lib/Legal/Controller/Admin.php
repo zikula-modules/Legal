@@ -89,9 +89,7 @@ class Legal_Controller_Admin extends Zikula_AbstractController
         }
 
         // Confirm the forms authorisation key
-        if (!SecurityUtil::confirmAuthKey()) {
-            return LogUtil::registerAuthidError(ModUtil::url('legal', 'admin', 'main'));
-        }
+        $this->checkCsrfToken();
 
         // set our module variables
         $termsOfUseActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_TERMS_ACTIVE, false, 'POST');
