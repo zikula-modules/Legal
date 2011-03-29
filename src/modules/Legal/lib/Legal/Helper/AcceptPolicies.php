@@ -25,7 +25,7 @@ class Legal_Helper_AcceptPolicies
     protected $name;
 
     public function __construct() {
-        $this->name = Legal::MODNAME;
+        $this->name = Legal_Constant::MODNAME;
     }
     
     /**
@@ -35,9 +35,9 @@ class Legal_Helper_AcceptPolicies
      */
     public function getActivePolicies()
     {
-        $termsOfUseActive = ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = (ModUtil::getVar(Legal::MODNAME, Legal::MODVAR_MINIMUM_AGE, 0) != 0);
+        $termsOfUseActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false);
+        $privacyPolicyActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false);
+        $agePolicyActive = (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_MINIMUM_AGE, 0) != 0);
         
         return array(
             'termsOfUse'    => $termsOfUseActive,
@@ -61,9 +61,9 @@ class Legal_Helper_AcceptPolicies
             $isRegistration = false;
         }
         
-        $termsOfUseAcceptedDateStr      = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $uid, false, $isRegistration)  : false;
-        $privacyPolicyAcceptedDateStr   = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $uid, false, $isRegistration): false;
-        $agePolicyConfirmedDateStr      = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal::ATTRIBUTE_AGEPOLICY_CONFIRMED, $uid, false, $isRegistration)  : false;
+        $termsOfUseAcceptedDateStr      = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $uid, false, $isRegistration)  : false;
+        $privacyPolicyAcceptedDateStr   = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $uid, false, $isRegistration): false;
+        $agePolicyConfirmedDateStr      = (isset($uid) && !empty($uid)) ? UserUtil::getVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $uid, false, $isRegistration)  : false;
         
         $termsOfUseAcceptedDate     = $termsOfUseAcceptedDateStr    ? new DateTime($termsOfUseAcceptedDateStr)      : false;
         $privacyPolicyAcceptedDate  = $privacyPolicyAcceptedDateStr ? new DateTime($privacyPolicyAcceptedDateStr)   : false;
