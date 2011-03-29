@@ -1,4 +1,4 @@
-<p>This page is the site accessibility statement for {configgetvar name=sitename}. If you have any questions or comments, please feel free to <a href="mailto:{configgetvar name=adminmail}">contact the site administrator</a>.</p>
+<p>This page is the site accessibility statement for {$modvars.ZConfig.sitename}. If you have any questions or comments, please feel free to <a href="mailto:{$modvars.ZConfig.adminmail}">contact the site administrator</a>.</p>
 <h2>Access keys</h2>
 <p>Most browsers support jumping to specific links by typing keys defined on the site. Under the Microsoft Windows operating system, you can press the 'Alt' key plus an access key; on an Apple Macintosh operating system, you can press the 'Control' key plus an access key.</p>
 <p>The following access keys are defined for all pages on this site:</p>
