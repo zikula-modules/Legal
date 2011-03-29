@@ -39,9 +39,9 @@
                     <p class="z-formnote z-informationmsg">{gt text="Notice: This setting resets the acceptance of the 'Terms of use' for all users in this group. Next time they want to log-in, they will have to acknowledge their acceptance of them again, and will not be able to log-in if they do not. This action does not affect the main administrator account. You can perform the same operation for individual users by visiting the Users manager in the site admin panel."}</p>
                 </div>
             </fieldset>
-            <div class="z-formbuttons">
-                {button src='button_ok.png' set='icons/small' __alt='Save' __title='Save' __text='Save'}
-                <a href="{modurl modname='Legal' type='admin'}">{img modname='core' src='button_cancel.png' set='icons/small' __alt='Cancel' __title='Cancel'}</a>
+            <div class="z-formbuttons z-buttons">
+                {button src='button_ok.png' set='icons/extrasmall' __alt='Save' __title='Save' __text='Save'}
+                <a href="{modurl modname='Legal' type='admin'}" title="{gt text='Cancel'}">{img modname='core' src='button_cancel.png' set='icons/extrasmall' __alt='Cancel' __title='Cancel'} {gt text='Cancel'}</a>
             </div>
         </div>
     </form>
