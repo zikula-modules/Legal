@@ -1,6 +1,6 @@
 {include file="legal_admin_menu.tpl"}
 <div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname=core src=configure.gif set=icons/large __alt="Settings"}</div>
+    <div class="z-adminpageicon">{img modname='core' src='configure.png' set='icons/large' __alt='Settings'}</div>
     <h2>{gt text="Settings"}</h2>
     <p class="z-warningmsg">{gt text='<strong>Important Usage Note</strong>: The provided legal statements are samples only. They need to be adapted to specific needs and locales. You will find the content of the statements in files in the "modules/legal/pntemplates/en" directory. These templates can be <a href="http://community.zikula.org/Wiki-TemplateOverridng.htm">overridden</a> by theme templates, or by global templates you would create in the "config/templates/legal/" directory (in the appropriate sub-directory for the language you are writing for).'}</p>
     <form id="legal_config" class="z-form" action="{modurl modname="legal" type="admin" func="updateconfig"}" method="post" enctype="application/x-www-form-urlencoded">
@@ -40,8 +40,8 @@
                 </div>
             </fieldset>
             <div class="z-formbuttons">
-                {button src=button_ok.gif set=icons/small __alt="Save" __title="Save" __text="Save"}
-                <a href="{modurl modname=Admin type=admin func=adminpanel}">{img modname=core src=button_cancel.gif set=icons/small __alt="Cancel" __title="Cancel"}</a>
+                {button src='button_ok.png' set='icons/small' __alt='Save' __title='Save' __text='Save'}
+                <a href="{modurl modname='Legal' type='admin'}">{img modname='core' src='button_cancel.png' set='icons/small' __alt='Cancel' __title='Cancel'}</a>
             </div>
         </div>
     </form>
