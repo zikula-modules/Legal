@@ -74,8 +74,8 @@ class Legal_Installer extends Zikula_AbstractInstaller
                 $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, $this->getVar('accessibilitystatement', true));
                 $this->delVar('accessibilitystatement');
 
-                // Set the new module variable
-                $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, 13);
+                // Set the new module variable -- but if Users set it for us during its upgrade, then don't overwrite it
+                $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, $this->getVar(Legal_Constant::MODVAR_MINIMUM_AGE, 0));
 
                 // Set up the new persistent event handler, hook bundles, and any other event-related features.
                 EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
