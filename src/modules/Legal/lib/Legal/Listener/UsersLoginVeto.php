@@ -85,9 +85,7 @@ class Legal_Listener_UsersLoginVeto
                         $event->data['retry'] = true;
                     }
 
-                    if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted) {
-                        LogUtil::registerError(__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', $domain));
-                    }
+                    LogUtil::registerError(__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', $domain));
                 }
             }
         }
