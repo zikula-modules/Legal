@@ -128,11 +128,11 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                 
                 if ($eventName == 'users.hook.login.ui.edit') {
                     // Determine if the policies hook should be displayed for log-in events
-                    $formType = $event->hasArg('formType') ? $event->getArg('formType') : '';
+                    $formType = $event->hasArg('form_type') ? $event->getArg('form_type') : '';
 
                     // It is not shown unless the formType is 'page' indicating that we are not looking at a block,
                     // and then only if we have a user record (meaning that the first log-in attempt was vetoed.
-                    if (($formType == 'page') && isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
+                    if (($formType == 'loginscreen') && isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
                         $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
 
                         // We only show the policies if one or more active policies have not been accepted by the user.
