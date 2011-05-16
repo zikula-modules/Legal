@@ -33,7 +33,7 @@ class Legal_Installer extends Zikula_AbstractInstaller
 
         // Set up the persistent event handler, hook bundles, and any other event-related features.
         EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
-        HookUtil::registerHookProviderBundles($this->version);
+//        HookUtil::registerHookProviderBundles($this->version);
 
         // Initialization successful
         return true;
@@ -79,7 +79,7 @@ class Legal_Installer extends Zikula_AbstractInstaller
 
                 // Set up the new persistent event handler, hook bundles, and any other event-related features.
                 EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
-                HookUtil::upgradeHookProviderBundles($this->version);
+//                HookUtil::registerHookProviderBundles($this->version);
 
             case '2.0.0':
                 // Upgrade 2.0.0 -> ?.?.?
