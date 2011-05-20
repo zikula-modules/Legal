@@ -69,30 +69,6 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
         $this->helper = new Legal_Helper_AcceptPolicies();
     }
 
-    //        // Bundle for forms that create and edit user account records (both by admin and by user).
-//        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.users.user', 'ui_hooks', $this->__('User and registration management hooks'));
-//        $bundle->addEvent('display_view',    'users.user.display_view');
-//        $bundle->addEvent('form_edit',       'users.user.form_edit');
-//        $bundle->addEvent('form_delete',     'users.user.form_delete');
-//        $bundle->addEvent('validate_edit',   'users.user.validate_edit');
-//        $bundle->addEvent('validate_delete', 'users.user.validate_delete');
-//        $bundle->addEvent('process_edit',    'users.user.process_edit');
-//        $bundle->addEvent('process_delete',  'users.user.process_delete');
-//        $this->registerHookSubscriberBundle($bundle);
-//
-//        // Bundle for the login form (both the block and the login).
-//        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.users.login', 'ui_hooks', $this->__('Login form and block hooks'));
-//        $bundle->addEvent('form_edit',     'users.login.form_edit');
-//        $bundle->addEvent('validate_edit', 'users.login.validate_edit');
-//        $bundle->addEvent('process_edit',  'users.login.process_edit');
-//        $this->registerHookSubscriberBundle($bundle);
-//
-//        // Bundle for the list of authentication methods on the login block and the login.
-//        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.users.authentication_method_selectors', 'ui_hooks', $this->__('Pre-login authentication method selector hooks'));
-//        $bundle->addEvent('display_view', 'users.authentication_method_selectors.display_view');
-//        $this->registerHookSubscriberBundle($bundle);
-
-
     public function setupHandlerDefinitions()
     {
 
@@ -103,6 +79,11 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 //        $this->addHandlerDefinition('users.user.validate_delete', '');
         $this->addHandlerDefinition('users.user.process_edit', 'processEdit');
 //        $this->addHandlerDefinition('users.user.process_delete', '');
+
+//        $this->addHandlerDefinition('users.login.form_edit', 'uiEdit');
+//        $this->addHandlerDefinition('users.login.validate_edit', 'validateEdit');
+//        $this->addHandlerDefinition('users.login.process_edit', 'processEdit');
+
     }
 
     /**
