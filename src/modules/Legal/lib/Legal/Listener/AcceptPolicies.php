@@ -1,13 +1,13 @@
 <?php
 /**
  * Copyright 2011 Zikula Foundation.
- * 
+ *
  * This work is contributed to the Zikula Foundation under one or more
  * Contributor Agreements and licensed to You under the following license:
- * 
+ *
  * @license GNU/LGPLv3 (or at your option, any later version).
  * @package Legal
- * 
+ *
  * Please see the NOTICE file distributed with this source code for further
  * information regarding copyright and licensing.
  */
@@ -15,14 +15,14 @@
 /**
  * Handles hook notifications from log-in and registration for the acceptance of policies.
  */
-class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
+class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 {
     /**
      * The area that this handler handles.
-     * 
+     *
      * @var string
      */
-    const AREA = 'modulehook_area.legal.acceptpolicies';
+    const AREA = 'provider.legal.ui_hooks.acceptpolicies';
 
     /**
      * Convenience access to the module name.
@@ -30,7 +30,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
      * @var string
      */
     protected $name;
-    
+
     /**
      * Access to the Zikula_View instance for this module.
      *
@@ -44,7 +44,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
      * @var Zikula_Request_Request
      */
     protected $request;
-    
+
     /**
      * Access to the helper.
      *
@@ -55,18 +55,54 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
     /**
      * Constructs a new instance of this class.
      *
-     * @param Zikula_ServiceManager $serviceManager The current service manager instance.
+     * @param Zikula_EventManager $serviceManager The current service manager instance.
      */
-    public function  __construct(Zikula_ServiceManager $serviceManager)
+    public function  __construct(Zikula_EventManager $eventManager)
     {
-        parent::__construct($serviceManager);
+        parent::__construct($eventManager);
 
         $this->name = Legal_Constant::MODNAME;
         $this->view = Zikula_View::getInstance($this->name);
         $this->request = $this->serviceManager->getService('request');
         $this->domain = ZLanguage::getModuleDomain($this->name);
-        
+
         $this->helper = new Legal_Helper_AcceptPolicies();
+    }
+
+    //        // Bundle for forms that create and edit user account records (both by admin and by user).
+//        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.users.user', 'ui_hooks', $this->__('User and registration management hooks'));
+//        $bundle->addEvent('display_view',    'users.user.display_view');
+//        $bundle->addEvent('form_edit',       'users.user.form_edit');
+//        $bundle->addEvent('form_delete',     'users.user.form_delete');
+//        $bundle->addEvent('validate_edit',   'users.user.validate_edit');
+//        $bundle->addEvent('validate_delete', 'users.user.validate_delete');
+//        $bundle->addEvent('process_edit',    'users.user.process_edit');
+//        $bundle->addEvent('process_delete',  'users.user.process_delete');
+//        $this->registerHookSubscriberBundle($bundle);
+//
+//        // Bundle for the login form (both the block and the login).
+//        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.users.login', 'ui_hooks', $this->__('Login form and block hooks'));
+//        $bundle->addEvent('form_edit',     'users.login.form_edit');
+//        $bundle->addEvent('validate_edit', 'users.login.validate_edit');
+//        $bundle->addEvent('process_edit',  'users.login.process_edit');
+//        $this->registerHookSubscriberBundle($bundle);
+//
+//        // Bundle for the list of authentication methods on the login block and the login.
+//        $bundle = new Zikula_HookManager_SubscriberBundle($this->name, 'subscriber.users.authentication_method_selectors', 'ui_hooks', $this->__('Pre-login authentication method selector hooks'));
+//        $bundle->addEvent('display_view', 'users.authentication_method_selectors.display_view');
+//        $this->registerHookSubscriberBundle($bundle);
+
+
+    public function setupHandlerDefinitions()
+    {
+
+        $this->addHandlerDefinition('users.user.display_view', 'uiView');
+        $this->addHandlerDefinition('users.user.form_edit', 'uiEdit');
+//        $this->addHandlerDefinition('users.user.form_delete', '');
+        $this->addHandlerDefinition('users.user.validate_edit', 'validateEdit');
+//        $this->addHandlerDefinition('users.user.validate_delete', '');
+        $this->addHandlerDefinition('users.user.process_edit', 'processEdit');
+//        $this->addHandlerDefinition('users.user.process_delete', '');
     }
 
     /**
@@ -78,14 +114,14 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
     {
         $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
-        
+
         $user = $event->getSubject();
-        
+
         if (isset($user) && !empty($user) && ($activePolicyCount > 0)) {
             $showPolicies = false;
             $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
             $viewablePolicies = $this->helper->getViewablePolicies($user['uid']);
-                
+
             if (array_sum($viewablePolicies) > 0) {
                 $templateVars = array(
                     'activePolicies'    => $activePolicies,
@@ -94,7 +130,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                 );
                 $this->view->assign($templateVars);
 
-                $event->data[self::AREA] = new Zikula_Response_DisplayHook('modulehook_area.legal.acceptpolicies', $this->view, 'legal_acceptpolicies_ui_view.tpl');
+                $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_view.tpl');
             }
         }
     }
@@ -111,21 +147,21 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
         if ($activePolicyCount > 0) {
             $showPolicies = false;
             $eventName = $event->getName();
-            
+
             // Determine if the hook should be displayed, and also set up certain variables, based on the type of event
             // being handled, the state of the subject user account, and who is currently logged in.
             if (!UserUtil::isLoggedIn()) {
                 // If the user is not logged in, then the only two scenarios where we would show the hook contents is if
                 // the user is trying to log in and it was vetoed because one or more policies need to be accepted, or if
                 // the user is looking at the new user registration form.
-                
+
                 $user = $event->getSubject();
                 if (!isset($user) || empty($user)) {
                     $user = array(
                         '__ATTRIBUTES__' => array(),
                     );
                 }
-                
+
                 if ($eventName == 'users.hook.login.ui.edit') {
                     // Determine if the policies hook should be displayed for log-in events
                     $formType = $event->hasArg('form_type') ? $event->getArg('form_type') : '';
@@ -149,12 +185,12 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                             );
                             $this->view->assign($templateVars);
 
-                            $event->data[self::AREA] = new Zikula_Response_DisplayHook('modulehook_area.legal.acceptpolicies', $this->view, 'legal_acceptpolicies_ui_edit_login.tpl');
+                            $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_edit_login.tpl');
                         }
                     }
                 } else {
                     $acceptedPolicies = (isset($this->validation)) ? $this->validation->getObject() : $this->helper->getAcceptedPolicies();
-                    
+
                     $templateVars = array(
                         'activePolicies'    => $activePolicies,
                         'acceptedPolicies'  => $acceptedPolicies,
@@ -162,7 +198,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                     );
                     $this->view->assign($templateVars);
 
-                    $event->data[self::AREA] = new Zikula_Response_DisplayHook('modulehook_area.legal.acceptpolicies', $this->view, 'legal_acceptpolicies_ui_edit_registration.tpl');
+                    $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_edit_registration.tpl');
                 }
             } else {
                 // The user is logged in. A few possibilities here. The user is editing his own account information,
@@ -170,16 +206,16 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                 // account information (view-only access to the policies in that case), or the user is someone with ACCESS_EDIT access
                 // to the policies.
                 $user = $event->getSubject();
-                
+
                 if (isset($this->validation)) {
                     $acceptedPolicies = $this->validation->getObject();
                 } else {
                     $acceptedPolicies = $this->helper->getAcceptedPolicies(isset($user) ? $user['uid'] : null);
                 }
-                
+
                 $viewablePolicies = $this->helper->getViewablePolicies(isset($user) ? $user['uid'] : null);
                 $editablePolicies = $this->helper->getEditablePolicies();
-                
+
                 if ((array_sum($viewablePolicies) > 0) || (array_sum($editablePolicies) > 0)) {
                     $templateVars = array(
                         'policiesUid'       => isset($user) ? $user['uid'] : '',
@@ -191,7 +227,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                     );
                     $this->view->assign($templateVars);
 
-                    $event->data[self::AREA] = new Zikula_Response_DisplayHook('modulehook_area.legal.acceptpolicies', $this->view, 'legal_acceptpolicies_ui_edit.tpl');
+                    $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_edit.tpl');
                 }
             }
         }
@@ -206,7 +242,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
     {
         $activePolicies = $this->helper->getActivePolicies();
         $eventName = $event->getName();
-        
+
         if (!UserUtil::isLoggedIn()) {
             $user = $event->getSubject();
             if (!isset($user) || empty($user)) {
@@ -214,7 +250,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                     '__ATTRIBUTES__' => array(),
                 );
             }
-            
+
             if ($eventName == 'users.hook.login.ui.edit') {
                 // See if there is anything for validation to do.
                 if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
@@ -296,7 +332,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
             // See if there is anything for validation to do.
             if ($this->request->isPost()) {
                 $user = $event->getSubject();
-                
+
                 $isNewUser = (!isset($user['uid']) || empty($user['uid']));
                 $isRegistration = !$isNewUser && UserUtil::isRegistration($user['uid']);
 
@@ -307,9 +343,9 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                     'agePolicy'     => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
                 );
                 $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
-                
+
                 $this->validation = new Zikula_Provider_HookValidation($uid ? $uid : '', $policiesAcceptedAtRegistration);
-                
+
                 if ($isNewUser) {
                     if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
                         throw new Zikula_Exception_Forbidden();
@@ -343,7 +379,7 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                         throw new Zikula_Exception_Fatal();
                     }
                 }
-                    
+
                 $event->data->set(self::AREA, $this->validation);
             } elseif (!$this->request->isPost()) {
                 throw new Zikula_Exception_Forbidden();
@@ -360,11 +396,11 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
     {
         $activePolicies = $this->helper->getActivePolicies();
         $eventName = $event->getName();
-        
+
         if (isset($this->validation) && !$this->validation->hasErrors()) {
             $user = $event->getSubject();
             $uid = $event->getArg('id');
-            
+
             if (!UserUtil::isLoggedIn()) {
                 if ($eventName == 'users.hook.login.process.edit') {
                     $policiesAcceptedAtLogin = $this->validation->getObject();
@@ -388,12 +424,12 @@ class Legal_HookHandler_AcceptPolicies extends Zikula_Hook_AbstractHandler
                     $user = UserUtil::getVars($uid, true);
                 } else {
                     $isRegistration = UserUtil::isRegistration($uid);
-                    
+
                     $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
                     if (!$user) {
                         throw new Zikula_Exception_Fatal($this->__('A user account or registration does not exist for the specified uid.'));
                     }
-                    
+
                     $policiesAcceptedAtRegistration = $this->validation->getObject();
 
                     $nowUTC = new DateTime('now', new DateTimeZone('UTC'));

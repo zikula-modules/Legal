@@ -33,6 +33,7 @@ class Legal_Installer extends Zikula_AbstractInstaller
 
         // Set up the persistent event handler, hook bundles, and any other event-related features.
         EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
+        EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_AcceptPolicies');
 //        HookUtil::registerHookProviderBundles($this->version);
 
         // Initialization successful
@@ -79,14 +80,16 @@ class Legal_Installer extends Zikula_AbstractInstaller
 
                 // Set up the new persistent event handler, hook bundles, and any other event-related features.
                 EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
+
 //                HookUtil::registerHookProviderBundles($this->version);
 
             case '2.0.0':
+                EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_AcceptPolicies');
                 // Upgrade 2.0.0 -> ?.?.?
 
             default:
-                $this->registerError($this->__f('Upgrading the Legal module from version %1$s to %2$s is not supported.', array($oldVersion, $this->version->getVersion())));
-                return $oldVersion;
+//                $this->registerError($this->__f('Upgrading the Legal module from version %1$s to %2$s is not supported.', array($oldVersion, $this->version->getVersion())));
+//                return $oldVersion;
         }
 
         // Update successful
