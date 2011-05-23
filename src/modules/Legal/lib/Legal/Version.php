@@ -13,8 +13,6 @@
  */
 /**
  * Provides version information for the Legal module.
- *
- * This class also sets up hook bundles.
  */
 class Legal_Version extends Zikula_AbstractVersion
 {
@@ -42,23 +40,6 @@ class Legal_Version extends Zikula_AbstractVersion
                         $this->name . '::accessibilitystatement' => '::'
                 ),
         );
-    }
-
-    /**
-     * Sets up hook bundles for the Legal modul.
-     *
-     * @return void
-     */
-    protected function setupHookBundles()
-    {
-//        // Provider bundles
-//        // Bundle to add change-of-password to login if desired.
-//        $bundle = new Zikula_HookManager_ProviderBundle($this->name, 'provider.legal.ui-hooks.acceptpolicies', 'ui_hooks', $this->__('Legal policies user acceptance login hook provider.'));
-//        $bundle->addServiceHandler('ui.view', 'Legal_HookHandler_AcceptPolicies', 'uiView', 'legal_acceptpolicies.service');
-//        $bundle->addServiceHandler('ui.edit', 'Legal_HookHandler_AcceptPolicies', 'uiEdit', 'legal_acceptpolicies.service');
-//        $bundle->addServiceHandler('validate.edit', 'Legal_HookHandler_AcceptPolicies', 'validateEdit', 'legal_acceptpolicies.service');
-//        $bundle->addServiceHandler('process.edit', 'Legal_HookHandler_AcceptPolicies', 'processEdit', 'legal_acceptpolicies.service');
-//        $this->registerHookProviderBundle($bundle);
     }
 
 }
