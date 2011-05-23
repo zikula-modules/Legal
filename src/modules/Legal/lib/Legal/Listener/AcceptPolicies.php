@@ -13,7 +13,7 @@
  */
 
 /**
- * Handles hook notifications from log-in and registration for the acceptance of policies.
+ * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
  */
 class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 {
@@ -87,7 +87,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
     }
 
     /**
-     * Responds to ui.view hook notifications.
+     * Responds to ui.view hook-like event notifications.
      *
      * @param Zikula_Event $event The event that triggered this function call.
      */
@@ -111,7 +111,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                 );
                 $this->view->assign($templateVars);
 
-                $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_view.tpl');
+                $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_view.tpl');
             }
         }
     }
@@ -166,7 +166,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                             );
                             $this->view->assign($templateVars);
 
-                            $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_edit_login.tpl');
+                            $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_edit_login.tpl');
                         }
                     }
                 } else {
@@ -179,7 +179,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     );
                     $this->view->assign($templateVars);
 
-                    $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_edit_registration.tpl');
+                    $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_edit_registration.tpl');
                 }
             } else {
                 // The user is logged in. A few possibilities here. The user is editing his own account information,
@@ -208,7 +208,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     );
                     $this->view->assign($templateVars);
 
-                    $event->data[self::AREA] = new Zikula_Response_DisplayHook(self::AREA, $this->view, 'legal_acceptpolicies_ui_edit.tpl');
+                    $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_edit.tpl');
                 }
             }
         }
