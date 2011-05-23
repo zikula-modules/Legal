@@ -66,10 +66,8 @@ class Legal_Listener_UsersLoginVeto
                 }
 
                 if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted) {
-                    $event->setNotified();
-                    if (!HookUtil::bindingBetweenAreas('modulehook_area.users.login', 'modulehook_area.legal.acceptpolicies')) {
-                        // Only force the redirect if the Legal module's acceptpolicies hook area is not bound to the Users module.
-                        $event->data['redirectFunc']  = array(
+                    $event->stop();
+                    $event->data['redirect_func']  = array(
                             'modname'   => Legal_Constant::MODNAME,
                             'type'      => 'user',
                             'func'      => 'acceptPolicies',
@@ -81,10 +79,6 @@ class Legal_Listener_UsersLoginVeto
                                 'namespace' => Legal_Constant::MODNAME,
                             )
                         );
-                    } else {
-                        $event->data['retry'] = true;
-                    }
-
                     LogUtil::registerError(__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', $domain));
                 }
             }
