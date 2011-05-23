@@ -81,7 +81,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 //        $this->addHandlerDefinition('users.user.process_delete', '');
 
 //        $this->addHandlerDefinition('users.login.form_edit', 'uiEdit');
-//        $this->addHandlerDefinition('users.login.validate_edit', 'validateEdit');
+        $this->addHandlerDefinition('users.login.validate_edit', 'validateEdit');
 //        $this->addHandlerDefinition('users.login.process_edit', 'processEdit');
 
     }
@@ -232,7 +232,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                 );
             }
 
-            if ($eventName == 'users.hook.login.ui.edit') {
+            if ($eventName == 'users.login.validate_edit') {
                 // See if there is anything for validation to do.
                 if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
                     $policiesAcceptedAtRegistration = array(
@@ -252,18 +252,18 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     if ($goodUidUser && $goodUidAcceptPolicies && ($user['uid'] == $uid)) {
                         $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
 
-                        $this->validation = new Zikula_Provider_HookValidation($uid, $policiesAcceptedAtRegistration);
+                        $this->validation = new Zikula_Hook_ValidationResponse($uid, $policiesAcceptedAtRegistration);
 
                         if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse'] && (!isset($policiesAcceptedAtRegistration['termsOfUse']) || empty($policiesAcceptedAtRegistration['termsOfUse']) || !$policiesAcceptedAtRegistration['termsOfUse'])) {
-                            $this->validation->addError('termsofuse', $this->__('In order to log in, you must accept this site\'s Terms of Use.'));
+                            $this->validation->addError('termsofuse', __('In order to log in, you must accept this site\'s Terms of Use.', $this->domain));
                         }
 
                         if ($activePolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy'] && (!isset($policiesAcceptedAtRegistration['privacyPolicy']) || empty($policiesAcceptedAtRegistration['privacyPolicy']) || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
-                            $this->validation->addError('privacypolicy', $this->__('In order to log in, you must accept this site\'s Privacy Policy.'));
+                            $this->validation->addError('privacypolicy', __('In order to log in, you must accept this site\'s Privacy Policy.', $this->domain));
                         }
 
                         if ($activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy'] && (!isset($policiesAcceptedAtRegistration['agePolicy']) || empty($policiesAcceptedAtRegistration['agePolicy']) || !$policiesAcceptedAtRegistration['agePolicy'])) {
-                            $this->validation->addError('agepolicy', $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0))));
+                            $this->validation->addError('agepolicy', __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain));
                         }
 
 
@@ -271,7 +271,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     } elseif (!$goodUidUser || !$goodUidAcceptPolicies) {
                         throw new Zikula_Exception_Fatal();
                     } else {
-                        LogUtil::registerError(_('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.', $this->domain));
+                        LogUtil::registerError(__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.', $this->domain));
                         $this->request->getSession()->clearNamespace('Zikula_Users');
                         $this->request->getSession()->clearNamespace('Legal');
                         throw new Zikula_Exception_Redirect(ModUtil::url('Users', 'user', 'login'));
@@ -288,18 +288,18 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                         'agePolicy'     => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
                     );
 
-                    $this->validation = new Zikula_Provider_HookValidation('', $policiesAcceptedAtRegistration);
+                    $this->validation = new Zikula_Hook_ValidationResponse('', $policiesAcceptedAtRegistration);
 
                     if ($activePolicies['termsOfUse'] && (!isset($policiesAcceptedAtRegistration['termsOfUse']) || empty($policiesAcceptedAtRegistration['termsOfUse']) || !$policiesAcceptedAtRegistration['termsOfUse'])) {
-                        $this->validation->addError('termsofuse', $this->__('In order to register for a new account, you must accept this site\'s Terms of Use.'));
+                        $this->validation->addError('termsofuse', __('In order to register for a new account, you must accept this site\'s Terms of Use.', $this->domain));
                     }
 
                     if ($activePolicies['privacyPolicy'] && (!isset($policiesAcceptedAtRegistration['privacyPolicy']) || empty($policiesAcceptedAtRegistration['privacyPolicy']) || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
-                        $this->validation->addError('privacypolicy', $this->__('In order to register for a new account, you must accept this site\'s Privacy Policy.'));
+                        $this->validation->addError('privacypolicy', __('In order to register for a new account, you must accept this site\'s Privacy Policy.', $this->domain));
                     }
 
                     if ($activePolicies['agePolicy'] && (!isset($policiesAcceptedAtRegistration['agePolicy']) || empty($policiesAcceptedAtRegistration['agePolicy']) || !$policiesAcceptedAtRegistration['agePolicy'])) {
-                        $this->validation->addError('agepolicy', $this->__f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0))));
+                        $this->validation->addError('agepolicy', __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain));
                     }
 
 
@@ -325,7 +325,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                 );
                 $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
 
-                $this->validation = new Zikula_Provider_HookValidation($uid ? $uid : '', $policiesAcceptedAtRegistration);
+                $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
 
                 if ($isNewUser) {
                     if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
@@ -408,7 +408,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 
                     $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
                     if (!$user) {
-                        throw new Zikula_Exception_Fatal($this->__('A user account or registration does not exist for the specified uid.'));
+                        throw new Zikula_Exception_Fatal(__('A user account or registration does not exist for the specified uid.', $this->domain));
                     }
 
                     $policiesAcceptedAtRegistration = $this->validation->getObject();
@@ -436,7 +436,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 
                 $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
                 if (!$user) {
-                    throw new Zikula_Exception_Fatal($this->__('A user account or registration does not exist for the specified uid.'));
+                    throw new Zikula_Exception_Fatal(__('A user account or registration does not exist for the specified uid.', $this->domain));
                 }
 
                 $policiesAcceptedAtRegistration = $this->validation->getObject();
