@@ -4,7 +4,7 @@ Zikula.define('Legal.UI');
 
 Zikula.Legal.UI.Edit = {
     init: function() {
-        Zikula.Users.NewUser.addValidatorHandler('modulehook_area.legal.acceptpolicies', Zikula.Legal.UI.Edit.getRegistrationErrorsResponse)
+        Zikula.Users.NewUser.addValidatorHandler('acceptpolicies', Zikula.Legal.UI.Edit.getRegistrationErrorsResponse)
     },
     
     /**

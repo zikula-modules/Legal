@@ -18,11 +18,11 @@
 class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 {
     /**
-     * The area that this handler handles.
+     * Similar to a hook area, the event
      *
      * @var string
      */
-    const AREA = 'provider.legal.ui_hooks.acceptpolicies';
+    const EVENT_KEY = 'acceptpolicies';
 
     /**
      * Convenience access to the module name.
@@ -111,7 +111,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                 );
                 $this->view->assign($templateVars);
 
-                $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_view.tpl');
+                $event->data[self::EVENT_KEY] = $this->view->fetch('legal_acceptpolicies_ui_view.tpl');
             }
         }
     }
@@ -166,7 +166,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                             );
                             $this->view->assign($templateVars);
 
-                            $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_edit_login.tpl');
+                            $event->data[self::EVENT_KEY] = $this->view->fetch('legal_acceptpolicies_ui_edit_login.tpl');
                         }
                     }
                 } else {
@@ -179,7 +179,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     );
                     $this->view->assign($templateVars);
 
-                    $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_edit_registration.tpl');
+                    $event->data[self::EVENT_KEY] = $this->view->fetch('legal_acceptpolicies_ui_edit_registration.tpl');
                 }
             } else {
                 // The user is logged in. A few possibilities here. The user is editing his own account information,
@@ -208,7 +208,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     );
                     $this->view->assign($templateVars);
 
-                    $event->data[] = $this->view->fetch('legal_acceptpolicies_ui_edit.tpl');
+                    $event->data[self::EVENT_KEY] = $this->view->fetch('legal_acceptpolicies_ui_edit.tpl');
                 }
             }
         }
@@ -267,7 +267,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                         }
 
 
-                        $event->data->set(self::AREA, $this->validation);
+                        $event->data->set(self::EVENT_KEY, $this->validation);
                     } elseif (!$goodUidUser || !$goodUidAcceptPolicies) {
                         throw new Zikula_Exception_Fatal();
                     } else {
@@ -303,7 +303,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     }
 
 
-                    $event->data->set(self::AREA, $this->validation);
+                    $event->data->set(self::EVENT_KEY, $this->validation);
                 } elseif (!$this->request->isPost()) {
                     throw new Zikula_Exception_Forbidden();
                 }
@@ -361,7 +361,7 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     }
                 }
 
-                $event->data->set(self::AREA, $this->validation);
+                $event->data->set(self::EVENT_KEY, $this->validation);
             } elseif (!$this->request->isPost()) {
                 throw new Zikula_Exception_Forbidden();
             }
