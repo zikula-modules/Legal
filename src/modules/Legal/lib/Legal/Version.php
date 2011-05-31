@@ -31,7 +31,6 @@ class Legal_Version extends Zikula_AbstractVersion
                 'url' => __('legalmod'),
                 'version' => '2.0.0',
                 'core_min' => '1.3.0',
-                //'capabilities' => array(HookUtil::PROVIDER_CAPABLE => array('enabled' => true)),
                 'securityschema' => array(
                         $this->name . '::' => '::',
                         $this->name . '::termsofuse' => '::',

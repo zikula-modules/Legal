@@ -34,7 +34,6 @@ class Legal_Installer extends Zikula_AbstractInstaller
         // Set up the persistent event handler, hook bundles, and any other event-related features.
         EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
         EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_AcceptPolicies');
-//        HookUtil::registerHookProviderBundles($this->version);
 
         // Initialization successful
         return true;
@@ -78,15 +77,13 @@ class Legal_Installer extends Zikula_AbstractInstaller
                 // Set the new module variable -- but if Users set it for us during its upgrade, then don't overwrite it
                 $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, $this->getVar(Legal_Constant::MODVAR_MINIMUM_AGE, 0));
 
-                // Set up the new persistent event handler, hook bundles, and any other event-related features.
+                // Set up the new persistent event handler, and any other event-related features.
                 EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
-
-//                HookUtil::registerHookProviderBundles($this->version);
+                EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_AcceptPolicies');
 
             case '2.0.0':
-                EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_AcceptPolicies');
                 // Upgrade 2.0.0 -> ?.?.?
-
+                
             default:
 //                $this->registerError($this->__f('Upgrading the Legal module from version %1$s to %2$s is not supported.', array($oldVersion, $this->version->getVersion())));
 //                return $oldVersion;
