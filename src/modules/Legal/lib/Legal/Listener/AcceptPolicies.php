@@ -73,7 +73,11 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
     {
 
         $this->addHandlerDefinition('module.users.ui.display_view', 'uiView');
-        $this->addHandlerDefinition('users.user.form_edit', 'uiEdit');
+        $this->addHandlerDefinition('module.users.ui.form_edit.login_screen', 'uiEdit');
+        $this->addHandlerDefinition('module.users.ui.form_edit.new_user', 'uiEdit');
+        $this->addHandlerDefinition('module.users.ui.form_edit.modify_user', 'uiEdit');
+        $this->addHandlerDefinition('module.users.ui.form_edit.new_registration', 'uiEdit');
+        $this->addHandlerDefinition('module.users.ui.form_edit.modify_registration', 'uiEdit');
 //        $this->addHandlerDefinition('users.user.form_delete', '');
         $this->addHandlerDefinition('users.user.validate_edit', 'validateEdit');
 //        $this->addHandlerDefinition('users.user.validate_delete', '');
@@ -143,13 +147,9 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
                     );
                 }
 
-                if ($eventName == 'users.hook.login.ui.edit') {
-                    // Determine if the policies hook should be displayed for log-in events
-                    $formType = $event->hasArg('form_type') ? $event->getArg('form_type') : '';
-
-                    // It is not shown unless the formType is 'page' indicating that we are not looking at a block,
-                    // and then only if we have a user record (meaning that the first log-in attempt was vetoed.
-                    if (($formType == 'loginscreen') && isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
+                if ($eventName == 'module.users.ui.login_screen.form_edit') {
+                    // It is not shown unless we have a user record (meaning that the first log-in attempt was vetoed.
+                    if (isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
                         $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
 
                         // We only show the policies if one or more active policies have not been accepted by the user.
