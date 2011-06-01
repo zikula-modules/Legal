@@ -85,7 +85,11 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
         $this->addHandlerDefinition('module.users.ui.validate_edit.new_registration', 'validateEdit');
         $this->addHandlerDefinition('module.users.ui.validate_edit.modify_registration', 'validateEdit');
         
-        $this->addHandlerDefinition('users.user.process_edit', 'processEdit');
+        $this->addHandlerDefinition('module.users.ui.process_edit.login_screen', 'processEdit');
+        $this->addHandlerDefinition('module.users.ui.process_edit.new_user', 'processEdit');
+        $this->addHandlerDefinition('module.users.ui.process_edit.modify_user', 'processEdit');
+        $this->addHandlerDefinition('module.users.ui.process_edit.new_registration', 'processEdit');
+        $this->addHandlerDefinition('module.users.ui.process_edit.modify_registration', 'processEdit');
     }
 
     /**
