@@ -11,7 +11,7 @@
             {if ($editablePolicies.termsOfUse)}
             <span class="z-formlist">
                 <input type="radio" id="acceptpolicies_termsofuse_yes" name="acceptedpolicies_termsofuse" {if isset($fieldErrors.termsOfUse) && !empty($fieldErrors.termsOfUse)}class="z-form-error"{/if} {if $acceptedPolicies.termsOfUse}checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_termsofuse_yes">{gt text='%1$s accepted.' tag1=$policyLink}</label>
+                <label for="acceptpolicies_termsofuse_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
             </span>
             <span class="z-formlist">
                 <input type="radio" id="acceptpolicies_termsofuse_no" name="acceptedpolicies_termsofuse" {if isset($fieldErrors.termsOfUse) && !empty($fieldErrors.termsOfUse)}class="z-form-error"{/if} {if !$acceptedPolicies.termsOfUse}checked="checked"{/if} value="0" />
@@ -33,7 +33,7 @@
             {if ($editablePolicies.privacyPolicy)}
             <span class="z-formlist">
                 <input type="radio" id="acceptpolicies_privacypolicy_yes" name="acceptedpolicies_privacypolicy" {if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)}class="z-form-error"{/if} {if $acceptedPolicies.privacyPolicy}checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_privacypolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink}</label>
+                <label for="acceptpolicies_privacypolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
             </span>
             <span class="z-formlist">
                 <input type="radio" id="acceptpolicies_privacypolicy_no" name="acceptedpolicies_privacypolicy" {if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)}class="z-form-error"{/if} {if !$acceptedPolicies.privacyPolicy}checked="checked"{/if} value="0" />
@@ -53,7 +53,7 @@
             {if ($editablePolicies.agePolicy)}
             <span class="z-formlist">
                 <input type="radio" id="acceptpolicies_agepolicy_yes" name="acceptedpolicies_agepolicy" {if isset($fieldErrors.agePolicy) && !empty($fieldErrors.agePolicy)}class="z-form-error"{/if} {if $acceptedPolicies.agePolicy}checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_agepolicy_yes">{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.Legal.minimumAge}</label>
+                <label for="acceptpolicies_agepolicy_yes">{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.Legal.minimumAge|safetext}</label>
             </span>
             <span class="z-formlist">
                 <input type="radio" id="acceptpolicies_agepolicy_no" name="acceptedpolicies_agepolicy" {if isset($fieldErrors.agePolicy) && !empty($fieldErrors.agePolicy)}class="z-form-error"{/if} {if !$acceptedPolicies.agePolicy}checked="checked"{/if} value="0" />
@@ -63,7 +63,7 @@
                 {$fieldErrors.agepolicy|default:''|safetext}
             </p>
             {else}
-            <span>{if $acceptedPolicies.agePolicy}{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.Legal.minimumAge}{else}{gt text='Minimum age requirement not confirmed.'}{/if}</span>
+            <span>{if $acceptedPolicies.agePolicy}{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.Legal.minimumAge|safetext}{else}{gt text='Minimum age requirement not confirmed.'}{/if}</span>
             {/if}
         </div>
     {/if}

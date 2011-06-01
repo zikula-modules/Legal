@@ -12,7 +12,7 @@
             <label for="acceptpolicies_termsofuse">{gt text='Terms of Use'}<span class="z-form-mandatory-flag">{gt text="*"}</span></label>
             <span class="z-formlist">
                 <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptedpolicies_termsofuse" class="{if isset($fieldErrors.termsOfUse) && !empty($fieldErrors.termsOfUse)}z-form-error{/if}" {if $acceptedPolicies.termsOfUse}checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_termsofuse">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</label>
+                <label for="acceptpolicies_termsofuse">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink|safehtml}</label>
             </span>
             <p id="acceptpolicies_termsofuse_error" class="z-formnote z-errormsg {if !isset($fieldErrors.termsofuse) || empty($fieldErrors.termsofuse)}z-hide{/if}">
                 {$fieldErrors.termsofuse|default:''|safetext}
@@ -27,7 +27,7 @@
             <label for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}<span class="z-form-mandatory-flag">{gt text="*"}</span></label>
             <span class="z-formlist">
                 <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy" class="{if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)}z-form-error{/if}" {if $acceptedPolicies.privacyPolicy}checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_privacypolicy">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</label>
+                <label for="acceptpolicies_privacypolicy">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink|safehtml}</label>
             </span>
             <p id="acceptpolicies_privacypolicy_error" class="z-formnote z-errormsg {if !isset($fieldErrors.privacypolicy) || empty($fieldErrors.privacypolicy)}z-hide{/if}">
                 {$fieldErrors.privacypolicy|default:''|safetext}
@@ -45,9 +45,9 @@
             <label for="acceptpolicies_agepolicy">{gt text='Minimum Age'}<span class="z-form-mandatory-flag">{gt text="*"}</span></label>
             <span class="z-formlist">
                 <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy" class="{if isset($fieldErrors.agePolicy) && !empty($fieldErrors.agePolicy)}z-form-error{/if}" {if $acceptedPolicies.agePolicy}checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_agepolicy">{gt text='Check this box to indicate that you are %1$s years of age or older.' tag1=$modvars.Legal.minimumAge}</label>
+                <label for="acceptpolicies_agepolicy">{gt text='Check this box to indicate that you are %1$s years of age or older.' tag1=$modvars.Legal.minimumAge|safetext}</label>
             </span>
-            <em class="z-formnote z-sub">{gt text='Information on our minimum age policy, and on how we handle personally identifiable information can be found in our %1$s and in our %2$s.' tag1=$termsOfUseLink tag2=$privacyPolicyLink}</em>
+            <em class="z-formnote z-sub">{gt text='Information on our minimum age policy, and on how we handle personally identifiable information can be found in our %1$s and in our %2$s.' tag1=$termsOfUseLink|safehtml tag2=$privacyPolicyLink|safehtml}</em>
             <p id="acceptpolicies_agepolicy_error" class="z-formnote z-errormsg {if !isset($fieldErrors.agepolicy) || empty($fieldErrors.agepolicy)}z-hide{/if}">
                 {$fieldErrors.agepolicy|default:''|safetext}
             </p>
