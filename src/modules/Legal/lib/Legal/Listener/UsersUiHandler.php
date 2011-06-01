@@ -382,7 +382,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 
         if (isset($this->validation) && !$this->validation->hasErrors()) {
             $user = $event->getSubject();
-            $uid = $event->getArg('id');
+            $uid = $user['uid'];
 
             if (!UserUtil::isLoggedIn()) {
                 if ($eventName == 'users.hook.login.process.edit') {
