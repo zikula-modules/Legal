@@ -371,7 +371,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
     }
 
     /**
-     * Responds to process.edit hook notifications.
+     * Responds to process_edit hook-like event notifications.
      *
      * @param Zikula_Event $event The event that triggered this function call.
      */
