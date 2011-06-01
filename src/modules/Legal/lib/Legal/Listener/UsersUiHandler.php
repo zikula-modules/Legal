@@ -385,7 +385,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
             $uid = $user['uid'];
 
             if (!UserUtil::isLoggedIn()) {
-                if ($eventName == 'users.hook.login.process.edit') {
+                if (($eventName == 'module.users.ui.process_edit.login_screen') || ($eventName == 'module.users.ui.process_edit.login_block')) {
                     $policiesAcceptedAtLogin = $this->validation->getObject();
 
                     $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
