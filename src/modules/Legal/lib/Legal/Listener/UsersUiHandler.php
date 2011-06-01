@@ -15,14 +15,14 @@
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
  */
-class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
+class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 {
     /**
      * Similar to a hook area, the event
      *
      * @var string
      */
-    const EVENT_KEY = 'acceptpolicies';
+    const EVENT_KEY = 'module.legal.users_ui_handler';
 
     /**
      * Convenience access to the module name.
