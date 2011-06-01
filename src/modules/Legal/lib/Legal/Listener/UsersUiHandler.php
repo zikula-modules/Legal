@@ -149,7 +149,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     );
                 }
 
-                if ($eventName == 'module.users.ui.login_screen.form_edit') {
+                if ($eventName == 'module.users.ui.form_edit.login_screen') {
                     // It is not shown unless we have a user record (meaning that the first log-in attempt was vetoed.
                     if (isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
                         $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
