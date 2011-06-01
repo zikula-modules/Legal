@@ -71,23 +71,21 @@ class Legal_Listener_AcceptPolicies extends Zikula_AbstractEventHandler
 
     public function setupHandlerDefinitions()
     {
-
         $this->addHandlerDefinition('module.users.ui.display_view', 'uiView');
+        
         $this->addHandlerDefinition('module.users.ui.form_edit.login_screen', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.new_user', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.modify_user', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.new_registration', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.modify_registration', 'uiEdit');
-//        $this->addHandlerDefinition('users.user.form_delete', '');
-        $this->addHandlerDefinition('users.user.validate_edit', 'validateEdit');
-//        $this->addHandlerDefinition('users.user.validate_delete', '');
+        
+        $this->addHandlerDefinition('module.users.ui.validate_edit.login_screen', 'validateEdit');
+        $this->addHandlerDefinition('module.users.ui.validate_edit.new_user', 'validateEdit');
+        $this->addHandlerDefinition('module.users.ui.validate_edit.modify_user', 'validateEdit');
+        $this->addHandlerDefinition('module.users.ui.validate_edit.new_registration', 'validateEdit');
+        $this->addHandlerDefinition('module.users.ui.validate_edit.modify_registration', 'validateEdit');
+        
         $this->addHandlerDefinition('users.user.process_edit', 'processEdit');
-//        $this->addHandlerDefinition('users.user.process_delete', '');
-
-//        $this->addHandlerDefinition('users.login.form_edit', 'uiEdit');
-        $this->addHandlerDefinition('users.login.validate_edit', 'validateEdit');
-//        $this->addHandlerDefinition('users.login.process_edit', 'processEdit');
-
     }
 
     /**
