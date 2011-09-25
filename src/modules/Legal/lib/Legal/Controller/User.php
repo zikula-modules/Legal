@@ -25,7 +25,42 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function main()
     {
-        $this->redirect(ModUtil::url($this->name, 'User', 'termsOfUse'));
+        $url = ModUtil::url($this->name, 'user', 'termsOfUse');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        return $this->redirect($url);
+    }
+
+    /**
+     * Display Legal notice
+     *
+     * @return string HTML output string
+     */
+    public function legalNotice()
+    {
+        // Security check
+        if (!SecurityUtil::checkPermission($this->name . '::legalnotice', '::', ACCESS_OVERVIEW)) {
+            return LogUtil::registerPermissionError();
+        }
+
+        // work out the template path
+        if (!$this->getVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE)) {
+            $template = 'legal_user_policynotactive.tpl';
+        } else {
+            $template = 'legal_user_legalnotice.tpl';
+
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+
+            if (!$this->view->template_exists($languageCode.'/legal_text_legalnotice.tpl')) {
+                $languageCode = 'en';
+            }
+        }
+
+        return $this->view->assign('languageCode', $languageCode)
+                ->fetch($template);
     }
 
     /**
@@ -67,7 +102,12 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function privacy()
     {
-        $this->redirect(ModUtil::url($this->name, 'user', 'privacyPolicy'));
+        $url = ModUtil::url($this->name, 'user', 'privacyPolicy');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        return $this->redirect($url);
     }
 
     /**
@@ -131,6 +171,66 @@ class Legal_Controller_User extends Zikula_AbstractController
     }
 
     /**
+     * Display Cancellation right policy
+     *
+     * @return string HTML output string
+     */
+    public function cancellationRightPolicy()
+    {
+        // Security check
+        if (!SecurityUtil::checkPermission($this->name . '::cancellationrightpolicy', '::', ACCESS_OVERVIEW)) {
+            return LogUtil::registerPermissionError();
+        }
+
+        // work out the template path
+        if (!$this->getVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE)) {
+            $template = 'legal_user_policynotactive.tpl';
+        } else {
+            $template = 'legal_user_cancellationrightpolicy.tpl';
+
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+
+            if (!$this->view->template_exists($languageCode.'/legal_text_cancellationrightpolicy.tpl')) {
+                $languageCode = 'en';
+            }
+        }
+
+        return $this->view->assign('languageCode', $languageCode)
+                ->fetch($template);
+    }
+
+    /**
+     * Display Trade conditions
+     *
+     * @return string HTML output string
+     */
+    public function tradeConditions()
+    {
+        // Security check
+        if (!SecurityUtil::checkPermission($this->name . '::tradeconditions', '::', ACCESS_OVERVIEW)) {
+            return LogUtil::registerPermissionError();
+        }
+
+        // work out the template path
+        if (!$this->getVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE)) {
+            $template = 'legal_user_policynotactive.tpl';
+        } else {
+            $template = 'legal_user_tradeconditions.tpl';
+
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+
+            if (!$this->view->template_exists($languageCode.'/legal_text_tradeconditions.tpl')) {
+                $languageCode = 'en';
+            }
+        }
+
+        return $this->view->assign('languageCode', $languageCode)
+                ->fetch($template);
+    }
+
+    /**
      * Allow the user to accept active terms of use and/or privacy policy.
      *
      * This function is currently used by the Legal module's handler for the users.login.veto event.
@@ -160,9 +260,11 @@ class Legal_Controller_User extends Zikula_AbstractController
 
             $policiesUid = $this->request->getPost()->get('acceptedpolicies_uid', false);
             $acceptedPolicies = array(
-                'termsOfUse'    => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy'     => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
+                'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
             );
 
             if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
@@ -184,6 +286,14 @@ class Legal_Controller_User extends Zikula_AbstractController
 
             if ($activePolicies['agePolicy'] && !$originalAcceptedPolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
                 $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)));
+            }
+
+            if ($activePolicies['cancellationRightPolicy'] && !$originalAcceptedPolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy']) {
+                $fieldErrors['cancellationrightpolicy'] = $this->__('You must accept our cancellation right policy in order to proceed.');
+            }
+
+            if ($activePolicies['tradeConditions'] && !$originalAcceptedPolicies['tradeConditions'] && !$acceptedPolicies['tradeConditions']) {
+                $fieldErrors['tradeconditions'] = $this->__('You must accept our general terms and conditions of trade in order to proceed.');
             }
 
             if (empty($fieldErrors)) {
@@ -208,7 +318,19 @@ class Legal_Controller_User extends Zikula_AbstractController
                     $agePolicyProcessed = !$activePolicies['agePolicy'] || $originalAcceptedPolicies['agePolicy'];
                 }
 
-                $processed = $termsOfUseProcessed && $privacyPolicyProcessed && $agePolicyProcessed;
+                if ($activePolicies['cancellationRightPolicy'] && $acceptedPolicies['cancellationRightPolicy']) {
+                    $cancellationRightPolicyProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr, $policiesUid);
+                } else {
+                    $cancellationRightPolicyProcessed = !$activePolicies['cancellationRightPolicy'] || $originalAcceptedPolicies['cancellationRightPolicy'];
+                }
+
+                if ($activePolicies['tradeConditions'] && $acceptedPolicies['tradeConditions']) {
+                    $tradeConditionsProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr, $policiesUid);
+                } else {
+                    $tradeConditionsProcessed = !$activePolicies['tradeConditions'] || $originalAcceptedPolicies['tradeConditions'];
+                }
+
+                $processed = $termsOfUseProcessed && $privacyPolicyProcessed && $agePolicyProcessed && $cancellationRightPolicyProcessed && $tradeConditionsProcessed;
             }
 
             if ($processed) {

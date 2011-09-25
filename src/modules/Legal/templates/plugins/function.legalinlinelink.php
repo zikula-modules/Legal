@@ -25,8 +25,11 @@
  *
  * Templates used:
  *      legal_function_legalinlinelink_notfound.tpl
+ *      legal_function_legalinlinelink_legalnotice.tpl
  *      legal_function_legalinlinelink_termsofuse.tpl
  *      legal_function_legalinlinelink_privacypolicy.tpl
+ *      legal_function_legalinlinelink_tradeconditions.tpl
+ *      legal_function_legalinlinelink_cancellationrightpolicy.tpl
  *      legal_function_legalinlinelink_accessibilitystatement.tpl
  *
  * Template Parameters Exported:
@@ -44,7 +47,7 @@ function smarty_function_legalinlinelink($params, Zikula_View &$view)
         $template = 'plugins/legal_function_legalinlinelink_notfound.tpl';
     } else {
         $params['policyType'] = strtolower($params['policyType']);
-        $template = "plugins/legal_function_legalinlinelink_{$params['policyType']}.tpl";
+        $template = 'plugins/legal_function_legalinlinelink_' . $params['policyType'] . '.tpl';
 
         if (!$view->template_exists($template)) {
             $template = 'plugins/legal_function_legalinlinelink_notfound.tpl';
@@ -52,7 +55,7 @@ function smarty_function_legalinlinelink($params, Zikula_View &$view)
     }
 
     $templateVars = array(
-        'target'    => isset($params['target']) ? $params['target'] : '',
+        'target' => isset($params['target']) ? $params['target'] : ''
     );
 
     $view->assign($templateVars);

@@ -1,4 +1,4 @@
-{if $templatetitle|default:'' == ''}
+{if $templatetitle|default:'' eq ''}
     {gt text='Legal information' assign='templatetitle'}
 {/if}
 {pagesetvar name='title' value=$templatetitle}

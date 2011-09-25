@@ -92,6 +92,9 @@ class Legal_Controller_Admin extends Zikula_AbstractController
         $this->checkCsrfToken();
 
         // set our module variables
+        $legalNoticeActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, true, 'POST');
+        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, $legalNoticeActive);
+
         $termsOfUseActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_TERMS_ACTIVE, false, 'POST');
         $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, $termsOfUseActive);
 
@@ -100,6 +103,32 @@ class Legal_Controller_Admin extends Zikula_AbstractController
 
         $accessibilityStmtActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false, 'POST');
         $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, $accessibilityStmtActive);
+
+        $tradeConditionsActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false, 'POST');
+        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, $tradeConditionsActive);
+
+        $cancellationRightPolicyActive = (bool)FormUtil::getPassedValue(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false, 'POST');
+        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, $cancellationRightPolicyActive);
+
+
+        $legalNoticeUrl = FormUtil::getPassedValue(Legal_Constant::MODVAR_LEGALNOTICE_URL, '', 'POST');
+        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, $legalNoticeUrl);
+
+        $termsOfUseUrl = FormUtil::getPassedValue(Legal_Constant::MODVAR_TERMS_URL, '', 'POST');
+        $this->setVar(Legal_Constant::MODVAR_TERMS_URL, $termsOfUseUrl);
+
+        $privacyPolicyUrl = FormUtil::getPassedValue(Legal_Constant::MODVAR_PRIVACY_URL, '', 'POST');
+        $this->setVar(Legal_Constant::MODVAR_PRIVACY_URL, $privacyPolicyUrl);
+
+        $accessibilityStmtUrl = FormUtil::getPassedValue(Legal_Constant::MODVAR_ACCESSIBILITY_URL, '', 'POST');
+        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_URL, $accessibilityStmtUrl);
+
+        $tradeConditionsUrl = FormUtil::getPassedValue(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '', 'POST');
+        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, $tradeConditionsUrl);
+
+        $cancellationRightPolicyUrl = FormUtil::getPassedValue(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '', 'POST');
+        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, $cancellationRightPolicyUrl);
+
 
         $minimumAge = (int)FormUtil::getPassedValue(Legal_Constant::MODVAR_MINIMUM_AGE, 0, 'POST');
         $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, $minimumAge);

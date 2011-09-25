@@ -34,13 +34,60 @@
  */
 function smarty_function_legaluserlinks($params, &$view)
 {
+    $dom = ZLanguage::getModuleDomain(Legal_Constant::MODNAME);
+    $policies = array();
+    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
+        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'legalNotice');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        $policies['legalNotice'] = array('title' => __('Legal notice', $dom), 'url' => $url);
+    }
+    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false)) {
+        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'termsOfUse');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        $policies['termsOfUse'] = array('title' => __('Terms of use', $dom), 'url' => $url);
+    }
+    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false)) {
+        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'privacyPolicy');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        $policies['privacyPolicy'] = array('title' => __('Privacy policy', $dom), 'url' => $url);
+    }
+    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
+        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'tradeConditions');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        $policies['tradeConditions'] = array('title' => __('Trade conditions', $dom), 'url' => $url);
+    }
+    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
+        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'cancellationRightPolicy');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        $policies['cancellationRightPolicy'] = array('title' => __('Cancellation right', $dom), 'url' => $url);
+    }
+    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
+        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'accessibilityStatement');
+        $customUrl = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+        if (!empty($customUrl)) {
+            $url = $customUrl;
+        }
+        $policies['accessibilityStatement'] = array('title' => __('Accessibility statement', $dom), 'url' => $url);
+    }
+
     $templateVariables = array(
-        'policies'  => array(
-            'termsofuse'            => ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false),
-            'privacypolicy'         => ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false),
-            'accessibilitystatement'=> ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false),
-        ),
-        'domain'    => ZLanguage::getModuleDomain(Legal_Constant::MODNAME),
+        'policies'  => $policies,
+        'domain'    => $dom,
         'start'     => isset($params['start'])     ? $params['start']     : '',
         'end'       => isset($params['end'])       ? $params['end']       : '',
         'seperator' => isset($params['seperator']) ? $params['seperator'] : '',

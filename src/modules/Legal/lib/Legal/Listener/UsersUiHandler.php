@@ -238,9 +238,11 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                 // See if there is anything for validation to do.
                 if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
                     $policiesAcceptedAtRegistration = array(
-                        'termsOfUse'    => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                        'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                        'agePolicy'     => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                        'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                        'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                        'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                        'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
+                        'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
                     );
                     $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
                     $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid) && ($uid > 2);
@@ -268,6 +270,13 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                             $this->validation->addError('agepolicy', __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain));
                         }
 
+                        if ($activePolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy'] && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) || empty($policiesAcceptedAtRegistration['cancellationRightPolicy']) || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
+                            $this->validation->addError('cancellationrightpolicy', __('In order to log in, you must accept our cancellation right policy.', $this->domain));
+                        }
+
+                        if ($activePolicies['tradeConditions'] && !$acceptedPolicies['tradeConditions'] && (!isset($policiesAcceptedAtRegistration['tradeConditions']) || empty($policiesAcceptedAtRegistration['tradeConditions']) || !$policiesAcceptedAtRegistration['tradeConditions'])) {
+                            $this->validation->addError('tradeconditions', __('In order to log in, you must accept our general terms and conditions of trade.', $this->domain));
+                        }
 
                         $event->data->set(self::EVENT_KEY, $this->validation);
                     } elseif (!$goodUidUser || !$goodUidAcceptPolicies) {
@@ -285,9 +294,11 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                 // See if there is anything for validation to do.
                 if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
                     $policiesAcceptedAtRegistration = array(
-                        'termsOfUse'    => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                        'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                        'agePolicy'     => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                        'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                        'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                        'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                        'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
+                        'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
                     );
 
                     $this->validation = new Zikula_Hook_ValidationResponse('', $policiesAcceptedAtRegistration);
@@ -304,6 +315,13 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                         $this->validation->addError('agepolicy', __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain));
                     }
 
+                    if ($activePolicies['cancellationRightPolicy'] && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) || empty($policiesAcceptedAtRegistration['cancellationRightPolicy']) || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
+                        $this->validation->addError('cancellationrightpolicy', __('In order to register for a new account, you must accept our cancellation right policy.', $this->domain));
+                    }
+
+                    if ($activePolicies['tradeConditions'] && (!isset($policiesAcceptedAtRegistration['tradeConditions']) || empty($policiesAcceptedAtRegistration['tradeConditions']) || !$policiesAcceptedAtRegistration['tradeConditions'])) {
+                        $this->validation->addError('tradeconditions', __('In order to register for a new account, you must accept our general terms and conditions of trade.', $this->domain));
+                    }
 
                     $event->data->set(self::EVENT_KEY, $this->validation);
                 } elseif (!$this->request->isPost()) {
@@ -321,9 +339,11 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 
                 $editablePolicies = $this->helper->getEditablePolicies();
                 $policiesAcceptedAtRegistration = array(
-                    'termsOfUse'    => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                    'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                    'agePolicy'     => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                    'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                    'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                    'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                    'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
+                    'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
                 );
                 $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
 
@@ -337,6 +357,12 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                         throw new Zikula_Exception_Forbidden();
                     }
                     if (isset($policiesAcceptedAtRegistration['agePolicy']) && !$editablePolicies['agePolicy']) {
+                        throw new Zikula_Exception_Forbidden();
+                    }
+                    if (isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) && !$editablePolicies['cancellationRightPolicy']) {
+                        throw new Zikula_Exception_Forbidden();
+                    }
+                    if (isset($policiesAcceptedAtRegistration['tradeConditions']) && !$editablePolicies['tradeConditions']) {
                         throw new Zikula_Exception_Forbidden();
                     }
                 } else {
@@ -356,6 +382,12 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                             throw new Zikula_Exception_Forbidden();
                         }
                         if (isset($policiesAcceptedAtRegistration['agePolicy']) && !$editablePolicies['agePolicy']) {
+                            throw new Zikula_Exception_Forbidden();
+                        }
+                        if (isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) && !$editablePolicies['cancellationRightPolicy']) {
+                            throw new Zikula_Exception_Forbidden();
+                        }
+                        if (isset($policiesAcceptedAtRegistration['tradeConditions']) && !$editablePolicies['tradeConditions']) {
                             throw new Zikula_Exception_Forbidden();
                         }
                     } elseif (!$goodUidUser || !$goodUidAcceptPolicies) {
@@ -403,6 +435,14 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                         UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
                     }
 
+                    if ($activePolicies['cancellationRightPolicy'] && $policiesAcceptedAtLogin['cancellationRightPolicy']) {
+                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                    }
+
+                    if ($activePolicies['tradeConditions'] && $policiesAcceptedAtLogin['tradeConditions']) {
+                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
+                    }
+
                     // Force the reload of the user record
                     $user = UserUtil::getVars($uid, true);
                 } else {
@@ -428,6 +468,14 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 
                     if ($activePolicies['agePolicy'] && $policiesAcceptedAtRegistration['agePolicy']) {
                         UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
+                    }
+
+                    if ($activePolicies['cancellationRightPolicy'] && $policiesAcceptedAtRegistration['cancellationRightPolicy']) {
+                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                    }
+
+                    if ($activePolicies['tradeConditions'] && $policiesAcceptedAtRegistration['tradeConditions']) {
+                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
                     }
 
                     // Force the reload of the user record
@@ -468,6 +516,22 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                         UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
                     } elseif (($policiesAcceptedAtRegistration['agePolicy'] === 0) || ($policiesAcceptedAtRegistration['termsOfUse'] === "0")) {
                         UserUtil::delVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $uid);
+                    }
+                }
+
+                if ($activePolicies['cancellationRightPolicy'] && $editablePolicies['cancellationRightPolicy']) {
+                    if ($policiesAcceptedAtRegistration['cancellationRightPolicy']) {
+                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                    } elseif (($policiesAcceptedAtRegistration['cancellationRightPolicy'] === 0) || ($policiesAcceptedAtRegistration['cancellationRightPolicy'] === "0")) {
+                        UserUtil::delVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $uid);
+                    }
+                }
+
+                if ($activePolicies['tradeConditions'] && $editablePolicies['tradeConditions']) {
+                    if ($policiesAcceptedAtRegistration['tradeConditions']) {
+                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
+                    } elseif (($policiesAcceptedAtRegistration['tradeConditions'] === 0) || ($policiesAcceptedAtRegistration['tradeConditions'] === "0")) {
+                        UserUtil::delVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $uid);
                     }
                 }
 

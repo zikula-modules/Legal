@@ -7,7 +7,12 @@
         <div>
             <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
             <fieldset>
-                <legend>{gt text="General settings"}</legend>
+                <legend>{gt text="Legal document types"}</legend>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE'|constant}
+                    <label for="legal_{$fieldName}">{gt text="Legal notice"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
+                </div>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_TERMS_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Terms of use"}</label>
@@ -16,13 +21,60 @@
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_PRIVACY_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
-                    <input id="legal_{$fieldName}" name="{'Legal_Constant::MODVAR_PRIVACY_ACTIVE'|constant}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
+                </div>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE'|constant}
+                    <label for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
+                </div>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE'|constant}
+                    <label for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
-                    <input id="legal_{$fieldName}" name="{'Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE'|constant}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
+            </fieldset>
+            <fieldset>
+                <legend>{gt text="Custom urls"}</legend>
+                <p>{gt text='The following fields allow to reference any custom url. As soon as an url is given it will be used instead of the normal Legal templates. So you can now use any page you want for displaying and managing your legal data.'}</p>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_LEGALNOTICE_URL'|constant}
+                    <label for="legal_{$fieldName}">{gt text="Legal notice"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                </div>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_TERMS_URL'|constant}
+                    <label for="legal_{$fieldName}">{gt text="Terms of use"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                </div>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_PRIVACY_URL'|constant}
+                    <label for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                </div>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_TRADECONDITIONS_URL'|constant}
+                    <label for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                </div>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
+                    <label for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                </div>
+                <div class="z-formrow">
+                    {assign var='fieldName' value='Legal_Constant::MODVAR_ACCESSIBILITY_URL'|constant}
+                    <label for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>{gt text="Further settings"}</legend>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_MINIMUM_AGE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Minimum age permitted to register"}<span class="z-form-mandatory-flag">{gt text="*"}</span></label>

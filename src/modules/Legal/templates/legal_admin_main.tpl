@@ -1,2 +1,2 @@
 {*  $Id$  *}
-{modfunc modname=legal type=admin func=modifyconfig}
+{modfunc modname='Legal' type='admin' func='modifyconfig'}
