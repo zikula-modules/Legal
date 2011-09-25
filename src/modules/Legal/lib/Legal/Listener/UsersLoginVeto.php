@@ -36,11 +36,13 @@ class Legal_Listener_UsersLoginVeto
     {
         $domain = ZLanguage::getModuleDomain(Legal_Constant::MODNAME);
 
-        $termsOfUseActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_MINIMUM_AGE, 0) > 0);
+        $termsOfUseActive               = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false);
+        $privacyPolicyActive            = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false);
+        $agePolicyActive                = (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_MINIMUM_AGE, 0) > 0);
+        $cancellationRightPolicyActive  = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $tradeConditionsActive          = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
 
-        if ($termsOfUseActive || $privacyPolicyActive || $agePolicyActive) {
+        if ($termsOfUseActive || $privacyPolicyActive || $agePolicyActive || $cancellationRightPolicyActive || $tradeConditionsActive) {
             $userObj = $event->getSubject();
 
             if (isset($userObj) && ($userObj['uid'] > 2)) {
@@ -65,7 +67,21 @@ class Legal_Listener_UsersLoginVeto
                     $agePolicyAccepted = true;
                 }
 
-                if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted) {
+                if ($cancellationRightPolicyActive) {
+                    $cancellationRightPolicyAcceptedDateTimeStr = UserUtil::getVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $userObj['uid'], false);
+                    $cancellationRightPolicyAccepted = isset($cancellationRightPolicyAcceptedDateTimeStr) && !empty($cancellationRightPolicyAcceptedDateTimeStr);
+                } else {
+                    $cancellationRightPolicyAccepted = true;
+                }
+
+                if ($tradeConditionsActive) {
+                    $tradeConditionsAcceptedDateTimeStr = UserUtil::getVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $userObj['uid'], false);
+                    $tradeConditionsAccepted = isset($tradeConditionsAcceptedDateTimeStr) && !empty($tradeConditionsAcceptedDateTimeStr);
+                } else {
+                    $tradeConditionsAccepted = true;
+                }
+
+                if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted || !$cancellationRightPolicyAccepted || !$tradeConditionsAccepted) {
                     $event->stop();
                     $event->data['redirect_func']  = array(
                             'modname'   => Legal_Constant::MODNAME,

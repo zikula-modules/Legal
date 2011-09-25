@@ -27,6 +27,13 @@ class Legal_Constant
     const MODNAME = 'Legal';
 
     /**
+     * The module variable name indicating that the legal notice is active.
+     *
+     * @var string
+     */
+    const MODVAR_LEGALNOTICE_ACTIVE = 'legalNoticeActive';
+
+    /**
      * The module variable name indicating that the terms of use is active.
      *
      * @var string
@@ -46,6 +53,62 @@ class Legal_Constant
      * @var string
      */
     const MODVAR_ACCESSIBILITY_ACTIVE = 'accessibilityStatementActive';
+
+    /**
+     * The module variable name indicating that the trade conditions page is active.
+     *
+     * @var string
+     */
+    const MODVAR_TRADECONDITIONS_ACTIVE = 'tradeConditionsActive';
+
+    /**
+     * The module variable name indicating that the cancellation right policy page is active.
+     *
+     * @var string
+     */
+    const MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE = 'cancellationRightPolicyActive';
+
+    /**
+     * The module variable name storing an optional url for the legal notice.
+     *
+     * @var string
+     */
+    const MODVAR_LEGALNOTICE_URL = 'legalNoticeUrl';
+
+    /**
+     * The module variable name storing an optional url for the terms of use.
+     *
+     * @var string
+     */
+    const MODVAR_TERMS_URL = 'termsOfUseUrl';
+
+    /**
+     * The module variable name storing an optional url for the privacy policy.
+     *
+     * @var string
+     */
+    const MODVAR_PRIVACY_URL = 'privacyPolicyUrl';
+
+    /**
+     * The module variable name storing an optional url for the accessibility guidelines.
+     *
+     * @var string
+     */
+    const MODVAR_ACCESSIBILITY_URL = 'accessibilityStatementUrl';
+
+    /**
+     * The module variable name storing an optional url for the trade conditions.
+     *
+     * @var string
+     */
+    const MODVAR_TRADECONDITIONS_URL = 'tradeConditionsUrl';
+
+    /**
+     * The module variable name storing an optional url for the cancellation right policy.
+     *
+     * @var string
+     */
+    const MODVAR_CANCELLATIONRIGHTPOLICY_URL = 'cancellationRightPolicyUrl';
 
     /**
      * The module variable containing the minimum age.
@@ -74,4 +137,18 @@ class Legal_Constant
      * @var string
      */
     const ATTRIBUTE_AGEPOLICY_CONFIRMED = '_Legal_agePolicyConfirmed';
+
+    /**
+     * Users account record attribute key for cancellation right policy acceptance.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED = '_Legal_cancellationRightPolicyConfirmed';
+
+    /**
+     * Users account record attribute key for trade conditions acceptance.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_TRADECONDITIONS_ACCEPTED = '_Legal_tradeConditionsConfirmed';
 }
