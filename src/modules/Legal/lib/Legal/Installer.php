@@ -26,9 +26,20 @@ class Legal_Installer extends Zikula_AbstractInstaller
     function install()
     {
         // Set default values for the module variables
+        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, true);
         $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, true);
         $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, true);
         $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, true);
+        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+
+        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
+        $this->setVar(Legal_Constant::MODVAR_TERMS_URL, '');
+        $this->setVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_URL, '');
+        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
+
         $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, 13);
 
         // Set up the persistent event handler, hook bundles, and any other event-related features.
@@ -82,8 +93,23 @@ class Legal_Installer extends Zikula_AbstractInstaller
                 EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_UsersUiHandler');
 
             case '2.0.0':
-                // Upgrade 2.0.0 -> ?.?.?
-                
+                // Upgrade 2.0.0 -> 2.0.1
+                // add vars for new document types
+                $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, false);
+                $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+                $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+
+                // add vars for optional custom urls
+                $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
+                $this->setVar(Legal_Constant::MODVAR_TERMS_URL, '');
+                $this->setVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+                $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_URL, '');
+                $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+                $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
+
+            case '2.0.1':
+                // Upgrade 2.0.1 -> ?.?.?
+
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:

@@ -1,8 +1,7 @@
-<span class="{$class|default:'z-menuitem-title'}">{if ($policies.termsofuse || $policies.privacypolicy || $policies.accessibilitystatement)}{$start|default:'['}{/if}
-    {if $policies.termsofuse}<a href="{modurl modname='Legal_Constant::MODNAME'|constant type='User' func='termsOfUse'}">{gt text='Terms of use'}</a>{/if}
-    {if $policies.termsofuse && ($policies.privacypolicy || $policies.accessibilitystatement)}{$seperator|default:'|'}{/if}
-    {if $policies.privacypolicy}<a href="{modurl modname='Legal_Constant::MODNAME'|constant type='User' func='privacyPolicy'}">{gt text='Privacy policy'}</a>{/if}
-    {if ($policies.termsofuse || $policies.privacypolicy) && $policies.accessibilitystatement}{$seperator|default:'|'}{/if}
-    {if $policies.accessibilitystatement}<a href="{modurl modname='Legal_Constant::MODNAME'|constant type='User' func='accessibilityStatement'}">{gt text='Accessibility statement'}</a>{/if}
-    {if ($policies.termsofuse || $policies.privacypolicy || $policies.accessibilitystatement)}{$end|default:']'}{/if}
+<span class="{$class|default:'z-menuitem-title'}">{if count($policies) gt 0}{$start|default:'['}{/if}
+{foreach name='policyLoop' key='policyName' item='policy' from=$policies}
+    <a href="{$policy.url}">{$policy.title}</a>
+    {if !$smarty.foreach.policyLoop.last}{$seperator|default:'|'}{/if}
+{/foreach}
+{if count($policies) gt 0}{$end|default:']'}{/if}
 </span>

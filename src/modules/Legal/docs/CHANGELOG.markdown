@@ -1,3 +1,16 @@
+2.0.1
+-----
+  * Added new document types
+    * Legal notice (active per default)
+    * Cancellation right (inactive per default)
+    * General terms and conditions of trade (inactive per default)
+  * Use arbitrary urls
+    * Each document type can now be linked to a custom url
+    * As soon as an url is given it will be used instead of the normal Legal templates
+    * So you can now use any page you want for displaying and managing your legal data
+  * Improvements and bugfixes for the user menu plugin
+  * Minor fixes regarding error states consistency
+
 2.0.0
 -----
  * General
