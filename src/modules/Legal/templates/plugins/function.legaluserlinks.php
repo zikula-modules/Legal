@@ -38,7 +38,7 @@ function smarty_function_legaluserlinks($params, &$view)
     $policies = array();
     if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
         $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'legalNotice');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
+        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
@@ -46,7 +46,7 @@ function smarty_function_legaluserlinks($params, &$view)
     }
     if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false)) {
         $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'termsOfUse');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
+        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
@@ -54,7 +54,7 @@ function smarty_function_legaluserlinks($params, &$view)
     }
     if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false)) {
         $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'privacyPolicy');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
@@ -62,7 +62,7 @@ function smarty_function_legaluserlinks($params, &$view)
     }
     if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
         $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'tradeConditions');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
+        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
@@ -70,7 +70,7 @@ function smarty_function_legaluserlinks($params, &$view)
     }
     if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
         $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'cancellationRightPolicy');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
@@ -78,7 +78,7 @@ function smarty_function_legaluserlinks($params, &$view)
     }
     if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
         $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'accessibilityStatement');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }

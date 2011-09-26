@@ -45,32 +45,32 @@
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_LEGALNOTICE_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Legal notice"}</label>
-                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_TERMS_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Terms of use"}</label>
-                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_PRIVACY_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
-                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_TRADECONDITIONS_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
-                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
-                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
                     {assign var='fieldName' value='Legal_Constant::MODVAR_ACCESSIBILITY_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
-                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{if $modvars.Legal.$fieldName}" />
+                    <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
             </fieldset>
             <fieldset>
