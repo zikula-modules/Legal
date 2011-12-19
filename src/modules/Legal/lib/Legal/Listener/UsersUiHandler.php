@@ -227,6 +227,8 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         $eventName = $event->getName();
 
         if (!UserUtil::isLoggedIn()) {
+			// User is not logged in, so this should be either part of a login attempt or a new user registration.
+			
             $user = $event->getSubject();
             if (!isset($user) || empty($user)) {
                 $user = array(
@@ -235,8 +237,11 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
             }
 
             if ($eventName == 'users.login.validate_edit') {
-                // See if there is anything for validation to do.
+                // Login attempt, after the user's attempt was vetoed, and the user is being asked to accept one or more policies.
+				
                 if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
+					// A post has been made, and there is a uid identified for the Legal module to check.
+					
                     $policiesAcceptedAtRegistration = array(
                         'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
                         'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
@@ -288,11 +293,15 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                         throw new Zikula_Exception_Redirect(ModUtil::url('Users', 'user', 'login'));
                     }
                 } elseif (!$this->request->isPost()) {
+					// Not a post, so we should never have gotten into this function. If we do, critical failure.
                     throw new Zikula_Exception_Forbidden();
                 }
             } else {
-                // See if there is anything for validation to do.
+                // This must be a new user registration.
+				
                 if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
+					// A POST is being processed, and there is a uid field as a marker to indicate that the Legal module should validate.
+					
                     $policiesAcceptedAtRegistration = array(
                         'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
                         'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
@@ -325,13 +334,15 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 
                     $event->data->set(self::EVENT_KEY, $this->validation);
                 } elseif (!$this->request->isPost()) {
+					// Not a post, so we should never have gotten into this function. If we do, critical failure.
                     throw new Zikula_Exception_Forbidden();
                 }
             }
         } else {
-            // Someone is logged in, so either user looking at own record, or an admin creating or editing a user or registration.
-            // See if there is anything for validation to do.
-            if ($this->request->isPost()) {
+            // Someone is logged in, so either user looking at own record, an admin creating a new user, 
+			// an admin editing a user, or an admin editing a registration.
+
+			if ($this->request->isPost()) {
                 $user = $event->getSubject();
 
                 $isNewUser = (!isset($user['uid']) || empty($user['uid']));
@@ -350,6 +361,9 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                 $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
 
                 if ($isNewUser) {
+					// This must be an admin creating a new user account.
+					// Fail on any attempt to accept a policy that is not edtiable.
+					
                     if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
                         throw new Zikula_Exception_Forbidden();
                     }
@@ -366,14 +380,18 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                         throw new Zikula_Exception_Forbidden();
                     }
                 } else {
+					// Not a new user, so it must be the user modifying his own account, an admin modifying a user account,
+					// or an admin modifying a registration record.
+					
                     $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid) && ($uid > 2);
 
                     $user = $event->getSubject();
                     $goodUidUser = isset($user) && !empty($user) && is_array($user) && isset($user['uid']) && is_numeric($user['uid']) && ($user['uid'] > 2);
 
-                    // Fail if the uid of the subject does not match the uid from the form. The user changed his
-                    // login information, so not only should we not validate what was posted, we should not allow the user
-                    // to proceed with this login attempt at all.
+                    // Fail if the uid of the subject does not match the uid from the form. The user changed the uid
+					// on the account (is that even possible?!) or somehow the main user form and the part for Legal point
+					// to different user account. In any case, that is a bad situation that should cause a critical failure.
+					// TODO - 2011-Dec-18, actually if $user['uid'] == $uid, then nothing bad happens, and probably should.
                     if ($goodUidUser && $goodUidAcceptPolicies && ($user['uid'] == $uid)) {
                         if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
                             throw new Zikula_Exception_Forbidden();
@@ -397,6 +415,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 
                 $event->data->set(self::EVENT_KEY, $this->validation);
             } elseif (!$this->request->isPost()) {
+				// Not a post, so we should never have gotten into this function. If we do, critical failure.
                 throw new Zikula_Exception_Forbidden();
             }
         }
