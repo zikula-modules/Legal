@@ -235,111 +235,102 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     '__ATTRIBUTES__' => array(),
                 );
             }
+            
+            $isRegistration = ($eventName != 'users.login.validate_edit');
 
-            if ($eventName == 'users.login.validate_edit') {
-                // Login attempt, after the user's attempt was vetoed, and the user is being asked to accept one or more policies.
-				
-                if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
-					// A post has been made, and there is a uid identified for the Legal module to check.
-					
-                    $policiesAcceptedAtRegistration = array(
-                        'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                        'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                        'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
-                        'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
-                        'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
-                    );
+            if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
+                // A post has been made, and there is a uid identified for the Legal module to check.
+
+                $policiesAcceptedAtRegistration = array(
+                    'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                    'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                    'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                    'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
+                    'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
+                );
+                    
+                if ($isRegistration) {
+                    // A registration. There will be no accepted policies (function returns the appropriate array for a null uid), and there
+                    // is no uid to set on the validation response.
+                    
+                    $acceptedPolicies = $this->helper->getAcceptedPolicies();
+                    $this->validation = new Zikula_Hook_ValidationResponse('', $policiesAcceptedAtRegistration);
+                } else {
+                    // A login attempt.
+                    
                     $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
                     $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid) && ($uid > 2);
 
                     $user = $event->getSubject();
                     $goodUidUser = isset($user) && !empty($user) && is_array($user) && isset($user['uid']) && is_numeric($user['uid']) && ($user['uid'] > 2);
 
-                    if ($goodUidUser && $goodUidAcceptPolicies && ($user['uid'] == $uid)) {
-						// Do the validation 
-						
-                        $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
-
-                        $this->validation = new Zikula_Hook_ValidationResponse($uid, $policiesAcceptedAtRegistration);
-
-                        if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse'] && (!isset($policiesAcceptedAtRegistration['termsOfUse']) || empty($policiesAcceptedAtRegistration['termsOfUse']) || !$policiesAcceptedAtRegistration['termsOfUse'])) {
-                            $this->validation->addError('termsofuse', __('In order to log in, you must accept this site\'s Terms of Use.', $this->domain));
-                        }
-
-                        if ($activePolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy'] && (!isset($policiesAcceptedAtRegistration['privacyPolicy']) || empty($policiesAcceptedAtRegistration['privacyPolicy']) || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
-                            $this->validation->addError('privacypolicy', __('In order to log in, you must accept this site\'s Privacy Policy.', $this->domain));
-                        }
-
-                        if ($activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy'] && (!isset($policiesAcceptedAtRegistration['agePolicy']) || empty($policiesAcceptedAtRegistration['agePolicy']) || !$policiesAcceptedAtRegistration['agePolicy'])) {
-                            $this->validation->addError('agepolicy', __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain));
-                        }
-
-                        if ($activePolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy'] && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) || empty($policiesAcceptedAtRegistration['cancellationRightPolicy']) || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
-                            $this->validation->addError('cancellationrightpolicy', __('In order to log in, you must accept our cancellation right policy.', $this->domain));
-                        }
-
-                        if ($activePolicies['tradeConditions'] && !$acceptedPolicies['tradeConditions'] && (!isset($policiesAcceptedAtRegistration['tradeConditions']) || empty($policiesAcceptedAtRegistration['tradeConditions']) || !$policiesAcceptedAtRegistration['tradeConditions'])) {
-                            $this->validation->addError('tradeconditions', __('In order to log in, you must accept our general terms and conditions of trade.', $this->domain));
-                        }
-
-                        $event->data->set(self::EVENT_KEY, $this->validation);
-                    } elseif (!$goodUidUser || !$goodUidAcceptPolicies) {
-						// Critical fail if the $user record is bad, or if the uid used for Legal is bad.
+                    if (!$goodUidUser || !$goodUidAcceptPolicies) {
+                        // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
                         throw new Zikula_Exception_Fatal();
-                    } else {
-						// Fail if the uid of the subject does not match the uid from the form. The user changed his
-						// login information, so not only should we not validate what was posted, we should not allow the user
-						// to proceed with this login attempt at all.
+                    } elseif ($user['uid'] != $uid) {
+                        // Fail if the uid of the subject does not match the uid from the form. The user changed his
+                        // login information, so not only should we not validate what was posted, we should not allow the user
+                        // to proceed with this login attempt at all.
                         LogUtil::registerError(__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.', $this->domain));
                         $this->request->getSession()->clearNamespace('Zikula_Users');
                         $this->request->getSession()->clearNamespace('Legal');
                         throw new Zikula_Exception_Redirect(ModUtil::url('Users', 'user', 'login'));
                     }
-                } elseif (!$this->request->isPost()) {
-					// Not a post, so we should never have gotten into this function. If we do, critical failure.
-                    throw new Zikula_Exception_Forbidden();
+                    
+                    $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
+                    $this->validation = new Zikula_Hook_ValidationResponse($uid, $policiesAcceptedAtRegistration);
                 }
-            } else {
-                // This must be a new user registration.
-				
-                if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
-					// A POST is being processed, and there is a uid field as a marker to indicate that the Legal module should validate.
-					
-                    $policiesAcceptedAtRegistration = array(
-                        'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                        'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                        'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
-                        'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
-                        'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
-                    );
 
-                    $this->validation = new Zikula_Hook_ValidationResponse('', $policiesAcceptedAtRegistration);
-
-                    if ($activePolicies['termsOfUse'] && (!isset($policiesAcceptedAtRegistration['termsOfUse']) || empty($policiesAcceptedAtRegistration['termsOfUse']) || !$policiesAcceptedAtRegistration['termsOfUse'])) {
-                        $this->validation->addError('termsofuse', __('In order to register for a new account, you must accept this site\'s Terms of Use.', $this->domain));
+                // Do the validation
+                if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse'] && (!isset($policiesAcceptedAtRegistration['termsOfUse']) || empty($policiesAcceptedAtRegistration['termsOfUse']) || !$policiesAcceptedAtRegistration['termsOfUse'])) {
+                    if ($isRegistration) {
+                        $validationErrorMsg = __('In order to register for a new account, you must accept this site\'s Terms of Use.', $this->domain);
+                    } else {
+                        $validationErrorMsg = __('In order to log in, you must accept this site\'s Terms of Use.', $this->domain);
                     }
-
-                    if ($activePolicies['privacyPolicy'] && (!isset($policiesAcceptedAtRegistration['privacyPolicy']) || empty($policiesAcceptedAtRegistration['privacyPolicy']) || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
-                        $this->validation->addError('privacypolicy', __('In order to register for a new account, you must accept this site\'s Privacy Policy.', $this->domain));
-                    }
-
-                    if ($activePolicies['agePolicy'] && (!isset($policiesAcceptedAtRegistration['agePolicy']) || empty($policiesAcceptedAtRegistration['agePolicy']) || !$policiesAcceptedAtRegistration['agePolicy'])) {
-                        $this->validation->addError('agepolicy', __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain));
-                    }
-
-                    if ($activePolicies['cancellationRightPolicy'] && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) || empty($policiesAcceptedAtRegistration['cancellationRightPolicy']) || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
-                        $this->validation->addError('cancellationrightpolicy', __('In order to register for a new account, you must accept our cancellation right policy.', $this->domain));
-                    }
-
-                    if ($activePolicies['tradeConditions'] && (!isset($policiesAcceptedAtRegistration['tradeConditions']) || empty($policiesAcceptedAtRegistration['tradeConditions']) || !$policiesAcceptedAtRegistration['tradeConditions'])) {
-                        $this->validation->addError('tradeconditions', __('In order to register for a new account, you must accept our general terms and conditions of trade.', $this->domain));
-                    }
-
-                    $event->data->set(self::EVENT_KEY, $this->validation);
-                } elseif (!$this->request->isPost()) {
-					// Not a post, so we should never have gotten into this function. If we do, critical failure.
-                    throw new Zikula_Exception_Forbidden();
+                    $this->validation->addError('termsofuse', $validationErrorMsg);
                 }
+
+                if ($activePolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy'] && (!isset($policiesAcceptedAtRegistration['privacyPolicy']) || empty($policiesAcceptedAtRegistration['privacyPolicy']) || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
+                    if ($isRegistration) {
+                        $validationErrorMsg = __('In order to register for a new account, you must accept this site\'s Privacy Policy.', $this->domain);
+                    } else {
+                        $validationErrorMsg = __('In order to log in, you must accept this site\'s Privacy Policy.', $this->domain);
+                    }
+                    $this->validation->addError('privacypolicy', $validationErrorMsg);
+                }
+
+                if ($activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy'] && (!isset($policiesAcceptedAtRegistration['agePolicy']) || empty($policiesAcceptedAtRegistration['agePolicy']) || !$policiesAcceptedAtRegistration['agePolicy'])) {
+                    if ($isRegistration) {
+                        $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                    } else {
+                        $validationErrorMsg = __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                    }
+                    $this->validation->addError('agepolicy', $validationErrorMsg);
+                }
+
+                if ($activePolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy'] && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) || empty($policiesAcceptedAtRegistration['cancellationRightPolicy']) || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
+                    if ($isRegistration) {
+                        $validationErrorMsg = __('In order to register for a new account, you must accept our cancellation right policy.', $this->domain);
+                    } else {
+                        $validationErrorMsg = __('In order to log in, you must accept our cancellation right policy.', $this->domain);
+                    }
+                    $this->validation->addError('cancellationrightpolicy', $validationErrorMsg);
+                }
+
+                if ($activePolicies['tradeConditions'] && !$acceptedPolicies['tradeConditions'] && (!isset($policiesAcceptedAtRegistration['tradeConditions']) || empty($policiesAcceptedAtRegistration['tradeConditions']) || !$policiesAcceptedAtRegistration['tradeConditions'])) {
+                    if ($isRegistration) {
+                        $validationErrorMsg = __('In order to register for a new account, you must accept our general terms and conditions of trade.', $this->domain);
+                    } else {
+                        $validationErrorMsg = __('In order to log in, you must accept our general terms and conditions of trade.', $this->domain);
+                    }
+                    $this->validation->addError('tradeconditions', $validationErrorMsg);
+                }
+
+                $event->data->set(self::EVENT_KEY, $this->validation);
+            } elseif (!$this->request->isPost()) {
+                // Not a post, so we should never have gotten into this function. If we do, critical failure.
+                throw new Zikula_Exception_Forbidden();
             }
         } else {
             // Someone is logged in, so either user looking at own record, an admin creating a new user, 
