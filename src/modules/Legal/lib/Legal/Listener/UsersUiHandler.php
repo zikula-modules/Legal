@@ -346,7 +346,6 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                 $user = $event->getSubject();
 
                 $isNewUser = (!isset($user['uid']) || empty($user['uid']));
-                $isRegistration = !$isNewUser && UserUtil::isRegistration($user['uid']);
 
                 $editablePolicies = $this->helper->getEditablePolicies();
                 $policiesAcceptedAtRegistration = array(
