@@ -1,4 +1,5 @@
 {ajaxheader modname='Legal_Constant::MODNAME'|constant filename='Legal.UI.Edit.js' noscriptaculous=true effects=true}
+{if (is_numeric($policiesUid) && ($policiesUid > 2))}
 <fieldset>
     <legend>{gt text='Site policies'}</legend>
     <input type="hidden" id="acceptpolicies_csrftoken" name="acceptpolicies_csrftoken" value="{insert name='csrftoken'}" />
@@ -132,4 +133,4 @@
         </div>
     {/if}
 </fieldset>
-
+{/if}
