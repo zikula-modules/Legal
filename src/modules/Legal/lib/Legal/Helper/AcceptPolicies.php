@@ -61,7 +61,21 @@ class Legal_Helper_AcceptPolicies
      */
     private function determineAcceptanceState($uid, $isRegistration, $modVarName)
     {
-        return (!is_null($uid) && !empty($uid)) ? UserUtil::getVar($modVarName, $uid, false, $isRegistration) : false;
+        $acceptanceState = false;
+        
+        $now = new DateTime('now', new DateTimeZone('UTC'));
+        $nowStr = $now->format(DateTime::ISO8601);
+        
+        if (!is_null($uid) && !empty($uid) && is_numeric($uid) && ($uid > 0)) {
+            if ($uid > 2) {
+                $acceptanceState = UserUtil::getVar($modVarName, $uid, false, $isRegistration);
+            } else {
+                // The special users (uid == 2 for admin, and uid == 1 for guest) have always accepted all policies.
+                $acceptanceState = '1970-01-01T00:00:00Z';
+            }
+        }
+        
+        return $acceptanceState;
     }
 
     /**
