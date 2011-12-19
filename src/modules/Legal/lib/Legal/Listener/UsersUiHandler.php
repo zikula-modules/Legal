@@ -335,6 +335,9 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         } else {
             // Someone is logged in, so either user looking at own record, an admin creating a new user, 
 			// an admin editing a user, or an admin editing a registration.
+            
+            // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
+            // being changed.
 
 			if ($this->request->isPost()) {
                 $user = $event->getSubject();
