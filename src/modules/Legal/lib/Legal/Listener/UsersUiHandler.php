@@ -255,10 +255,9 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     $user = $event->getSubject();
                     $goodUidUser = isset($user) && !empty($user) && is_array($user) && isset($user['uid']) && is_numeric($user['uid']) && ($user['uid'] > 2);
 
-                    // Fail if the uid of the subject does not match the uid from the form. The user changed his
-                    // login information, so not only should we not validate what was posted, we should not allow the user
-                    // to proceed with this login attempt at all.
                     if ($goodUidUser && $goodUidAcceptPolicies && ($user['uid'] == $uid)) {
+						// Do the validation 
+						
                         $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
 
                         $this->validation = new Zikula_Hook_ValidationResponse($uid, $policiesAcceptedAtRegistration);
@@ -285,8 +284,12 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 
                         $event->data->set(self::EVENT_KEY, $this->validation);
                     } elseif (!$goodUidUser || !$goodUidAcceptPolicies) {
+						// Critical fail if the $user record is bad, or if the uid used for Legal is bad.
                         throw new Zikula_Exception_Fatal();
                     } else {
+						// Fail if the uid of the subject does not match the uid from the form. The user changed his
+						// login information, so not only should we not validate what was posted, we should not allow the user
+						// to proceed with this login attempt at all.
                         LogUtil::registerError(__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.', $this->domain));
                         $this->request->getSession()->clearNamespace('Zikula_Users');
                         $this->request->getSession()->clearNamespace('Legal');
@@ -359,58 +362,41 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
 
                 $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
 
-                if ($isNewUser) {
-					// This must be an admin creating a new user account.
-					// Fail on any attempt to accept a policy that is not edtiable.
-					
-                    if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
-                        throw new Zikula_Exception_Forbidden();
-                    }
-                    if (isset($policiesAcceptedAtRegistration['privacyPolicy']) && !$editablePolicies['privacyPolicy']) {
-                        throw new Zikula_Exception_Forbidden();
-                    }
-                    if (isset($policiesAcceptedAtRegistration['agePolicy']) && !$editablePolicies['agePolicy']) {
-                        throw new Zikula_Exception_Forbidden();
-                    }
-                    if (isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) && !$editablePolicies['cancellationRightPolicy']) {
-                        throw new Zikula_Exception_Forbidden();
-                    }
-                    if (isset($policiesAcceptedAtRegistration['tradeConditions']) && !$editablePolicies['tradeConditions']) {
-                        throw new Zikula_Exception_Forbidden();
-                    }
-                } else {
-					// Not a new user, so it must be the user modifying his own account, an admin modifying a user account,
-					// or an admin modifying a registration record.
+                if (!$isNewUser) {
+					// Only check this stuff if the admin is not creating a new user. It doesn't make sense otherwise.
 					
                     $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid) && ($uid > 2);
 
                     $user = $event->getSubject();
                     $goodUidUser = isset($user) && !empty($user) && is_array($user) && isset($user['uid']) && is_numeric($user['uid']) && ($user['uid'] > 2);
 
-                    // Fail if the uid of the subject does not match the uid from the form. The user changed the uid
-					// on the account (is that even possible?!) or somehow the main user form and the part for Legal point
-					// to different user account. In any case, that is a bad situation that should cause a critical failure.
-					// TODO - 2011-Dec-18, actually if $user['uid'] == $uid, then nothing bad happens, and probably should.
-                    if ($goodUidUser && $goodUidAcceptPolicies && ($user['uid'] == $uid)) {
-                        if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
-                            throw new Zikula_Exception_Forbidden();
-                        }
-                        if (isset($policiesAcceptedAtRegistration['privacyPolicy']) && !$editablePolicies['privacyPolicy']) {
-                            throw new Zikula_Exception_Forbidden();
-                        }
-                        if (isset($policiesAcceptedAtRegistration['agePolicy']) && !$editablePolicies['agePolicy']) {
-                            throw new Zikula_Exception_Forbidden();
-                        }
-                        if (isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) && !$editablePolicies['cancellationRightPolicy']) {
-                            throw new Zikula_Exception_Forbidden();
-                        }
-                        if (isset($policiesAcceptedAtRegistration['tradeConditions']) && !$editablePolicies['tradeConditions']) {
-                            throw new Zikula_Exception_Forbidden();
-                        }
-                    } elseif (!$goodUidUser || !$goodUidAcceptPolicies) {
+                    if (!$goodUidUser || !$goodUidAcceptPolicies || ($user['uid'] != $uid)) {
+						// Fail if the uid of the subject does not match the uid from the form. The user changed the uid
+						// on the account (is that even possible?!) or somehow the main user form and the part for Legal point
+						// to different user account. In any case, that is a bad situation that should cause a critical failure.
+						
+						// Also fail if the $user record is bad, or if the uid used for Legal is bad.
+						
                         throw new Zikula_Exception_Fatal();
                     }
-                }
+				}
+					
+				// Fail on any attempt to accept a policy that is not edtiable.
+				if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
+					throw new Zikula_Exception_Forbidden();
+				}
+				if (isset($policiesAcceptedAtRegistration['privacyPolicy']) && !$editablePolicies['privacyPolicy']) {
+					throw new Zikula_Exception_Forbidden();
+				}
+				if (isset($policiesAcceptedAtRegistration['agePolicy']) && !$editablePolicies['agePolicy']) {
+					throw new Zikula_Exception_Forbidden();
+				}
+				if (isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) && !$editablePolicies['cancellationRightPolicy']) {
+					throw new Zikula_Exception_Forbidden();
+				}
+				if (isset($policiesAcceptedAtRegistration['tradeConditions']) && !$editablePolicies['tradeConditions']) {
+					throw new Zikula_Exception_Forbidden();
+				}
 
                 $event->data->set(self::EVENT_KEY, $this->validation);
             } elseif (!$this->request->isPost()) {
