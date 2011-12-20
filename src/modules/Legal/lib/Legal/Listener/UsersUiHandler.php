@@ -105,7 +105,6 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         $user = $event->getSubject();
 
         if (isset($user) && !empty($user) && ($activePolicyCount > 0)) {
-            $showPolicies = false;
             $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
             $viewablePolicies = $this->helper->getViewablePolicies($user['uid']);
 
@@ -132,7 +131,6 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         if ($activePolicyCount > 0) {
-            $showPolicies = false;
             $eventName = $event->getName();
 
             // Determine if the hook should be displayed, and also set up certain variables, based on the type of event
