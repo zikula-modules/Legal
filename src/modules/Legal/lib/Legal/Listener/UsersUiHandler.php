@@ -223,12 +223,29 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
      */
     public function validateEdit(Zikula_Event $event)
     {
-        $activePolicies = $this->helper->getActivePolicies();
-        $eventName = $event->getName();
+        if (!$this->request->isPost()) {
+            // Validation is only appropriate for a post, otherwise it is probably a hack attempt.
+            throw new Zikula_Exception_Forbidden();
+        }
 
-        if (!UserUtil::isLoggedIn()) {
-			// User is not logged in, so this should be either part of a login attempt or a new user registration.
-			
+        // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
+        // So there is nothing to validate.
+        if ($this->request->getPost()->has('acceptedpolicies_uid')) {
+            
+            // Set up the necessary objects for the validation response
+            $policiesAcceptedAtRegistration = array(
+                'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
+                'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
+            );
+            $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
+            $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
+            
+            $activePolicies = $this->helper->getActivePolicies();
+            
+            // Get the user record from the event. If there is no user record, create a dummy one.
             $user = $event->getSubject();
             if (!isset($user) || empty($user)) {
                 $user = array(
@@ -236,33 +253,24 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                 );
             }
             
-            $isRegistration = ($eventName != 'users.login.validate_edit');
+            $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid);
+            $goodUidUser = is_array($user) && isset($user['uid']) && is_numeric($user['uid']);
 
-            if ($this->request->isPost() && $this->request->getPost()->has('acceptedpolicies_uid')) {
-                // A post has been made, and there is a uid identified for the Legal module to check.
+            if (!UserUtil::isLoggedIn()) {
+                // User is not logged in, so this should be either part of a login attempt or a new user registration.
 
-                $policiesAcceptedAtRegistration = array(
-                    'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                    'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                    'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
-                    'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
-                    'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
-                );
-                    
+                $eventName = $event->getName();
+                $isRegistration = ($eventName != 'users.login.validate_edit');
+
                 if ($isRegistration) {
-                    // A registration. There will be no accepted policies (function returns the appropriate array for a null uid), and there
-                    // is no uid to set on the validation response.
-                    
+                    // A registration. There will be no accepted policies stored yet (function returns the appropriate array for a null uid),
+                    // and there is no (or at least there *should* be no) uid to set on the validation response.
                     $acceptedPolicies = $this->helper->getAcceptedPolicies();
-                    $this->validation = new Zikula_Hook_ValidationResponse('', $policiesAcceptedAtRegistration);
                 } else {
                     // A login attempt.
                     
-                    $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
-                    $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid) && ($uid > 2);
-
-                    $user = $event->getSubject();
-                    $goodUidUser = isset($user) && !empty($user) && is_array($user) && isset($user['uid']) && is_numeric($user['uid']) && ($user['uid'] > 2);
+                    $goodUidAcceptPolicies = $goodUidAcceptPolicies && ($uid > 2);
+                    $goodUidUser = $goodUidUser && ($user['uid'] > 2);
 
                     if (!$goodUidUser || !$goodUidAcceptPolicies) {
                         // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
@@ -278,7 +286,6 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     }
                     
                     $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
-                    $this->validation = new Zikula_Hook_ValidationResponse($uid, $policiesAcceptedAtRegistration);
                 }
 
                 // Do the validation
@@ -326,52 +333,28 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     }
                     $this->validation->addError('tradeconditions', $validationErrorMsg);
                 }
+            } else {
+                // Someone is logged in, so either user looking at own record, an admin creating a new user, 
+                // an admin editing a user, or an admin editing a registration.
 
-                $event->data->set(self::EVENT_KEY, $this->validation);
-            } elseif (!$this->request->isPost()) {
-                // Not a post, so we should never have gotten into this function. If we do, critical failure.
-                throw new Zikula_Exception_Forbidden();
-            }
-        } else {
-            // Someone is logged in, so either user looking at own record, an admin creating a new user, 
-			// an admin editing a user, or an admin editing a registration.
-            
-            // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
-            // being changed.
+                // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
+                // being changed.
 
-			if ($this->request->isPost()) {
-                $user = $event->getSubject();
+                $editablePolicies = $this->helper->getEditablePolicies();
 
                 if (!isset($user) || empty($user) || !is_array($user)) {
                         throw new Zikula_Exception_Fatal();
                 }
-                
+
                 $isNewUser = (!isset($user['uid']) || empty($user['uid']));
-                
+
                 if (!$isNewUser && !is_numeric($user['uid'])) {
                         throw new Zikula_Exception_Fatal();
                 }
-                
-                $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
-                
+
                 if ($isNewUser || ($user['uid'] > 2)) {
-                    $editablePolicies = $this->helper->getEditablePolicies();
-                    $policiesAcceptedAtRegistration = array(
-                        'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                        'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                        'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
-                        'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
-                        'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
-                    );
-                    $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
-
-
                     if (!$isNewUser) {
                         // Only check this stuff if the admin is not creating a new user. It doesn't make sense otherwise.
-
-                        $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid);
-
-                        $user = $event->getSubject();
 
                         if (!$goodUidUser || !$goodUidAcceptPolicies || ($user['uid'] != $uid)) {
                             // Fail if the uid of the subject does not match the uid from the form. The user changed the uid
@@ -400,15 +383,10 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     if (isset($policiesAcceptedAtRegistration['tradeConditions']) && !$editablePolicies['tradeConditions']) {
                         throw new Zikula_Exception_Forbidden();
                     }
-
                 }
-                
-                $event->data->set(self::EVENT_KEY, $this->validation);
-                
-            } elseif (!$this->request->isPost()) {
-				// Not a post, so we should never have gotten into this function. If we do, critical failure.
-                throw new Zikula_Exception_Forbidden();
             }
+        
+            $event->data->set(self::EVENT_KEY, $this->validation);
         }
     }
 
