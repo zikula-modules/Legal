@@ -20,7 +20,7 @@
 <h2>Navigation aids</h2>
 <ol>
 <li>All pages have <tt>rel=previous, next, up,</tt> and <tt>home</tt> links to aid navigation in text-only browsers. Mozilla users can also take advantage of this feature by opening the 'View' menu, and selecting 'Show/Hide', 'Site Navigation Bar', 'Show Only As Needed' (or 'Show Always').</li>
-<li>All pages include a search box (access key 4). Advanced search options are available on the <a href="{modurl modname="Search"}">site search page</a>.</li>
+<li>All pages include a search box (access key 4). Advanced search options are available on the <a href="{modurl modname='Search' type='user' func='form'}">site search page</a>.</li>
 {*
 <li>include any other navigation aids here</li>
 *}
