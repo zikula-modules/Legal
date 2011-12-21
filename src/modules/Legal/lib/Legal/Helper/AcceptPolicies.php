@@ -1,13 +1,13 @@
 <?php
 /**
  * Copyright 2011 Zikula Foundation.
- * 
+ *
  * This work is contributed to the Zikula Foundation under one or more
  * Contributor Agreements and licensed to You under the following license:
- * 
+ *
  * @license GNU/LGPLv3 (or at your option, any later version).
  * @package Legal
- * 
+ *
  * Please see the NOTICE file distributed with this source code for further
  * information regarding copyright and licensing.
  */
@@ -19,7 +19,7 @@ class Legal_Helper_AcceptPolicies
 {
     /**
      * The module name.
-     * 
+     *
      * @var string
      */
     protected $name;
@@ -27,7 +27,7 @@ class Legal_Helper_AcceptPolicies
     public function __construct() {
         $this->name = Legal_Constant::MODNAME;
     }
-    
+
     /**
      * Retrieves flags indicating which policies are active.
      *
@@ -62,19 +62,18 @@ class Legal_Helper_AcceptPolicies
     private function determineAcceptanceState($uid, $isRegistration, $modVarName)
     {
         $acceptanceState = false;
-        
-        $now = new DateTime('now', new DateTimeZone('UTC'));
-        $nowStr = $now->format(DateTime::ISO8601);
-        
+
         if (!is_null($uid) && !empty($uid) && is_numeric($uid) && ($uid > 0)) {
             if ($uid > 2) {
                 $acceptanceState = UserUtil::getVar($modVarName, $uid, false, $isRegistration);
             } else {
                 // The special users (uid == 2 for admin, and uid == 1 for guest) have always accepted all policies.
-                $acceptanceState = '1970-01-01T00:00:00Z';
+                $now = new DateTime('now', new DateTimeZone('UTC'));
+                $nowStr = $now->format(DateTime::ISO8601);
+                $acceptanceState = $nowStr;
             }
         }
-        
+
         return $acceptanceState;
     }
 
@@ -82,7 +81,7 @@ class Legal_Helper_AcceptPolicies
      * Retrieves flags indicating which policies the user with the given uid has already accepted.
      *
      * @param numeric $uid A valid uid.
-     * 
+     *
      * @return array An array containing flags indicating whether each policy has been accepted by the user or not.
      */
     public function getAcceptedPolicies($uid = null)
@@ -124,12 +123,12 @@ class Legal_Helper_AcceptPolicies
 
     /**
      * Determine whether the current user can view the acceptance/confirmation status of certain policies.
-     * 
+     *
      * If the current user is the subject user, then the user can always see his status for each policy. If the current user is not the
      * same as the subject user, then the current user can only see the status if he has ACCESS_MODERATE access for the policy.
      *
      * @param numeric $uid The uid of the subject account record (not the current user, but the subject user); optional.
-     * 
+     *
      * @return array An array containing flags indicating whether the current user is permitted to view the specified policy.
      */
     public function getViewablePolicies($uid = null)
@@ -145,15 +144,15 @@ class Legal_Helper_AcceptPolicies
             'tradeConditions'           => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::tradeconditions', '::', ACCESS_MODERATE)
         );
     }
-    
+
     /**
      * Determine whether the current user can edit the acceptance/confirmation status of certain policies.
-     * 
+     *
      * The current user can only edit the status if he has ACCESS_EDIT access for the policy, whether he is the subject user or not. The ability to edit
      * status for login and new registrations is handled differently, and does not count on the output of this function.
      *
      * @param numeric $uid The uid of the subject account record (not the current user, but the subject user); optional.
-     * 
+     *
      * @return array An array containing flags indicating whether the current user is permitted to edit the specified policy.
      */
     public function getEditablePolicies()
