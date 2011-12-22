@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2011 Zikula Foundation.
+ * Copyright (c) 2001-2012 Zikula Foundation
  *
  * This work is contributed to the Zikula Foundation under one or more
  * Contributor Agreements and licensed to You under the following license:
  *
- * @license GNU/LGPLv3 (or at your option, any later version).
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
  * @package Legal
  *
  * Please see the NOTICE file distributed with this source code for further
@@ -48,14 +48,19 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
     /**
      * Access to the helper.
      *
-     * @param Legal_Helper_AcceptPolicies
+     * @var Legal_Helper_AcceptPolicies
      */
     protected $helper;
 
     /**
      * Constructs a new instance of this class.
      *
-     * @param Zikula_EventManager $serviceManager The current service manager instance.
+     * The name attribute is set to the module name; the view attribute is set to a current instance of
+     * {@link Zikula_View}; the request attribute is set to the current request service instance, and the
+     * domain attribute is initialized to the module name. The helper attribute is initialized with an instance
+     * of {@link Legal_Helper_AcceptPolicies}.
+     *
+     * @param Zikula_EventManager $eventManager The current event manager instance.
      */
     public function  __construct(Zikula_EventManager $eventManager)
     {
@@ -69,22 +74,27 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         $this->helper = new Legal_Helper_AcceptPolicies();
     }
 
+    /**
+     * Establish the handlers for various events.
+     *
+     * @return void
+     */
     public function setupHandlerDefinitions()
     {
         $this->addHandlerDefinition('module.users.ui.display_view', 'uiView');
-        
+
         $this->addHandlerDefinition('module.users.ui.form_edit.login_screen', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.new_user', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.modify_user', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.new_registration', 'uiEdit');
         $this->addHandlerDefinition('module.users.ui.form_edit.modify_registration', 'uiEdit');
-        
+
         $this->addHandlerDefinition('module.users.ui.validate_edit.login_screen', 'validateEdit');
         $this->addHandlerDefinition('module.users.ui.validate_edit.new_user', 'validateEdit');
         $this->addHandlerDefinition('module.users.ui.validate_edit.modify_user', 'validateEdit');
         $this->addHandlerDefinition('module.users.ui.validate_edit.new_registration', 'validateEdit');
         $this->addHandlerDefinition('module.users.ui.validate_edit.modify_registration', 'validateEdit');
-        
+
         $this->addHandlerDefinition('module.users.ui.process_edit.login_screen', 'processEdit');
         $this->addHandlerDefinition('module.users.ui.process_edit.new_user', 'processEdit');
         $this->addHandlerDefinition('module.users.ui.process_edit.modify_user', 'processEdit');
@@ -93,9 +103,26 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
     }
 
     /**
+     * Cause redirect by throwing exception which passes to front controller.
+     *
+     * @param string  $url  Url to redirect to.
+     * @param integer $type Redirect code, 302 default.
+     *
+     * @return void
+     *
+     * @throws Zikula_Exception_Redirect Causing redirect.
+     */
+    protected function redirect($url, $type = 302)
+    {
+        throw new Zikula_Exception_Redirect($url, $type);
+    }
+
+    /**
      * Responds to ui.view hook-like event notifications.
      *
      * @param Zikula_Event $event The event that triggered this function call.
+     *
+     * @return void
      */
     public function uiView(Zikula_Event $event)
     {
@@ -125,6 +152,8 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
      * Responds to ui.edit hook notifications.
      *
      * @param Zikula_Event $event The event that triggered this function call.
+     *
+     * @return void
      */
     public function uiEdit(Zikula_Event $event)
     {
@@ -218,6 +247,14 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
      * Responds to validate.edit hook notifications.
      *
      * @param Zikula_Event $event The event that triggered this function call.
+     *
+     * @return void
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function, or to
+     *      modify the acceptance of policies on a user account other than his own.
+     *
+     * @throws Zikula_Exception_Fatal Thrown if the user record retrieved from the POST is in an unexpected form or its data is
+     *      unexpected.
      */
     public function validateEdit(Zikula_Event $event)
     {
@@ -229,7 +266,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
         if ($this->request->getPost()->has('acceptedpolicies_uid')) {
-            
+
             // Set up the necessary objects for the validation response
             $policiesAcceptedAtRegistration = array(
                 'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
@@ -240,9 +277,9 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
             );
             $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
             $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
-            
+
             $activePolicies = $this->helper->getActivePolicies();
-            
+
             // Get the user record from the event. If there is no user record, create a dummy one.
             $user = $event->getSubject();
             if (!isset($user) || empty($user)) {
@@ -250,7 +287,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     '__ATTRIBUTES__' => array(),
                 );
             }
-            
+
             $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid);
             $goodUidUser = is_array($user) && isset($user['uid']) && is_numeric($user['uid']);
 
@@ -266,7 +303,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     $acceptedPolicies = $this->helper->getAcceptedPolicies();
                 } else {
                     // A login attempt.
-                    
+
                     $goodUidAcceptPolicies = $goodUidAcceptPolicies && ($uid > 2);
                     $goodUidUser = $goodUidUser && ($user['uid'] > 2);
 
@@ -280,9 +317,9 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                         LogUtil::registerError(__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.', $this->domain));
                         $this->request->getSession()->clearNamespace('Zikula_Users');
                         $this->request->getSession()->clearNamespace('Legal');
-                        throw new Zikula_Exception_Redirect(ModUtil::url('Users', 'user', 'login'));
+                        $this->redirect(ModUtil::url('Users', 'user', 'login'));
                     }
-                    
+
                     $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
                 }
 
@@ -332,7 +369,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     $this->validation->addError('tradeconditions', $validationErrorMsg);
                 }
             } else {
-                // Someone is logged in, so either user looking at own record, an admin creating a new user, 
+                // Someone is logged in, so either user looking at own record, an admin creating a new user,
                 // an admin editing a user, or an admin editing a registration.
 
                 // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
@@ -383,7 +420,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
                     }
                 }
             }
-        
+
             $event->data->set(self::EVENT_KEY, $this->validation);
         }
     }
@@ -392,6 +429,10 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
      * Responds to process_edit hook-like event notifications.
      *
      * @param Zikula_Event $event The event that triggered this function call.
+     *
+     * @return void
+     *
+     * @throws Zikula_Exception_Fatal Thrown if a user account does not exist for the uid specified by the event.
      */
     public function processEdit(Zikula_Event $event)
     {
