@@ -35,7 +35,13 @@ class Legal_Controller_User extends Zikula_AbstractController
     }
 
     /**
-     * Render and display the specified legal document.
+     * Render and display the specified legal document, or redirect to the specified custom URL if it exists.
+     *
+     * If a custom URL for the legal document exists, as specified by the module variable identified by $customUrlKey, then
+     * this function will redirect the user to that URL.
+     *
+     * If no custom URL exists, then this function will render and return the appropriate template for the legal document, as
+     * specified by $documentName. If the legal document
      *
      * @param string $documentName      The "name" of the document, as specified by the names of the user and text template
      *                                      files in the format 'legal_user_documentname.tpl' and 'legal_text_documentname.tpl'.
@@ -43,34 +49,42 @@ class Legal_Controller_User extends Zikula_AbstractController
      * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
      *                                      active or not; typically this is a constant from {@link Legal_Constant}, such as
      *                                      {@link Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE}.
+     * @param string $customUrlKey      The string used to name the module variable that contains a custom static URL for the
+     *                                      legal document; typically this is a constant from {@link Legal_Constant}, such as
+     *                                      {@link Legal_Constant::MODVAR_TERMS_URL}.
      *
      * @return string HTML output string
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    private function renderDocument($documentName, $accessInstanceKey, $activeFlagKey)
+    private function renderDocument($documentName, $accessInstanceKey, $activeFlagKey, $customUrlKey)
     {
         // Security check
         if (!SecurityUtil::checkPermission($this->name . '::' . $accessInstanceKey, '::', ACCESS_OVERVIEW)) {
             throw new Zikula_Exception_Forbidden();
         }
 
-        // work out the template path
         if (!$this->getVar($activeFlagKey)) {
-            $template = 'legal_user_policynotactive.tpl';
+            return $this->view->fetch('legal_user_policynotactive.tpl');
         } else {
-            $template = "legal_user_{$documentName}.tpl";
+            $customUrl = $this->getVar($customUrlKey, '');
+            if (empty($customUrl)) {
+                // work out the template path
+                $template = "legal_user_{$documentName}.tpl";
 
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+                // get the current users language
+                $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
 
-            if (!$this->view->template_exists("{$languageCode}/legal_text_{$documentName}.tpl")) {
-                $languageCode = 'en';
+                if (!$this->view->template_exists("{$languageCode}/legal_text_{$documentName}.tpl")) {
+                    $languageCode = 'en';
+                }
+
+                return $this->view->assign('languageCode', $languageCode)
+                        ->fetch($template);
+            } else {
+                $this->redirect($customUrl);
             }
         }
-
-        return $this->view->assign('languageCode', $languageCode)
-                ->fetch($template);
     }
 
     /**
@@ -82,29 +96,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function legalNotice()
     {
-        return $this->renderDocument('legalnotice', 'legalnotice', Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE);
-
-        // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::legalnotice', '::', ACCESS_OVERVIEW)) {
-            throw new Zikula_Exception_Forbidden();
-        }
-
-        // work out the template path
-        if (!$this->getVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE)) {
-            $template = 'legal_user_policynotactive.tpl';
-        } else {
-            $template = 'legal_user_legalnotice.tpl';
-
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
-            if (!$this->view->template_exists($languageCode.'/legal_text_legalnotice.tpl')) {
-                $languageCode = 'en';
-            }
-        }
-
-        return $this->view->assign('languageCode', $languageCode)
-                ->fetch($template);
+        return $this->renderDocument('legalnotice', 'legalnotice', Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, Legal_Constant::MODVAR_LEGALNOTICE_URL);
     }
 
     /**
@@ -116,23 +108,21 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function termsofuse()
     {
-        return $this->renderDocument('termsofuse', 'termsofuse', Legal_Constant::MODVAR_TERMS_ACTIVE);
+        return $this->renderDocument('termsofuse', 'termsofuse', Legal_Constant::MODVAR_TERMS_ACTIVE, Legal_Constant::MODVAR_TERMS_URL);
     }
 
     /**
-     * Display Privacy Policy
+     * Display Privacy Policy.
+     *
+     * Redirects to {@link privacyPolicy()}.
      *
      * @deprecated Since 1.6.1
      *
-     * @return string HTML output string
+     * @return void
      */
     public function privacy()
     {
-        $url = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
-        if (empty($url)) {
-            $url = ModUtil::url($this->name, 'user', 'privacyPolicy');
-        }
-        return $this->redirect($url);
+        $this->redirect(ModUtil::url($this->name, 'user', 'privacyPolicy'));
     }
 
     /**
@@ -144,7 +134,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function privacyPolicy()
     {
-        return $this->renderDocument('privacypolicy', 'privacy', Legal_Constant::MODVAR_PRIVACY_ACTIVE);
+        return $this->renderDocument('privacypolicy', 'privacy', Legal_Constant::MODVAR_PRIVACY_ACTIVE, Legal_Constant::MODVAR_PRIVACY_URL);
     }
 
     /**
@@ -156,7 +146,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function accessibilitystatement()
     {
-        return $this->renderDocument('accessibilitystatement', 'accessibilitystatement', Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE);
+        return $this->renderDocument('accessibilitystatement', 'accessibilitystatement', Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, Legal_Constant::MODVAR_ACCESSIBILITY_URL);
     }
 
     /**
@@ -168,7 +158,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function cancellationRightPolicy()
     {
-        return $this->renderDocument('cancellationrightpolicy', 'cancellationrightpolicy', Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE);
+        return $this->renderDocument('cancellationrightpolicy', 'cancellationrightpolicy', Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
     }
 
     /**
@@ -180,7 +170,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function tradeConditions()
     {
-        return $this->renderDocument('tradeconditions', 'tradeconditions', Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE);
+        return $this->renderDocument('tradeconditions', 'tradeconditions', Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, Legal_Constant::MODVAR_TRADECONDITIONS_URL);
     }
 
     /**
