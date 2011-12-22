@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright 2011 Zikula Foundation.
+ * Copyright (c) 2001-2012 Zikula Foundation
  *
  * This work is contributed to the Zikula Foundation under one or more
  * Contributor Agreements and licensed to You under the following license:
  *
- * @license GNU/LGPLv3 (or at your option, any later version).
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
  * @package Legal
  *
  * Please see the NOTICE file distributed with this source code for further
@@ -13,7 +13,7 @@
  */
 
 /**
- * AcceptPolicies
+ * Helper class to process acceptance of policies.
  */
 class Legal_Helper_AcceptPolicies
 {
@@ -24,6 +24,9 @@ class Legal_Helper_AcceptPolicies
      */
     protected $name;
 
+    /**
+     * Construct a new instance of the helper, setting the $name attribute to the module name.
+     */
     public function __construct() {
         $this->name = Legal_Constant::MODNAME;
     }
@@ -150,8 +153,6 @@ class Legal_Helper_AcceptPolicies
      *
      * The current user can only edit the status if he has ACCESS_EDIT access for the policy, whether he is the subject user or not. The ability to edit
      * status for login and new registrations is handled differently, and does not count on the output of this function.
-     *
-     * @param numeric $uid The uid of the subject account record (not the current user, but the subject user); optional.
      *
      * @return array An array containing flags indicating whether the current user is permitted to edit the specified policy.
      */
