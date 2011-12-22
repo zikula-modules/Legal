@@ -26,7 +26,7 @@ class Legal_Controller_Admin extends Zikula_AbstractController
      */
     public function main()
     {
-        return $this->redirect(ModUtil::url($this->name, 'admin', 'modifyConfig'));
+        $this->redirect(ModUtil::url($this->name, 'admin', 'modifyConfig'));
     }
 
     /**
