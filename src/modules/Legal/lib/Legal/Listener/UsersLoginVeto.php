@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright Zikula Foundation 2011 - Zikula Application Framework
+ * Copyright (c) 2001-2012 Zikula Foundation
  *
  * This work is contributed to the Zikula Foundation under one or more
  * Contributor Agreements and licensed to You under the following license:
  *
- * @license GNU/LGPLv3 (or at your option, any later version).
- * @package Users
- * @subpackage Listeners
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
+ * @package Legal
  *
  * Please see the NOTICE file distributed with this source code for further
  * information regarding copyright and licensing.
