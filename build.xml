@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
- <project name="Clip" default="clean">
+ <project name="Legalmod" default="clean">
 
     <!-- invokation
         phing -f $WORKSPACE/source/build.xml clean prepare phpcs phpcb phpcpd phpunit pdepend phpmd phpdoc jsdoc build build_delete -Dworkspace=$WORKSPACE -Djob_name=$JOB_NAME -Dbuild_number=$BUILD_NUMBER -Dbuild_tag=$BUILD_TAG -Dbuild_id=$BUILD_ID -Dsvn_revision=$SVN_REVISION
