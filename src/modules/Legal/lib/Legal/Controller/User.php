@@ -1,11 +1,11 @@
 <?php
 /**
- * Copyright Zikula Foundation 2001 - Zikula Application Framework
+ * Copyright (c) 2001-2012 Zikula Foundation
  *
  * This work is contributed to the Zikula Foundation under one or more
  * Contributor Agreements and licensed to You under the following license:
  *
- * @license GNU/LGPLv3 (or at your option, any later version).
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
  * @package Legal
  *
  * Please see the NOTICE file distributed with this source code for further
@@ -19,30 +19,74 @@ class Legal_Controller_User extends Zikula_AbstractController
 {
 
     /**
-     * Legal Module main user function
+     * Legal Module main user function.
      *
-     * @return string HTML output string
+     * Redirects to the Terms of Use legal document.
+     *
+     * @return void
      */
     public function main()
     {
-        $url = ModUtil::url($this->name, 'user', 'termsOfUse');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
-        if (!empty($customUrl)) {
-            $url = $customUrl;
+        $url = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
+        if (empty($url)) {
+            $url = ModUtil::url($this->name, 'user', 'termsOfUse');
         }
-        return $this->redirect($url);
+        $this->redirect($url);
     }
 
     /**
-     * Display Legal notice
+     * Render and display the specified legal document.
+     *
+     * @param string $documentName      The "name" of the document, as specified by the names of the user and text template
+     *                                      files in the format 'legal_user_documentname.tpl' and 'legal_text_documentname.tpl'.
+     * @param string $accessInstanceKey The string used in the instance_right part of the permission access key for this document.
+     * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
+     *                                      active or not; typically this is a constant from {@link Legal_Constant}, such as
+     *                                      {@link Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE}.
      *
      * @return string HTML output string
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     */
+    private function renderDocument($documentName, $accessInstanceKey, $activeFlagKey)
+    {
+        // Security check
+        if (!SecurityUtil::checkPermission($this->name . '::' . $accessInstanceKey, '::', ACCESS_OVERVIEW)) {
+            throw new Zikula_Exception_Forbidden();
+        }
+
+        // work out the template path
+        if (!$this->getVar($activeFlagKey)) {
+            $template = 'legal_user_policynotactive.tpl';
+        } else {
+            $template = "legal_user_{$documentName}.tpl";
+
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+
+            if (!$this->view->template_exists("{$languageCode}/legal_text_{$documentName}.tpl")) {
+                $languageCode = 'en';
+            }
+        }
+
+        return $this->view->assign('languageCode', $languageCode)
+                ->fetch($template);
+    }
+
+    /**
+     * Display Legal notice.
+     *
+     * @return string HTML output string
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
     public function legalNotice()
     {
+        return $this->renderDocument('legalnotice', 'legalnotice', Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE);
+
         // Security check
         if (!SecurityUtil::checkPermission($this->name . '::legalnotice', '::', ACCESS_OVERVIEW)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         // work out the template path
@@ -67,30 +111,12 @@ class Legal_Controller_User extends Zikula_AbstractController
      * Display Terms of Use
      *
      * @return string HTML output string
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
     public function termsofuse()
     {
-        // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::termsofuse', '::', ACCESS_OVERVIEW)) {
-            return LogUtil::registerPermissionError();
-        }
-
-        // work out the template path
-        if (!$this->getVar(Legal_Constant::MODVAR_TERMS_ACTIVE)) {
-            $template = 'legal_user_policynotactive.tpl';
-        } else {
-            $template = 'legal_user_termsofuse.tpl';
-
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
-            if (!$this->view->template_exists($languageCode.'/legal_text_termsofuse.tpl')) {
-                $languageCode = 'en';
-            }
-        }
-
-        return $this->view->assign('languageCode', $languageCode)
-                ->fetch($template);
+        return $this->renderDocument('termsofuse', 'termsofuse', Legal_Constant::MODVAR_TERMS_ACTIVE);
     }
 
     /**
@@ -102,10 +128,9 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function privacy()
     {
-        $url = ModUtil::url($this->name, 'user', 'privacyPolicy');
-        $customUrl = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
-        if (!empty($customUrl)) {
-            $url = $customUrl;
+        $url = $this->getVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
+        if (empty($url)) {
+            $url = ModUtil::url($this->name, 'user', 'privacyPolicy');
         }
         return $this->redirect($url);
     }
@@ -114,120 +139,48 @@ class Legal_Controller_User extends Zikula_AbstractController
      * Display Privacy Policy
      *
      * @return string HTML output string
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
     public function privacyPolicy()
     {
-        // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::privacy', '::', ACCESS_OVERVIEW)) {
-            return LogUtil::registerPermissionError();
-        }
-
-        // work out the template path
-        if (!$this->getVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE)) {
-            $template = 'legal_user_policynotactive.tpl';
-        } else {
-            $template = 'legal_user_privacypolicy.tpl';
-
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
-            if (!$this->view->template_exists($languageCode.'/legal_text_privacypolicy.tpl')) {
-                $languageCode = 'en';
-            }
-        }
-
-        return $this->view->assign('languageCode', $languageCode)
-                ->fetch($template);
+        return $this->renderDocument('privacypolicy', 'privacy', Legal_Constant::MODVAR_PRIVACY_ACTIVE);
     }
 
     /**
      * Display Accessibility statement
-     * 
+     *
      * @return string HTML output string
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
     public function accessibilitystatement()
     {
-        // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::accessibilitystatement', '::', ACCESS_OVERVIEW)) {
-            return LogUtil::registerPermissionError();
-        }
-
-        // work out the template path
-        if (!$this->getVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE)) {
-            $template = 'legal_user_policynotactive.tpl';
-        } else {
-            $template = 'legal_user_accessibilitystatement.tpl';
-
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
-            if (!$this->view->template_exists($languageCode.'/legal_text_accessibilitystatement.tpl')) {
-                $languageCode = 'en';
-            }
-        }
-
-        return $this->view->assign('languageCode', $languageCode)
-                ->fetch($template);
+        return $this->renderDocument('accessibilitystatement', 'accessibilitystatement', Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE);
     }
 
     /**
      * Display Cancellation right policy
      *
      * @return string HTML output string
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
     public function cancellationRightPolicy()
     {
-        // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::cancellationrightpolicy', '::', ACCESS_OVERVIEW)) {
-            return LogUtil::registerPermissionError();
-        }
-
-        // work out the template path
-        if (!$this->getVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE)) {
-            $template = 'legal_user_policynotactive.tpl';
-        } else {
-            $template = 'legal_user_cancellationrightpolicy.tpl';
-
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
-            if (!$this->view->template_exists($languageCode.'/legal_text_cancellationrightpolicy.tpl')) {
-                $languageCode = 'en';
-            }
-        }
-
-        return $this->view->assign('languageCode', $languageCode)
-                ->fetch($template);
+        return $this->renderDocument('cancellationrightpolicy', 'cancellationrightpolicy', Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE);
     }
 
     /**
      * Display Trade conditions
      *
      * @return string HTML output string
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
     public function tradeConditions()
     {
-        // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::tradeconditions', '::', ACCESS_OVERVIEW)) {
-            return LogUtil::registerPermissionError();
-        }
-
-        // work out the template path
-        if (!$this->getVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE)) {
-            $template = 'legal_user_policynotactive.tpl';
-        } else {
-            $template = 'legal_user_tradeconditions.tpl';
-
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-
-            if (!$this->view->template_exists($languageCode.'/legal_text_tradeconditions.tpl')) {
-                $languageCode = 'en';
-            }
-        }
-
-        return $this->view->assign('languageCode', $languageCode)
-                ->fetch($template);
+        return $this->renderDocument('tradeconditions', 'tradeconditions', Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE);
     }
 
     /**
@@ -236,6 +189,12 @@ class Legal_Controller_User extends Zikula_AbstractController
      * This function is currently used by the Legal module's handler for the users.login.veto event.
      *
      * @return string The rendered output from the template.
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user is not logged in and the acceptance attempt is not a result of a login attempt.
+     *
+     * @throws Zikula_Exception_Fatal Thrown if the user is already logged in and the acceptance attempt is a result of a login attempt;
+     *      also thrown in cases where expected data is not present or not in an expected form;
+     *      also thrown if the call to this function is not the result of a POST operation or a GET operation.
      */
     public function acceptPolicies()
     {
@@ -246,7 +205,7 @@ class Legal_Controller_User extends Zikula_AbstractController
 
         $processed = false;
         $helper = new Legal_Helper_AcceptPolicies();
-        
+
         if ($this->request->isPost()) {
             $this->checkCsrfToken();
 
@@ -270,7 +229,7 @@ class Legal_Controller_User extends Zikula_AbstractController
             if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
                 throw new Zikula_Exception_Fatal();
             }
-            
+
             $activePolicies = $helper->getActivePolicies();
             $originalAcceptedPolicies = $helper->getAcceptedPolicies($policiesUid);
 
@@ -377,7 +336,7 @@ class Legal_Controller_User extends Zikula_AbstractController
             SessionUtil::requireSession();
             $this->request->getSession()->set('Legal_Controller_User_acceptPolicies', $sessionVars, $this->name);
         }
-        
+
         $templateVars = array(
             'login'                     => $isLogin,
             'policiesUid'               => $policiesUid,
@@ -389,17 +348,5 @@ class Legal_Controller_User extends Zikula_AbstractController
 
         return $this->view->assign($templateVars)
                 ->fetch('legal_user_acceptpolicies.tpl');
-    }
-
-    /**
-     * Update the user's acceptance of terms of use and/or privacy policy.
-     *
-     * Available Post Parameters:
-     * - array acceptPolicies The array of form values posted.
-     *
-     * @return void The user is redirected.
-     */
-    public function updatePolicyAcceptance()
-    {
     }
 }
