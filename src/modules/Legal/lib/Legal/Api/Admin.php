@@ -1,31 +1,47 @@
 <?php
 /**
- * Zikula Application Framework
+ * Copyright (c) 2001-2012 Zikula Foundation
  *
- * @copyright (c) 2001, Zikula Development Team
- * @link http://www.zikula.org
- * @version $Id$
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * This work is contributed to the Zikula Foundation under one or more
+ * Contributor Agreements and licensed to You under the following license:
+ *
+ * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
+ * @package Legal
+ *
+ * Please see the NOTICE file distributed with this source code for further
+ * information regarding copyright and licensing.
  */
 
+/**
+ * Administrative API functions.
+ */
 class Legal_Api_Admin extends Zikula_AbstractApi
 {
 
     /**
-     * reset the agreement to the terms of use for a speial group of users
+     * Reset the agreement to the terms of use for a specific group of users, or all users.
      *
-     * @param        gid   (int) the group id, -1=none, 0=all groups
-     * @return       output       The main module admin page.
+     * Parameters passed in the $args array:
+     * -------------------------------------
+     * int $args['gid'] The group id; -1 = none, 0 = all groups.
+     *
+     * @param array $args All arguments passed to the function.
+     *
+     * @return bool True if successfully reset, otherwise false.
+     *
+     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @throws Zikula_Exception_Fatal Thrown in cases where expected data is not present or not in an expected form.
      */
     public function resetagreement($args)
     {
         // Security check
         if (!SecurityUtil::checkPermission('legal::', '::', ACCESS_ADMIN)) {
-            return LogUtil::registerPermissionError();
+            throw new Zikula_Exception_Forbidden();
         }
 
         if (!isset($args['gid']) || $args['gid'] == -1) {
-            return false;
+            throw new Zikula_Exception_Fatal();
         }
 
         // Get database setup
@@ -74,7 +90,7 @@ class Legal_Api_Admin extends Zikula_AbstractApi
     /**
      * Get available admin panel links.
      *
-     * @return array Array of admin links.
+     * @return array Array of adminpanel links.
      */
     public function getLinks()
     {
