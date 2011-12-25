@@ -8,6 +8,7 @@
     * Each document type can now be linked to a custom url
     * As soon as an url is given it will be used instead of the normal Legal templates
     * So you can now use any page you want for displaying and managing your legal data
+    * The "standard" functions will redirect to the custom url, if present, instead of rendering the templated version.
   * Improvements and bugfixes for the user menu plugin
   * Minor fixes regarding error states consistency
 
