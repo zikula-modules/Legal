@@ -134,7 +134,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      */
     public function privacyPolicy()
     {
-        return $this->renderDocument('privacypolicy', 'privacy', Legal_Constant::MODVAR_PRIVACY_ACTIVE, Legal_Constant::MODVAR_PRIVACY_URL);
+        return $this->renderDocument('privacypolicy', 'privacypolicy', Legal_Constant::MODVAR_PRIVACY_ACTIVE, Legal_Constant::MODVAR_PRIVACY_URL);
     }
 
     /**

@@ -1,16 +1,21 @@
 2.0.1
 -----
-  * Added new document types
+  * Added new document types (Issue #4)
     * Legal notice (active per default)
     * Cancellation right (inactive per default)
     * General terms and conditions of trade (inactive per default)
-  * Use arbitrary urls
-    * Each document type can now be linked to a custom url
-    * As soon as an url is given it will be used instead of the normal Legal templates
+  * Use arbitrary URLs (Issues #4, #11)
+    * Each document type can now be linked to a custom URL
+    * As soon as an URL is given it will be used instead of the normal Legal templates
     * So you can now use any page you want for displaying and managing your legal data
-    * The "standard" functions will redirect to the custom url, if present, instead of rendering the templated version.
-  * Improvements and bugfixes for the user menu plugin
-  * Minor fixes regarding error states consistency
+    * The "standard" functions will redirect to the custom URL, if present, instead of rendering the templated version.
+  * Improvements and bug fixes for the user menu plugin (Issue #4)
+  * The permission instance check for the privacy policy was corrected to use 'privacypolicy' as the instance name, instead of the incorrect 'privacy'. (Issue #13)
+  * Other fixes:
+    * Minor fixes regarding error states consistency
+    * The situation where a fatal system error is displayed when editing the administrator special user account has been resolved. (Issue #3)
+    * Validation was added to ensure that the user id used in this module matches the uid of the main user record when updating user accounts. (Issue #5)
+    * The code was updated to use core version 1.3 compatible calls and objects. Deprecated calls were removed. (Issue #10)
 
 2.0.0
 -----
