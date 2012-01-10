@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-10 06:17-0500\n"
+"POT-Creation-Date: 2012-01-10 06:55-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,8 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/Legal/Api/Admin.php:100 templates/legal_admin_modifyconfig.tpl:3
-#: templates/legal_admin_modifyconfig.tpl:4
+#: lib/Legal/Api/Admin.php:100 templates/legal_admin_modifyconfig.tpl:4
 msgid "Settings"
 msgstr ""
 
@@ -134,7 +133,7 @@ msgstr ""
 msgid "A user account or registration does not exist for the specified uid."
 msgstr ""
 
-#: lib/Legal/Version.php:29 templates/legal_admin_menu.tpl:4
+#: lib/Legal/Version.php:29
 msgid "Legal info manager"
 msgstr ""
 
@@ -148,21 +147,21 @@ msgid "legalmod"
 msgstr ""
 
 #: templates/plugins/function.legaluserlinks.php:45
-#: templates/legal_admin_modifyconfig.tpl:13
-#: templates/legal_admin_modifyconfig.tpl:47
+#: templates/legal_admin_modifyconfig.tpl:15
+#: templates/legal_admin_modifyconfig.tpl:49
 #: templates/plugins/legal_function_legalinlinelink_legalnotice.tpl:5
 msgid "Legal notice"
 msgstr ""
 
 #: templates/plugins/function.legaluserlinks.php:53
-#: templates/legal_admin_modifyconfig.tpl:18
-#: templates/legal_admin_modifyconfig.tpl:52
+#: templates/legal_admin_modifyconfig.tpl:20
+#: templates/legal_admin_modifyconfig.tpl:54
 msgid "Terms of use"
 msgstr ""
 
 #: templates/plugins/function.legaluserlinks.php:61
-#: templates/legal_admin_modifyconfig.tpl:23
-#: templates/legal_admin_modifyconfig.tpl:57
+#: templates/legal_admin_modifyconfig.tpl:25
+#: templates/legal_admin_modifyconfig.tpl:59
 msgid "Privacy policy"
 msgstr ""
 
@@ -175,16 +174,12 @@ msgid "Cancellation right"
 msgstr ""
 
 #: templates/plugins/function.legaluserlinks.php:85
-#: templates/legal_admin_modifyconfig.tpl:38
-#: templates/legal_admin_modifyconfig.tpl:72
+#: templates/legal_admin_modifyconfig.tpl:40
+#: templates/legal_admin_modifyconfig.tpl:74
 msgid "Accessibility statement"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:2
-msgid "Policy"
-msgstr ""
-
-#: templates/legal_acceptpolicies_ui_edit.tpl:5
+#: templates/legal_acceptpolicies_ui_edit.tpl:4
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:2
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:4
 #: templates/legal_acceptpolicies_ui_view.tpl:3
@@ -192,6 +187,7 @@ msgstr ""
 msgid "Site policies"
 msgstr ""
 
+#: templates/legal_acceptpolicies_ui_edit.tpl:14
 #: templates/legal_acceptpolicies_ui_edit.tpl:17
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:18
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:21
@@ -199,6 +195,7 @@ msgstr ""
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:14
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:17
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:54
+#: templates/legal_acceptpolicies_ui_view.tpl:11
 #: templates/legal_user_acceptpolicies.tpl:27
 #: templates/legal_user_acceptpolicies.tpl:30
 #: templates/legal_user_acceptpolicies.tpl:66
@@ -207,45 +204,47 @@ msgid "Terms of Use"
 msgstr ""
 
 #: templates/legal_acceptpolicies_ui_edit.tpl:21
-#: templates/legal_acceptpolicies_ui_edit.tpl:48
-#: templates/legal_acceptpolicies_ui_edit.tpl:95
-#: templates/legal_acceptpolicies_ui_edit.tpl:122
-#: templates/legal_acceptpolicies_ui_view.tpl:14
-#: templates/legal_acceptpolicies_ui_view.tpl:27
-#: templates/legal_acceptpolicies_ui_view.tpl:46
-#: templates/legal_acceptpolicies_ui_view.tpl:59
+#: templates/legal_acceptpolicies_ui_edit.tpl:49
+#: templates/legal_acceptpolicies_ui_edit.tpl:97
+#: templates/legal_acceptpolicies_ui_edit.tpl:125
+#: templates/legal_acceptpolicies_ui_view.tpl:15
+#: templates/legal_acceptpolicies_ui_view.tpl:29
+#: templates/legal_acceptpolicies_ui_view.tpl:49
+#: templates/legal_acceptpolicies_ui_view.tpl:63
 #, php-format
 msgid "%1$s accepted."
 msgstr ""
 
 #: templates/legal_acceptpolicies_ui_edit.tpl:25
-#: templates/legal_acceptpolicies_ui_edit.tpl:52
-#: templates/legal_acceptpolicies_ui_edit.tpl:99
-#: templates/legal_acceptpolicies_ui_edit.tpl:126
+#: templates/legal_acceptpolicies_ui_edit.tpl:53
+#: templates/legal_acceptpolicies_ui_edit.tpl:101
+#: templates/legal_acceptpolicies_ui_edit.tpl:129
 msgid "Policy not accepted."
 msgstr ""
 
 #: templates/legal_acceptpolicies_ui_edit.tpl:31
-#: templates/legal_acceptpolicies_ui_edit.tpl:58
-#: templates/legal_acceptpolicies_ui_edit.tpl:105
-#: templates/legal_acceptpolicies_ui_edit.tpl:132
+#: templates/legal_acceptpolicies_ui_edit.tpl:59
+#: templates/legal_acceptpolicies_ui_edit.tpl:107
+#: templates/legal_acceptpolicies_ui_edit.tpl:135
 msgid "Accepted."
 msgstr ""
 
 #: templates/legal_acceptpolicies_ui_edit.tpl:31
-#: templates/legal_acceptpolicies_ui_edit.tpl:58
-#: templates/legal_acceptpolicies_ui_edit.tpl:105
-#: templates/legal_acceptpolicies_ui_edit.tpl:132
+#: templates/legal_acceptpolicies_ui_edit.tpl:59
+#: templates/legal_acceptpolicies_ui_edit.tpl:107
+#: templates/legal_acceptpolicies_ui_edit.tpl:135
 msgid "Not accepted."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:44
+#: templates/legal_acceptpolicies_ui_edit.tpl:42
+#: templates/legal_acceptpolicies_ui_edit.tpl:45
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:38
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:41
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:67
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:34
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:37
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:63
+#: templates/legal_acceptpolicies_ui_view.tpl:25
 #: templates/legal_user_acceptpolicies.tpl:46
 #: templates/legal_user_acceptpolicies.tpl:49
 #: templates/legal_user_acceptpolicies.tpl:75
@@ -253,34 +252,36 @@ msgstr ""
 msgid "Privacy Policy"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:64
+#: templates/legal_acceptpolicies_ui_edit.tpl:65
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:71
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:67
-#: templates/legal_acceptpolicies_ui_view.tpl:32
+#: templates/legal_acceptpolicies_ui_view.tpl:34
 #: templates/legal_user_acceptpolicies.tpl:79
 msgid "Minimum Age"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:68
-#: templates/legal_acceptpolicies_ui_edit.tpl:78
-#: templates/legal_acceptpolicies_ui_view.tpl:33
+#: templates/legal_acceptpolicies_ui_edit.tpl:69
+#: templates/legal_acceptpolicies_ui_edit.tpl:79
+#: templates/legal_acceptpolicies_ui_view.tpl:35
 #, php-format
 msgid "Confirmed minimum age requirement (%1$s years of age) met."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:72
-#: templates/legal_acceptpolicies_ui_edit.tpl:78
-#: templates/legal_acceptpolicies_ui_view.tpl:33
+#: templates/legal_acceptpolicies_ui_edit.tpl:73
+#: templates/legal_acceptpolicies_ui_edit.tpl:79
+#: templates/legal_acceptpolicies_ui_view.tpl:35
 msgid "Minimum age requirement not confirmed."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:91
+#: templates/legal_acceptpolicies_ui_edit.tpl:90
+#: templates/legal_acceptpolicies_ui_edit.tpl:93
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:89
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:92
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:85
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:88
-#: templates/legal_admin_modifyconfig.tpl:28
-#: templates/legal_admin_modifyconfig.tpl:62
+#: templates/legal_acceptpolicies_ui_view.tpl:45
+#: templates/legal_admin_modifyconfig.tpl:30
+#: templates/legal_admin_modifyconfig.tpl:64
 #: templates/legal_user_acceptpolicies.tpl:96
 #: templates/legal_user_acceptpolicies.tpl:99
 #: templates/plugins/legal_function_legalinlinelink_tradeconditions.tpl:5
@@ -288,12 +289,14 @@ msgid "General Terms and Conditions of Trade"
 msgstr ""
 
 #: templates/legal_acceptpolicies_ui_edit.tpl:118
+#: templates/legal_acceptpolicies_ui_edit.tpl:121
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:109
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:112
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:105
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:108
-#: templates/legal_admin_modifyconfig.tpl:33
-#: templates/legal_admin_modifyconfig.tpl:67
+#: templates/legal_acceptpolicies_ui_view.tpl:59
+#: templates/legal_admin_modifyconfig.tpl:35
+#: templates/legal_admin_modifyconfig.tpl:69
 #: templates/legal_user_acceptpolicies.tpl:115
 #: templates/legal_user_acceptpolicies.tpl:118
 #: templates/plugins/legal_function_legalinlinelink_cancellationrightpolicy.tpl:5
@@ -345,35 +348,35 @@ msgstr ""
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:67
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:88
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:108
-#: templates/legal_admin_modifyconfig.tpl:80
+#: templates/legal_admin_modifyconfig.tpl:82
 msgid "*"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_view.tpl:13
+#: templates/legal_acceptpolicies_ui_view.tpl:14
 msgid "Terms of Use:"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_view.tpl:14
-#: templates/legal_acceptpolicies_ui_view.tpl:27
-#: templates/legal_acceptpolicies_ui_view.tpl:46
-#: templates/legal_acceptpolicies_ui_view.tpl:59
+#: templates/legal_acceptpolicies_ui_view.tpl:15
+#: templates/legal_acceptpolicies_ui_view.tpl:29
+#: templates/legal_acceptpolicies_ui_view.tpl:49
+#: templates/legal_acceptpolicies_ui_view.tpl:63
 #, php-format
 msgid "%1$s not accepted."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_view.tpl:26
+#: templates/legal_acceptpolicies_ui_view.tpl:28
 msgid "Privacy Policy:"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_view.tpl:45
+#: templates/legal_acceptpolicies_ui_view.tpl:48
 msgid "General Terms and Conditions of Trade:"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_view.tpl:58
+#: templates/legal_acceptpolicies_ui_view.tpl:62
 msgid "Cancellation Right Policy:"
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:5
+#: templates/legal_admin_modifyconfig.tpl:7
 msgid ""
 "<strong>Important Usage Note</strong>: The provided legal statements are "
 "samples only. They need to be adapted to specific needs and locales. You "
@@ -385,38 +388,38 @@ msgid ""
 "are writing for)."
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:10
+#: templates/legal_admin_modifyconfig.tpl:12
 msgid "Legal document types"
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:43
+#: templates/legal_admin_modifyconfig.tpl:45
 msgid "Custom urls"
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:44
+#: templates/legal_admin_modifyconfig.tpl:46
 msgid ""
 "The following fields allow to reference any custom url. As soon as an url is "
 "given it will be used instead of the normal Legal templates. So you can now "
 "use any page you want for displaying and managing your legal data."
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:77
+#: templates/legal_admin_modifyconfig.tpl:79
 msgid "Further settings"
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:80
+#: templates/legal_admin_modifyconfig.tpl:82
 msgid "Minimum age permitted to register"
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:82
+#: templates/legal_admin_modifyconfig.tpl:84
 msgid "Enter a positive integer, or 0 for no age check."
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:85
+#: templates/legal_admin_modifyconfig.tpl:87
 msgid "Reset user group's acceptance of 'Terms of use'"
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:91
+#: templates/legal_admin_modifyconfig.tpl:93
 msgid ""
 "Notice: This setting resets the acceptance of the 'Terms of use' for all "
 "users in this group. Next time they want to log-in, they will have to "
@@ -426,12 +429,12 @@ msgid ""
 "Users manager in the site admin panel."
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:95
+#: templates/legal_admin_modifyconfig.tpl:97
 #: templates/legal_user_acceptpolicies.tpl:133
 msgid "Save"
 msgstr ""
 
-#: templates/legal_admin_modifyconfig.tpl:96
+#: templates/legal_admin_modifyconfig.tpl:98
 #: templates/legal_user_acceptpolicies.tpl:135
 msgid "Cancel"
 msgstr ""
@@ -446,6 +449,21 @@ msgstr ""
 msgid "Save and continue logging in"
 msgstr ""
 
+#: templates/legal_user_accessibilitystatement.tpl:1
+#, php-format
+msgid "Accessibility statement for %s"
+msgstr ""
+
+#: templates/legal_user_cancellationrightpolicy.tpl:1
+#, php-format
+msgid "Cancellation right policy for %s"
+msgstr ""
+
+#: templates/legal_user_legalnotice.tpl:1
+#, php-format
+msgid "Legal notice for %s"
+msgstr ""
+
 #: templates/legal_user_menu.tpl:2
 msgid "Legal information"
 msgstr ""
@@ -456,6 +474,21 @@ msgstr ""
 
 #: templates/legal_user_policynotactive.tpl:3
 msgid "The selected policy is not available."
+msgstr ""
+
+#: templates/legal_user_privacypolicy.tpl:1
+#, php-format
+msgid "Privacy policy for %s"
+msgstr ""
+
+#: templates/legal_user_termsofuse.tpl:1
+#, php-format
+msgid "Terms of use for %s"
+msgstr ""
+
+#: templates/legal_user_tradeconditions.tpl:1
+#, php-format
+msgid "Trade conditions for %s"
 msgstr ""
 
 #: templates/plugins/legal_function_legalinlinelink_accessibilitystatement.tpl:5
