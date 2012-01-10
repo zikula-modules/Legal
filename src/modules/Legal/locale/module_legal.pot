@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-10 05:26-0500\n"
+"POT-Creation-Date: 2012-01-10 06:17-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,7 +180,11 @@ msgstr ""
 msgid "Accessibility statement"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:4
+#: templates/legal_acceptpolicies_ui_edit.tpl:2
+msgid "Policy"
+msgstr ""
+
+#: templates/legal_acceptpolicies_ui_edit.tpl:5
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:2
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:4
 #: templates/legal_acceptpolicies_ui_view.tpl:3
@@ -188,7 +192,7 @@ msgstr ""
 msgid "Site policies"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:16
+#: templates/legal_acceptpolicies_ui_edit.tpl:17
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:18
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:21
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:58
@@ -202,10 +206,10 @@ msgstr ""
 msgid "Terms of Use"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:20
-#: templates/legal_acceptpolicies_ui_edit.tpl:47
-#: templates/legal_acceptpolicies_ui_edit.tpl:94
-#: templates/legal_acceptpolicies_ui_edit.tpl:121
+#: templates/legal_acceptpolicies_ui_edit.tpl:21
+#: templates/legal_acceptpolicies_ui_edit.tpl:48
+#: templates/legal_acceptpolicies_ui_edit.tpl:95
+#: templates/legal_acceptpolicies_ui_edit.tpl:122
 #: templates/legal_acceptpolicies_ui_view.tpl:14
 #: templates/legal_acceptpolicies_ui_view.tpl:27
 #: templates/legal_acceptpolicies_ui_view.tpl:46
@@ -214,28 +218,28 @@ msgstr ""
 msgid "%1$s accepted."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:24
-#: templates/legal_acceptpolicies_ui_edit.tpl:51
-#: templates/legal_acceptpolicies_ui_edit.tpl:98
-#: templates/legal_acceptpolicies_ui_edit.tpl:125
+#: templates/legal_acceptpolicies_ui_edit.tpl:25
+#: templates/legal_acceptpolicies_ui_edit.tpl:52
+#: templates/legal_acceptpolicies_ui_edit.tpl:99
+#: templates/legal_acceptpolicies_ui_edit.tpl:126
 msgid "Policy not accepted."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:30
-#: templates/legal_acceptpolicies_ui_edit.tpl:57
-#: templates/legal_acceptpolicies_ui_edit.tpl:104
-#: templates/legal_acceptpolicies_ui_edit.tpl:131
+#: templates/legal_acceptpolicies_ui_edit.tpl:31
+#: templates/legal_acceptpolicies_ui_edit.tpl:58
+#: templates/legal_acceptpolicies_ui_edit.tpl:105
+#: templates/legal_acceptpolicies_ui_edit.tpl:132
 msgid "Accepted."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:30
-#: templates/legal_acceptpolicies_ui_edit.tpl:57
-#: templates/legal_acceptpolicies_ui_edit.tpl:104
-#: templates/legal_acceptpolicies_ui_edit.tpl:131
+#: templates/legal_acceptpolicies_ui_edit.tpl:31
+#: templates/legal_acceptpolicies_ui_edit.tpl:58
+#: templates/legal_acceptpolicies_ui_edit.tpl:105
+#: templates/legal_acceptpolicies_ui_edit.tpl:132
 msgid "Not accepted."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:43
+#: templates/legal_acceptpolicies_ui_edit.tpl:44
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:38
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:41
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:67
@@ -249,7 +253,7 @@ msgstr ""
 msgid "Privacy Policy"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:63
+#: templates/legal_acceptpolicies_ui_edit.tpl:64
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:71
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:67
 #: templates/legal_acceptpolicies_ui_view.tpl:32
@@ -257,20 +261,20 @@ msgstr ""
 msgid "Minimum Age"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:67
-#: templates/legal_acceptpolicies_ui_edit.tpl:77
+#: templates/legal_acceptpolicies_ui_edit.tpl:68
+#: templates/legal_acceptpolicies_ui_edit.tpl:78
 #: templates/legal_acceptpolicies_ui_view.tpl:33
 #, php-format
 msgid "Confirmed minimum age requirement (%1$s years of age) met."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:71
-#: templates/legal_acceptpolicies_ui_edit.tpl:77
+#: templates/legal_acceptpolicies_ui_edit.tpl:72
+#: templates/legal_acceptpolicies_ui_edit.tpl:78
 #: templates/legal_acceptpolicies_ui_view.tpl:33
 msgid "Minimum age requirement not confirmed."
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:90
+#: templates/legal_acceptpolicies_ui_edit.tpl:91
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:89
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:92
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:85
@@ -283,7 +287,7 @@ msgstr ""
 msgid "General Terms and Conditions of Trade"
 msgstr ""
 
-#: templates/legal_acceptpolicies_ui_edit.tpl:117
+#: templates/legal_acceptpolicies_ui_edit.tpl:118
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:109
 #: templates/legal_acceptpolicies_ui_edit_login.tpl:112
 #: templates/legal_acceptpolicies_ui_edit_registration.tpl:105
