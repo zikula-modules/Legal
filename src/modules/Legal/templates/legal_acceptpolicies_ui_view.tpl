@@ -8,7 +8,8 @@
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
-            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">Policy</a>'|sprintf:$policyUrl}
+            {gt text='Terms of Use' assign='policyName'}
+            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="z-formrow">
                 <label>{gt text='Terms of Use:'}</label>
                 <span>{if $acceptedPolicies.termsOfUse}{gt text='%1$s accepted.' tag1=$policyLink|safehtml}{else}{gt text='%1$s not accepted.' tag1=$policyLink|safehtml}{/if}</span>
@@ -21,7 +22,8 @@
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
-            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">Policy</a>'|sprintf:$policyUrl}
+            {gt text='Privacy Policy' assign='policyName'}
+            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="z-formrow">
                 <label>{gt text='Privacy Policy:'}</label>
                 <span>{if $acceptedPolicies.privacyPolicy}{gt text='%1$s accepted.' tag1=$policyLink|safehtml}{else}{gt text='%1$s not accepted.' tag1=$policyLink|safehtml}{/if}</span>
@@ -40,7 +42,8 @@
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
-            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">Policy</a>'|sprintf:$policyUrl}
+            {gt text='General Terms and Conditions of Trade' assign='policyName'}
+            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="z-formrow">
                 <label>{gt text='General Terms and Conditions of Trade:'}</label>
                 <span>{if $acceptedPolicies.tradeConditions}{gt text='%1$s accepted.' tag1=$policyLink|safehtml}{else}{gt text='%1$s not accepted.' tag1=$policyLink|safehtml}{/if}</span>
@@ -53,7 +56,8 @@
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
-            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">Policy</a>'|sprintf:$policyUrl}
+            {gt text='Cancellation Right Policy' assign='policyName'}
+            {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="z-formrow">
                 <label>{gt text='Cancellation Right Policy:'}</label>
                 <span>{if $acceptedPolicies.cancellationRight}{gt text='%1$s accepted.' tag1=$policyLink|safehtml}{else}{gt text='%1$s not accepted.' tag1=$policyLink|safehtml}{/if}</span>

@@ -1,7 +1,9 @@
-{include file="legal_admin_menu.tpl"}
-<div class="z-admincontainer">
-    <div class="z-adminpageicon">{img modname='core' src='configure.png' set='icons/large' __alt='Settings'}</div>
-    <h2>{gt text="Settings"}</h2>
+{adminheader}
+<div class="z-admin-content-pagetitle">
+    {icon type="view" size="small"}
+    <h3>{gt text="Settings"}</h3>
+</div>
+
     <p class="z-warningmsg">{gt text='<strong>Important Usage Note</strong>: The provided legal statements are samples only. They need to be adapted to specific needs and locales. You will find the content of the statements in files in the "modules/legal/pntemplates/en" directory. These templates can be <a href="http://community.zikula.org/Wiki-TemplateOverridng.htm">overridden</a> by theme templates, or by global templates you would create in the "config/templates/legal/" directory (in the appropriate sub-directory for the language you are writing for).'}</p>
     <form id="legal_config" class="z-form" action="{modurl modname="legal" type="admin" func="updateconfig"}" method="post" enctype="application/x-www-form-urlencoded">
         <div>
@@ -97,4 +99,5 @@
             </div>
         </div>
     </form>
-</div>
+
+{adminfooter}

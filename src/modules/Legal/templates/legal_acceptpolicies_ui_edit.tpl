@@ -1,5 +1,4 @@
 {ajaxheader modname='Legal_Constant::MODNAME'|constant filename='Legal.UI.Edit.js' noscriptaculous=true effects=true}
-{gt text='Policy' assign='policyString'}
 {if (is_numeric($policiesUid) && ($policiesUid > 2) || ($policiesUid == ''))}
 <fieldset>
     <legend>{gt text='Site policies'}</legend>
@@ -12,7 +11,8 @@
         {if $customUrl ne ''}
             {assign var='policyUrl' value=$customUrl}
         {/if}
-        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyString}
+        {gt text='Terms of Use' assign='policyName'}
+        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="z-formrow">
             <label>{gt text='Terms of Use'}</label>
             {if ($editablePolicies.termsOfUse)}
@@ -39,7 +39,8 @@
         {if $customUrl ne ''}
             {assign var='policyUrl' value=$customUrl}
         {/if}
-        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyString}
+        {gt text='Privacy Policy' assign='policyName'}
+        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="z-formrow">
             <label>{gt text='Privacy Policy'}</label>
             {if ($editablePolicies.privacyPolicy)}
@@ -86,7 +87,8 @@
         {if $customUrl ne ''}
             {assign var='policyUrl' value=$customUrl}
         {/if}
-        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyString}
+        {gt text='General Terms and Conditions of Trade' assign='policyName'}
+        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="z-formrow">
             <label>{gt text='General Terms and Conditions of Trade'}</label>
             {if ($editablePolicies.tradeConditions)}
@@ -113,7 +115,8 @@
         {if $customUrl ne ''}
             {assign var='policyUrl' value=$customUrl}
         {/if}
-        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyString}
+        {gt text='Cancellation Right Policy' assign='policyName'}
+        {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="z-formrow">
             <label>{gt text='Cancellation Right Policy'}</label>
             {if ($editablePolicies.cancellationRightPolicy)}
