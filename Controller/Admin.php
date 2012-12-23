@@ -24,7 +24,7 @@ class Legal_Controller_Admin extends Zikula_AbstractController
      *
      * @return void
      */
-    public function mainAction()
+    public function mainActionAction()
     {
         $this->redirect(ModUtil::url($this->name, 'admin', 'modifyConfig'));
     }
@@ -38,7 +38,7 @@ class Legal_Controller_Admin extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function modifyconfigAction()
+    public function modifyconfigActionAction()
     {
         // Security check
         if (!SecurityUtil::checkPermission('legal::', '::', ACCESS_ADMIN)) {
@@ -70,7 +70,7 @@ class Legal_Controller_Admin extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function updateconfigAction()
+    public function updateconfigActionAction()
     {
         // Security check
         if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
