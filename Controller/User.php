@@ -25,8 +25,9 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @return void
      */
-    public function main()
+    public function mainAction()
     {
+        echo 1;
         $url = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
             $url = ModUtil::url($this->name, 'user', 'termsOfUse');
@@ -94,7 +95,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function legalNotice()
+    public function legalNoticeAction()
     {
         return $this->renderDocument('legalnotice', 'legalnotice', Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, Legal_Constant::MODVAR_LEGALNOTICE_URL);
     }
@@ -106,7 +107,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function termsofuse()
+    public function termsofuseAction()
     {
         return $this->renderDocument('termsofuse', 'termsofuse', Legal_Constant::MODVAR_TERMS_ACTIVE, Legal_Constant::MODVAR_TERMS_URL);
     }
@@ -120,7 +121,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @return void
      */
-    public function privacy()
+    public function privacyAction()
     {
         $this->redirect(ModUtil::url($this->name, 'user', 'privacyPolicy'));
     }
@@ -132,7 +133,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function privacyPolicy()
+    public function privacyPolicyAction()
     {
         return $this->renderDocument('privacypolicy', 'privacypolicy', Legal_Constant::MODVAR_PRIVACY_ACTIVE, Legal_Constant::MODVAR_PRIVACY_URL);
     }
@@ -144,7 +145,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function accessibilitystatement()
+    public function accessibilitystatementAction()
     {
         return $this->renderDocument('accessibilitystatement', 'accessibilitystatement', Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, Legal_Constant::MODVAR_ACCESSIBILITY_URL);
     }
@@ -156,7 +157,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function cancellationRightPolicy()
+    public function cancellationRightPolicyAction()
     {
         return $this->renderDocument('cancellationrightpolicy', 'cancellationrightpolicy', Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
     }
@@ -168,7 +169,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function tradeConditions()
+    public function tradeConditionsAction()
     {
         return $this->renderDocument('tradeconditions', 'tradeconditions', Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, Legal_Constant::MODVAR_TRADECONDITIONS_URL);
     }
@@ -186,7 +187,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *      also thrown in cases where expected data is not present or not in an expected form;
      *      also thrown if the call to this function is not the result of a POST operation or a GET operation.
      */
-    public function acceptPolicies()
+    public function acceptPoliciesAction()
     {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.

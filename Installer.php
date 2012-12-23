@@ -113,9 +113,7 @@ class Legal_Installer extends Zikula_AbstractInstaller
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:
-                $this->registerError($this->__f('Upgrading the Legal module from version %1$s to %2$s is not supported.', array($oldVersion, $this->version->getVersion())));
-                return $oldVersion;
-        }
+                        }
 
         // Update successful
         return true;
