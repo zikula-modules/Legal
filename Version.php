@@ -31,7 +31,7 @@ class Legal_Version extends Zikula_AbstractVersion
                 //! module name that appears in URL
                 'url' => __('legalmod'),
                 'version' => '2.0.1',
-                'core_min' => '1.3.0', // Fixed to 1.3.x range
+                'core_min' => '1.3.6-dev', // Fixed to 1.3.x range
                 'core_max' => '1.3.99', // Fixed to 1.3.x range
                 'securityschema' => array(
                         $this->name . '::' => '::',
