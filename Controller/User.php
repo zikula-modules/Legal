@@ -25,7 +25,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @return void
      */
-    public function mainActionAction()
+    public function mainAction()
     {
         echo 1;
         $url = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
@@ -95,7 +95,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function legalNoticeActionAction()
+    public function legalNoticeAction()
     {
         return $this->renderDocument('legalnotice', 'legalnotice', Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, Legal_Constant::MODVAR_LEGALNOTICE_URL);
     }
@@ -107,7 +107,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function termsofuseActionAction()
+    public function termsofuseAction()
     {
         return $this->renderDocument('termsofuse', 'termsofuse', Legal_Constant::MODVAR_TERMS_ACTIVE, Legal_Constant::MODVAR_TERMS_URL);
     }
@@ -121,7 +121,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @return void
      */
-    public function privacyActionAction()
+    public function privacyAction()
     {
         $this->redirect(ModUtil::url($this->name, 'user', 'privacyPolicy'));
     }
@@ -133,7 +133,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function privacyPolicyActionAction()
+    public function privacyPolicyAction()
     {
         return $this->renderDocument('privacypolicy', 'privacypolicy', Legal_Constant::MODVAR_PRIVACY_ACTIVE, Legal_Constant::MODVAR_PRIVACY_URL);
     }
@@ -145,7 +145,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function accessibilitystatementActionAction()
+    public function accessibilitystatementAction()
     {
         return $this->renderDocument('accessibilitystatement', 'accessibilitystatement', Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, Legal_Constant::MODVAR_ACCESSIBILITY_URL);
     }
@@ -157,7 +157,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function cancellationRightPolicyActionAction()
+    public function cancellationRightPolicyAction()
     {
         return $this->renderDocument('cancellationrightpolicy', 'cancellationrightpolicy', Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
     }
@@ -169,7 +169,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *
      * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
      */
-    public function tradeConditionsActionAction()
+    public function tradeConditionsAction()
     {
         return $this->renderDocument('tradeconditions', 'tradeconditions', Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, Legal_Constant::MODVAR_TRADECONDITIONS_URL);
     }
@@ -187,7 +187,7 @@ class Legal_Controller_User extends Zikula_AbstractController
      *      also thrown in cases where expected data is not present or not in an expected form;
      *      also thrown if the call to this function is not the result of a POST operation or a GET operation.
      */
-    public function acceptPoliciesActionAction()
+    public function acceptPoliciesAction()
     {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
@@ -197,7 +197,7 @@ class Legal_Controller_User extends Zikula_AbstractController
         $processed = false;
         $helper = new Legal_Helper_AcceptPolicies();
 
-        if ($this->request->isPost()) {
+        if ($this->request->isMethod('POST')) {
             $this->checkCsrfToken();
 
             $isLogin = isset($sessionVars) && !empty($sessionVars);
@@ -208,13 +208,13 @@ class Legal_Controller_User extends Zikula_AbstractController
                 throw new Zikula_Exception_Fatal();
             }
 
-            $policiesUid = $this->request->getPost()->get('acceptedpolicies_uid', false);
+            $policiesUid = $this->request->request->get('acceptedpolicies_uid', false);
             $acceptedPolicies = array(
-                'termsOfUse'                => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy'             => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy'                 => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
-                'cancellationRightPolicy'   => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
-                'tradeConditions'           => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false)
+                'termsOfUse'                => $this->request->request->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy'             => $this->request->request->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy'                 => $this->request->request->get('acceptedpolicies_agepolicy', false),
+                'cancellationRightPolicy'   => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false),
+                'tradeConditions'           => $this->request->request->get('acceptedpolicies_tradeconditions', false)
             );
 
             if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
@@ -294,8 +294,8 @@ class Legal_Controller_User extends Zikula_AbstractController
                     $this->redirect(System::getHomepageUrl());
                 }
             }
-        } elseif ($this->request->isGet()) {
-            $isLogin = $this->request->getGet()->get('login', false);
+        } elseif ($this->request->isMethod('GET')) {
+            $isLogin = $this->request->query->get('login', false);
             $fieldErrors = array();
         } else {
             throw new Zikula_Exception_Forbidden();

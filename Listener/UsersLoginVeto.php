@@ -81,7 +81,7 @@ class Legal_Listener_UsersLoginVeto
                 }
 
                 if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted || !$cancellationRightPolicyAccepted || !$tradeConditionsAccepted) {
-                    $event->stop();
+                    $event->stopPropagation();
                     $event->data['redirect_func']  = array(
                             'modname'   => Legal_Constant::MODNAME,
                             'type'      => 'user',
