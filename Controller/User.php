@@ -66,12 +66,12 @@ class Legal_Controller_User extends Zikula_AbstractController
         }
 
         if (!$this->getVar($activeFlagKey)) {
-            return $this->view->fetch('legal_user_policynotactive.tpl');
+            return $this->view->fetch('User/policynotactive.tpl');
         } else {
             $customUrl = $this->getVar($customUrlKey, '');
             if (empty($customUrl)) {
                 // work out the template path
-                $template = "legal_user_{$documentName}.tpl";
+                $template = "User/{$documentName}.tpl";
 
                 // get the current users language
                 $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
@@ -338,6 +338,6 @@ class Legal_Controller_User extends Zikula_AbstractController
         );
 
         return $this->view->assign($templateVars)
-                ->fetch('legal_user_acceptpolicies.tpl');
+                ->fetch('User/legal_user_acceptpolicies.tpl');
     }
 }

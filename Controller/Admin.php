@@ -57,7 +57,7 @@ class Legal_Controller_Admin extends Zikula_AbstractController
         // Assign all the module vars
         return $this->view->assign(ModUtil::getVar('legal'))
             ->assign('groups', $groups)
-            ->fetch('legal_admin_modifyconfig.tpl');
+            ->fetch('Admin/modifyconfig.tpl');
     }
 
     /**
