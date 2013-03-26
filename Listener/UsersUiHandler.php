@@ -144,6 +144,8 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
             $viewablePolicies = $this->helper->getViewablePolicies($user['uid']);
 
             if (array_sum($viewablePolicies) > 0) {
+                ModUtil::load('Legal'); // to enable translation domain
+
                 $templateVars = array(
                     'activePolicies'    => $activePolicies,
                     'viewablePolicies'  => $viewablePolicies,
@@ -168,6 +170,8 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         if ($activePolicyCount > 0) {
+            ModUtil::load('Legal'); // to enable translation domain
+
             $eventName = $event->getName();
 
             // Determine if the hook should be displayed, and also set up certain variables, based on the type of event
@@ -274,6 +278,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
         if ($this->request->getPost()->has('acceptedpolicies_uid')) {
+            ModUtil::load('Legal'); // to enable translation domain
 
             // Set up the necessary objects for the validation response
             $policiesAcceptedAtRegistration = array(
@@ -448,6 +453,8 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
         $eventName = $event->getName();
 
         if (isset($this->validation) && !$this->validation->hasErrors()) {
+            ModUtil::load('Legal'); // to enable translation domain
+
             $user = $event->getSubject();
             $uid = $user['uid'];
 
