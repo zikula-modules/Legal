@@ -270,11 +270,6 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
      */
     public function validateEdit(Zikula_Event $event)
     {
-        if (!$this->request->isPost()) {
-            // Validation is only appropriate for a post, otherwise it is probably a hack attempt.
-            throw new Zikula_Exception_Forbidden();
-        }
-
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
         if ($this->request->getPost()->has('acceptedpolicies_uid')) {
