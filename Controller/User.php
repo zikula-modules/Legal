@@ -338,6 +338,6 @@ class Legal_Controller_User extends Zikula_AbstractController
         );
 
         return $this->view->assign($templateVars)
-                ->fetch('User/legal_user_acceptpolicies.tpl');
+                ->fetch('User/acceptpolicies.tpl');
     }
 }

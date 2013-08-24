@@ -272,7 +272,7 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
     {
         if (!$this->request->isPost()) {
             // Check if we got here by a reentrant login method.
-            $sessionVars = $this->request->getSession()->get('Users_Controller_User_login', array(), 'Zikula_Users');
+            $sessionVars = $this->request->getSession()->get('User_login', array(), Users_Constant::SESSION_VAR_NAMESPACE);
             $getReentrantToken = $this->request->query->get('reentranttoken', null);
             if (!isset($sessionVars['reentranttoken']) || !isset($getReentrantToken) || $getReentrantToken != $sessionVars['reentranttoken']) {
                 // Not reentrant login method,  it is probably a hack attempt.
