@@ -26,12 +26,12 @@ class Legal_Version extends Zikula_AbstractVersion
     {
         return array(
                 'oldnames' => 'legal',
-                'displayname' => __('Legal info manager'),
-                'description' => __("Provides an interface for managing the site's legal documents."),
+                'displayname' => $this->__('Legal info manager'),
+                'description' => $this->__("Provides an interface for managing the site's legal documents."),
                 //! module name that appears in URL
-                'url' => __('legalmod'),
+                'url' => $this->__('legalmod'),
                 'version' => '2.0.2',
-                'core_min' => '1.3.6-dev', // Fixed to 1.3.x range
+                'core_min' => '1.3.7', // Fixed to 1.3.x range
                 'core_max' => '1.4.99', // Fixed to 1.3.x range
                 'securityschema' => array(
                         $this->name . '::' => '::',
