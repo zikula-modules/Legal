@@ -49,7 +49,7 @@
                 <span>{if $acceptedPolicies.tradeConditions}{gt text='%1$s accepted.' tag1=$policyLink|safehtml}{else}{gt text='%1$s not accepted.' tag1=$policyLink|safehtml}{/if}</span>
             </div>
         {/if}
-        {if $activePolicies.cancellationRight && $viewablePolicies.cancellationRight}
+        {if $activePolicies.cancellationRightPolicy && $viewablePolicies.cancellationRightPolicy}
             {modurl modname='Legal_Constant::MODNAME'|constant type='user' func='cancellationRightPolicy' assign='policyUrl'}
             {assign var='customUrl' value='Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
             {assign var='customUrl' value=$modvars.Legal.$customUrl}
@@ -60,7 +60,7 @@
             {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="z-formrow">
                 <label>{gt text='Cancellation Right Policy:'}</label>
-                <span>{if $acceptedPolicies.cancellationRight}{gt text='%1$s accepted.' tag1=$policyLink|safehtml}{else}{gt text='%1$s not accepted.' tag1=$policyLink|safehtml}{/if}</span>
+                <span>{if $acceptedPolicies.cancellationRightPolicy}{gt text='%1$s accepted.' tag1=$policyLink|safehtml}{else}{gt text='%1$s not accepted.' tag1=$policyLink|safehtml}{/if}</span>
             </div>
         {/if}
     </fieldset>
