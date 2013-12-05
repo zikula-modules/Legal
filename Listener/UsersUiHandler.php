@@ -60,9 +60,9 @@ class Legal_Listener_UsersUiHandler extends Zikula_AbstractEventHandler
      * domain attribute is initialized to the module name. The helper attribute is initialized with an instance
      * of {@link Legal_Helper_AcceptPolicies}.
      *
-     * @param Zikula_EventManager $eventManager The current event manager instance.
+     * @param $eventManager The current event manager instance.
      */
-    public function  __construct(Zikula_EventManager $eventManager)
+    public function  __construct($eventManager)
     {
         parent::__construct($eventManager);
 
