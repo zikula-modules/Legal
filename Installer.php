@@ -113,7 +113,7 @@ class Legal_Installer extends Zikula_AbstractInstaller
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:
-                        }
+        }
 
         // Update successful
         return true;
