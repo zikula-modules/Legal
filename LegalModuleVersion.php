@@ -28,7 +28,25 @@ class LegalModuleVersion extends \Zikula_AbstractVersion
      */
     public function getMetaData()
     {
-        return array('oldnames' => 'legal', 'displayname' => $this->__('Legal info manager'), 'description' => $this->__('Provides an interface for managing the site\'s legal documents.'), 'url' => $this->__('legalmod'), 'version' => '2.0.2', 'core_min' => '1.3.7', 'core_max' => '1.4.99', 'securityschema' => array($this->name . '::' => '::', $this->name . '::legalnotice' => '::', $this->name . '::termsofuse' => '::', $this->name . '::privacypolicy' => '::', $this->name . '::agepolicy' => '::', $this->name . '::accessibilitystatement' => '::', $this->name . '::cancellationrightpolicy' => '::', $this->name . '::tradeconditions' => '::'));
+        return array(
+            'oldnames' => 'legal',
+            'displayname' => $this->__('Legal info manager'),
+            'description' => $this->__('Provides an interface for managing the site\'s legal documents.'),
+            'url' => $this->__('legalmod'),
+            'version' => '2.0.3',
+            'core_min' => '1.3.7',
+            'core_max' => '1.4.99',
+            'securityschema' => array(
+                $this->name . '::' => '::',
+                $this->name . '::legalnotice' => '::',
+                $this->name . '::termsofuse' => '::',
+                $this->name . '::privacypolicy' => '::',
+                $this->name . '::agepolicy' => '::',
+                $this->name . '::accessibilitystatement' => '::',
+                $this->name . '::cancellationrightpolicy' => '::',
+                $this->name . '::tradeconditions' => '::'
+            )
+        );
     }
 
 }
