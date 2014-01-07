@@ -9,7 +9,7 @@
     <a href="http://community.zikula.org/index.php?module=Wiki&tag=TemplateOverridng">overridden</a> by theme templates,
     or by global templates you would create in the "config/templates/legal/" directory (in the appropriate sub-directory
     for the language you are writing for).'}</p>
-<form id="legal_config" class="form-horizontal" role="form" action="{modurl modname="legal" type="admin" func="updateconfig"}" method="post" enctype="application/x-www-form-urlencoded">
+<form id="legal_config" class="form-horizontal" role="form" action="{modurl modname=$module type="admin" func="updateconfig"}" method="post" enctype="application/x-www-form-urlencoded">
     <div>
         <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
         <fieldset>
