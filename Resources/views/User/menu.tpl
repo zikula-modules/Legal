@@ -3,10 +3,8 @@
 {/if}
 {pagesetvar name='title' value=$templatetitle}
 
-<div class="z-menu">
-    {legaluserlinks}
-</div>
+<h2>{$templatetitle}</h2>
+
+{modulelinks modname=$module type='user'}
 
 {insert name='getstatusmsg'}
-
-<h2>{$templatetitle}</h2>
