@@ -13,22 +13,28 @@
         {/if}
         {gt text='Terms of Use' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
-        <div class="z-formrow">
-            <label>{gt text='Terms of Use'}</label>
+        <div class="form-group{if isset($fieldErrors.termsofuse) && !empty($fieldErrors.termsofuse)} has-error{/if}">
+            <div class="col-lg-3 control-label">
+                <label>{gt text='Terms of Use'}</label>
+            </div>
             {if ($editablePolicies.termsOfUse)}
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_termsofuse_yes" name="acceptedpolicies_termsofuse"{if isset($fieldErrors.termsofuse) && !empty($fieldErrors.termsofuse)} class="z-form-error"{/if}{if $acceptedPolicies.termsOfUse} checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_termsofuse_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
-            </span>
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_termsofuse_no" name="acceptedpolicies_termsofuse"{if isset($fieldErrors.termsofuse) && !empty($fieldErrors.termsofuse)} class="z-form-error"{/if}{if !$acceptedPolicies.termsOfUse} checked="checked"{/if} value="0" />
-                <label for="acceptpolicies_termsofuse_no">{gt text='Policy not accepted.'}</label>
-            </span>
-            <p id="acceptpolicies_termsofuse_error" class="z-formnote z-errormsg{if !isset($fieldErrors.termsofuse) || empty($fieldErrors.termsofuse)} z-hide{/if}">
-                {$fieldErrors.termsofuse|default:''|safetext}
-            </p>
+            <div class="col-lg-9">
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_termsofuse_yes" name="acceptedpolicies_termsofuse"{if $acceptedPolicies.termsOfUse} checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_termsofuse_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
+                </div>
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_termsofuse_no" name="acceptedpolicies_termsofuse"{if !$acceptedPolicies.termsOfUse} checked="checked"{/if} value="0" />
+                    <label for="acceptpolicies_termsofuse_no">{gt text='Policy not accepted.'}</label>
+                </div>
+                <p id="acceptpolicies_termsofuse_error" class="alert alert-danger{if !isset($fieldErrors.termsofuse) || empty($fieldErrors.termsofuse)} hidden{/if}">
+                    {$fieldErrors.termsofuse|default:''|safetext}
+                </p>
+            </div>
             {else}
-            <span>{if $acceptedPolicies.termsOfUse}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            <div class="col-lg-9">
+                <span class="form-control-static">{if $acceptedPolicies.termsOfUse}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            </div>
             {/if}
         </div>
     {/if}
@@ -41,42 +47,54 @@
         {/if}
         {gt text='Privacy Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
-        <div class="z-formrow">
-            <label>{gt text='Privacy Policy'}</label>
+        <div class="form-group{if isset($fieldErrors.privacypolicy) && !empty($fieldErrors.privacypolicy)} has-error{/if}">
+            <div class="col-lg-3 control-label">
+                <label>{gt text='Privacy Policy'}</label>
+            </div>
             {if ($editablePolicies.privacyPolicy)}
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_privacypolicy_yes" name="acceptedpolicies_privacypolicy"{if isset($fieldErrors.privacypolicy) && !empty($fieldErrors.privacypolicy)} class="z-form-error"{/if}{if $acceptedPolicies.privacyPolicy} checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_privacypolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
-            </span>
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_privacypolicy_no" name="acceptedpolicies_privacypolicy"{if isset($fieldErrors.privacypolicy) && !empty($fieldErrors.privacypolicy)} class="z-form-error"{/if}{if !$acceptedPolicies.privacyPolicy} checked="checked"{/if} value="0" />
-                <label for="acceptpolicies_privacypolicy_no">{gt text='Policy not accepted.'}</label>
-            </span>
-            <p id="acceptpolicies_privacypolicy_error" class="z-formnote z-errormsg{if !isset($fieldErrors.privacypolicy) || empty($fieldErrors.privacypolicy)} z-hide{/if}">
-                {$fieldErrors.privacypolicy|default:''|safetext}
-            </p>
+            <div class="col-lg-9">
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_privacypolicy_yes" name="acceptedpolicies_privacypolicy"{if $acceptedPolicies.privacyPolicy} checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_privacypolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
+                </div>
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_privacypolicy_no" name="acceptedpolicies_privacypolicy"{if !$acceptedPolicies.privacyPolicy} checked="checked"{/if} value="0" />
+                    <label for="acceptpolicies_privacypolicy_no">{gt text='Policy not accepted.'}</label>
+                </div>
+                <p id="acceptpolicies_privacypolicy_error" class="alert alert-danger{if !isset($fieldErrors.privacypolicy) || empty($fieldErrors.privacypolicy)} hidden{/if}">
+                    {$fieldErrors.privacypolicy|default:''|safetext}
+                </p>
+            </div>
             {else}
-            <span>{if $acceptedPolicies.privacyPolicy}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            <div class="col-lg-9">
+                <span class="form-control-static">{if $acceptedPolicies.privacyPolicy}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            </div>
             {/if}
         </div>
     {/if}
     {if $activePolicies.agePolicy && $viewablePolicies.agePolicy}
-        <div class="z-formrow">
-            <label>{gt text='Minimum Age'}</label>
+        <div class="form-group{if isset($fieldErrors.agepolicy) && !empty($fieldErrors.agepolicy)} has-error{/if}">
+            <div class="col-lg-3 control-label">
+                <label>{gt text='Minimum Age'}</label>
+            </div>
             {if ($editablePolicies.agePolicy)}
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_agepolicy_yes" name="acceptedpolicies_agepolicy"{if isset($fieldErrors.agepolicy) && !empty($fieldErrors.agepolicy)} class="z-form-error"{/if}{if $acceptedPolicies.agePolicy} checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_agepolicy_yes">{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.$module.minimumAge|safetext}</label>
-            </span>
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_agepolicy_no" name="acceptedpolicies_agepolicy"{if isset($fieldErrors.agepolicy) && !empty($fieldErrors.agepolicy)} class="z-form-error"{/if}{if !$acceptedPolicies.agePolicy} checked="checked"{/if} value="0" />
-                <label for="acceptpolicies_agepolicy_no">{gt text='Minimum age requirement not confirmed.'}</label>
-            </span>
-            <p id="acceptpolicies_agepolicy_error" class="z-formnote z-errormsg{if !isset($fieldErrors.agepolicy) || empty($fieldErrors.agepolicy)} z-hide{/if}">
-                {$fieldErrors.agepolicy|default:''|safetext}
-            </p>
+            <div class="col-lg-9">
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_agepolicy_yes" name="acceptedpolicies_agepolicy"{if $acceptedPolicies.agePolicy} checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_agepolicy_yes">{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.$module.minimumAge|safetext}</label>
+                </div>
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_agepolicy_no" name="acceptedpolicies_agepolicy"{if !$acceptedPolicies.agePolicy} checked="checked"{/if} value="0" />
+                    <label for="acceptpolicies_agepolicy_no">{gt text='Minimum age requirement not confirmed.'}</label>
+                </div>
+                <p id="acceptpolicies_agepolicy_error" class="alert alert-danger{if !isset($fieldErrors.agepolicy) || empty($fieldErrors.agepolicy)} hidden{/if}">
+                    {$fieldErrors.agepolicy|default:''|safetext}
+                </p>
+            </div>
             {else}
-            <span>{if $acceptedPolicies.agePolicy}{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.$module.minimumAge|safetext}{else}{gt text='Minimum age requirement not confirmed.'}{/if}</span>
+            <div class="col-lg-9">
+                <span class="form-control-static">{if $acceptedPolicies.agePolicy}{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.$module.minimumAge|safetext}{else}{gt text='Minimum age requirement not confirmed.'}{/if}</span>
+            </div>
             {/if}
         </div>
     {/if}
@@ -89,22 +107,28 @@
         {/if}
         {gt text='General Terms and Conditions of Trade' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
-        <div class="z-formrow">
-            <label>{gt text='General Terms and Conditions of Trade'}</label>
+        <div class="form-group{if isset($fieldErrors.tradeconditions) && !empty($fieldErrors.tradeconditions)} has-error{/if}">
+            <div class="col-lg-3 control-label">
+                <label>{gt text='General Terms and Conditions of Trade'}</label>
+            </div>
             {if ($editablePolicies.tradeConditions)}
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_tradeconditions_yes" name="acceptedpolicies_tradeconditions"{if isset($fieldErrors.tradeconditions) && !empty($fieldErrors.tradeconditions)} class="z-form-error"{/if}{if $acceptedPolicies.tradeConditions} checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_tradeconditions_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
-            </span>
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_tradeconditions_no" name="acceptedpolicies_tradeconditions"{if isset($fieldErrors.tradeConditions) && !empty($fieldErrors.tradeConditions)} class="z-form-error"{/if}{if !$acceptedPolicies.tradeConditions} checked="checked"{/if} value="0" />
-                <label for="acceptpolicies_tradeconditions_no">{gt text='Policy not accepted.'}</label>
-            </span>
-            <p id="acceptpolicies_tradeconditions_error" class="z-formnote z-errormsg{if !isset($fieldErrors.tradeconditions) || empty($fieldErrors.tradeconditions)} z-hide{/if}">
-                {$fieldErrors.tradeconditions|default:''|safetext}
-            </p>
+            <div class="col-lg-9">
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_tradeconditions_yes" name="acceptedpolicies_tradeconditions"{if $acceptedPolicies.tradeConditions} checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_tradeconditions_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
+                </div>
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_tradeconditions_no" name="acceptedpolicies_tradeconditions"{if !$acceptedPolicies.tradeConditions} checked="checked"{/if} value="0" />
+                    <label for="acceptpolicies_tradeconditions_no">{gt text='Policy not accepted.'}</label>
+                </div>
+                <p id="acceptpolicies_tradeconditions_error" class="alert alert-danger{if !isset($fieldErrors.tradeconditions) || empty($fieldErrors.tradeconditions)} hidden{/if}">
+                    {$fieldErrors.tradeconditions|default:''|safetext}
+                </p>
+            </div>
             {else}
-            <span>{if $acceptedPolicies.tradeConditions}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            <div class="col-lg-9">
+                <span class="form-control-static">{if $acceptedPolicies.tradeConditions}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            </div>
             {/if}
         </div>
     {/if}
@@ -117,22 +141,28 @@
         {/if}
         {gt text='Cancellation Right Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
-        <div class="z-formrow">
-            <label>{gt text='Cancellation Right Policy'}</label>
+        <div class="form-group{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} has-error{/if}">
+            <div class="col-lg-3 control-label">
+                <label>{gt text='Cancellation Right Policy'}</label>
+            </div>
             {if ($editablePolicies.cancellationRightPolicy)}
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_cancellationrightpolicy_yes" name="acceptedpolicies_cancellationrightpolicy"{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} class="z-form-error"{/if}{if $acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="1" />
-                <label for="acceptpolicies_cancellationrightpolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
-            </span>
-            <span class="z-formlist">
-                <input type="radio" id="acceptpolicies_cancellationrightpolicy_no" name="acceptedpolicies_cancellationrightpolicy"{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} class="z-form-error"{/if}{if !$acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="0" />
-                <label for="acceptpolicies_cancellationrightpolicy_no">{gt text='Policy not accepted.'}</label>
-            </span>
-            <p id="acceptpolicies_cancellationrightpolicy_error" class="z-formnote z-errormsg{if !isset($fieldErrors.cancellationrightpolicy) || empty($fieldErrors.cancellationrightpolicy)} z-hide{/if}">
-                {$fieldErrors.cancellationrightpolicy|default:''|safetext}
-            </p>
+            <div class="col-lg-9">
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_cancellationrightpolicy_yes" name="acceptedpolicies_cancellationrightpolicy"{if $acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="1" />
+                    <label for="acceptpolicies_cancellationrightpolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
+                </div>
+                <div class="radio">
+                    <input type="radio" id="acceptpolicies_cancellationrightpolicy_no" name="acceptedpolicies_cancellationrightpolicy"{if !$acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="0" />
+                    <label for="acceptpolicies_cancellationrightpolicy_no">{gt text='Policy not accepted.'}</label>
+                </div>
+                <p id="acceptpolicies_cancellationrightpolicy_error" class="alert alert-danger{if !isset($fieldErrors.cancellationrightpolicy) || empty($fieldErrors.cancellationrightpolicy)} hidden{/if}">
+                    {$fieldErrors.cancellationrightpolicy|default:''|safetext}
+                </p>
+            </div>
             {else}
-            <span>{if $acceptedPolicies.cancellationRightPolicy}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            <div class="col-lg-9">
+                <span class="form-control-static">{if $acceptedPolicies.cancellationRightPolicy}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
+            </div>
             {/if}
         </div>
     {/if}
