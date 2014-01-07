@@ -29,7 +29,7 @@ class LegalModuleVersion extends \Zikula_AbstractVersion
     public function getMetaData()
     {
         return array(
-            'oldnames' => 'legal',
+            'oldnames' => array('legal', 'Legal'),
             'displayname' => $this->__('Legal info manager'),
             'description' => $this->__('Provides an interface for managing the site\'s legal documents.'),
             'url' => $this->__('legalmod'),
