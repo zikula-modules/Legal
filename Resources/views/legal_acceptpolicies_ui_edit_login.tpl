@@ -3,7 +3,7 @@
 {pagesetvar name='title' value=$templatetitle}
 <fieldset>
     <legend>{$templatetitle}</legend>
-    <div class="z-warningmsg">
+    <div class="alert alert-danger">
         {gt text='In order to log in you must accept this site\'s policies. If you have accepted the site\'s policies in the past, then they have been updated and we ask that you review the changes.'}
     </div>
     <input type="hidden" id="acceptpolicies_csrftoken" name="acceptpolicies_csrftoken" value="{insert name='csrftoken'}" />

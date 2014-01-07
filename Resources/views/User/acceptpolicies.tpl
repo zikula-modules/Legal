@@ -6,7 +6,7 @@
 {insert name='getstatusmsg'}
 
 {if $login}
-    <div class="z-warningmsg">
+    <div class="alert alert-danger">
         {gt text='In order to log in you must accept this site\'s policies. If you have accepted the site\'s policies in the past, then they have been updated and we ask that you review the changes.'}
         <hr />
         {gt text='If you leave this page without successfully accepting the policies, then you will not be logged in.'}
