@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2001-2012 Zikula Foundation
  *
@@ -12,10 +13,17 @@
  * information regarding copyright and licensing.
  */
 
+namespace Zikula\LegalModule\Controller;
+
+use ModUtil;
+use Zikula_Exception_Forbidden;
+use SecurityUtil;
+use Legal_Constant;
+
 /**
  * Administrator-initiated actions for the Legal module.
  */
-class Legal_Controller_Admin extends Zikula_AbstractController
+class AdminController extends \Zikula_AbstractController
 {
     /**
      * The main administration entry point.
@@ -28,7 +36,7 @@ class Legal_Controller_Admin extends Zikula_AbstractController
     {
         $this->redirect(ModUtil::url($this->name, 'admin', 'modifyConfig'));
     }
-
+    
     /**
      * Modify configuration.
      *
@@ -44,22 +52,16 @@ class Legal_Controller_Admin extends Zikula_AbstractController
         if (!SecurityUtil::checkPermission('legal::', '::', ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
-
         // get all groups
         $groups = ModUtil::apiFunc('Groups', 'user', 'getall');
-
         // add dummy group "all groups" on top
         array_unshift($groups, array('gid' => 0, 'name' => $this->__('All users')));
-
         // add dummy group "no groups" on top
         array_unshift($groups, array('gid' => -1, 'name' => $this->__('No groups')));
-
         // Assign all the module vars
-        return $this->view->assign(ModUtil::getVar('legal'))
-            ->assign('groups', $groups)
-            ->fetch('Admin/modifyconfig.tpl');
+        return $this->view->assign(ModUtil::getVar('legal'))->assign('groups', $groups)->fetch('Admin/modifyconfig.tpl');
     }
-
+    
     /**
      * Update the configuration.
      *
@@ -76,62 +78,44 @@ class Legal_Controller_Admin extends Zikula_AbstractController
         if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
-
         // Confirm the forms authorisation key
         $this->checkCsrfToken();
-
         // set our module variables
         $legalNoticeActive = $this->request->request->get(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, true);
         $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, $legalNoticeActive);
-
         $termsOfUseActive = $this->request->request->get(Legal_Constant::MODVAR_TERMS_ACTIVE, false);
         $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, $termsOfUseActive);
-
         $privacyPolicyActive = $this->request->request->get(Legal_Constant::MODVAR_PRIVACY_ACTIVE, false);
         $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, $privacyPolicyActive);
-
         $accessibilityStmtActive = $this->request->request->get(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false);
         $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, $accessibilityStmtActive);
-
         $tradeConditionsActive = $this->request->request->get(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
         $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, $tradeConditionsActive);
-
         $cancellationRightPolicyActive = $this->request->request->get(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
         $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, $cancellationRightPolicyActive);
-
-
         $legalNoticeUrl = $this->request->request->get(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
         $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, $legalNoticeUrl);
-
         $termsOfUseUrl = $this->request->request->get(Legal_Constant::MODVAR_TERMS_URL, '');
         $this->setVar(Legal_Constant::MODVAR_TERMS_URL, $termsOfUseUrl);
-
         $privacyPolicyUrl = $this->request->request->get(Legal_Constant::MODVAR_PRIVACY_URL, '');
         $this->setVar(Legal_Constant::MODVAR_PRIVACY_URL, $privacyPolicyUrl);
-
         $accessibilityStmtUrl = $this->request->request->get(Legal_Constant::MODVAR_ACCESSIBILITY_URL, '');
         $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_URL, $accessibilityStmtUrl);
-
         $tradeConditionsUrl = $this->request->request->get(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
         $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, $tradeConditionsUrl);
-
         $cancellationRightPolicyUrl = $this->request->request->get(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
         $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, $cancellationRightPolicyUrl);
-
-
         $minimumAge = $this->request->request->get(Legal_Constant::MODVAR_MINIMUM_AGE, 0);
         $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, $minimumAge);
-
         $resetagreement = $this->request->request->get('resetagreement', -1);
         if ($resetagreement != -1) {
             ModUtil::apiFunc($this->name, 'admin', 'resetagreement', array('gid' => $resetagreement));
         }
-
         // the module configuration has been updated successfuly
         $this->registerStatus($this->__('Done! Saved module configuration.'));
-
         // This function generated no output, and so now it is complete we redirect
         // the user to an appropriate page for them to carry on their work
         $this->redirect(ModUtil::url($this->name, 'admin', 'main'));
     }
+
 }

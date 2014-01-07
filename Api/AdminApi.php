@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) 2001-2012 Zikula Foundation
  *
@@ -12,12 +13,19 @@
  * information regarding copyright and licensing.
  */
 
+namespace Zikula\LegalModule\Api;
+
+use Zikula_Exception_Forbidden;
+use SecurityUtil;
+use Zikula_Exception_Fatal;
+use DBUtil;
+use ModUtil;
+
 /**
  * Administrative API functions.
  */
-class Legal_Api_Admin extends Zikula_AbstractApi
+class AdminApi extends \Zikula_AbstractApi
 {
-
     /**
      * Reset the agreement to the terms of use for a specific group of users, or all users.
      *
@@ -39,54 +47,46 @@ class Legal_Api_Admin extends Zikula_AbstractApi
         if (!SecurityUtil::checkPermission('legal::', '::', ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
-
         if (!isset($args['gid']) || $args['gid'] == -1) {
             throw new Zikula_Exception_Fatal();
         }
-
         // Get database setup
         $pntable = DBUtil::getTables();
         $userscolumn = $pntable['users_column'];
-
-        if ($args['gid']==0) {
+        if ($args['gid'] == 0) {
             //all users
             // creative usage of DBUtil
             $object = array('activated' => 2);
-            $where = "WHERE $userscolumn[uid] NOT IN (1,2)";
+            $where = "WHERE {$userscolumn['uid']} NOT IN (1,2)";
             DBUtil::updateObject($object, 'users', $where, 'uid');
         } else {
             // single group
-
             // get the group incl members
             $grp = ModUtil::apiFunc('Groups', 'user', 'get', array('gid' => $args['gid']));
-            if ($grp==false) {
+            if ($grp == false) {
                 return false;
             }
-
             // remove anonymous from members array
             if (array_key_exists(1, $grp['members'])) {
                 unset($grp['members'][1]);
             }
-
             // remove admin from members array
             if (array_key_exists(2, $grp['members'])) {
                 unset($grp['members'][2]);
             }
-
             // return if group is empty
-            if (count($grp['members'])==0) {
+            if (count($grp['members']) == 0) {
                 return false;
             }
             $members = '(' . implode(array_keys($grp['members']), ',') . ')';
-
             // creative usage of DBUtil
             $object = array('activated' => 2);
-            $where = "WHERE $userscolumn[uid] IN $members";
+            $where = "WHERE {$userscolumn['uid']} IN {$members}";
             DBUtil::updateObject($object, 'users', $where, 'uid');
         }
         return true;
     }
-
+    
     /**
      * Get available admin panel links.
      *
@@ -95,11 +95,10 @@ class Legal_Api_Admin extends Zikula_AbstractApi
     public function getLinks()
     {
         $links = array();
-
         if (SecurityUtil::checkPermission('Users::', '::', ACCESS_ADMIN)) {
             $links[] = array('url' => ModUtil::url($this->name, 'admin', 'modifyConfig'), 'text' => $this->__('Settings'), 'class' => 'z-icon-es-config');
         }
-
         return $links;
     }
+
 }
