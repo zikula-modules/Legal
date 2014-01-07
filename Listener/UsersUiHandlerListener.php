@@ -19,6 +19,7 @@ use Zikula\LegalModule\Constant as LegalConstant;
 use ZLanguage;
 use Legal_Helper_AcceptPolicies;
 use Zikula_View;
+use Zikula_Event;
 use Zikula_Exception_Redirect;
 use ModUtil;
 use UserUtil;

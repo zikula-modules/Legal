@@ -16,6 +16,7 @@
 namespace Zikula\LegalModule\Listener;
 
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula_Event;
 use ZLanguage;
 use ModUtil;
 use UserUtil;

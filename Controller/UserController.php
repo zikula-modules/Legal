@@ -307,9 +307,10 @@ class UserController extends \Zikula_AbstractController
             if ($processed) {
                 if ($isLogin) {
                     $loginArgs = $this->request->getSession()->get(
+                        // @todo check on this value
                         'Users_Controller_User_login',
                         array(),
-                        'Zikula_Users'
+                        'ZikulaUsersModule'
                     );
                     $loginArgs['authentication_method'] = $sessionVars['authentication_method'];
                     $loginArgs['authentication_info'] = $sessionVars['authentication_info'];
