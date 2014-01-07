@@ -1,11 +1,11 @@
 {* TODO - Use Zikula.UI to display policies in a pop-up window. *}
-{ajaxheader modname='Zikula\LegalModule\Constant::MODNAME'|constant filename='Legal.UI.Edit.js' noscriptaculous=true effects=true}
+{ajaxheader modname=$module filename='Legal.UI.Edit.js' noscriptaculous=true effects=true}
 <fieldset>
     <legend>{gt text='Site policies'}</legend>
     <input type="hidden" id="acceptpolicies_csrftoken" name="acceptpolicies_csrftoken" value="{insert name='csrftoken'}" />
     <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="" />
     {if $activePolicies.termsOfUse}
-        {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='termsofuse' assign='policyUrl'}
+        {modurl modname=$module type='user' func='termsofuse' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -25,7 +25,7 @@
         </div>
     {/if}
     {if $activePolicies.privacyPolicy}
-        {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='privacyPolicy' assign='policyUrl'}
+        {modurl modname=$module type='user' func='privacyPolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -45,7 +45,7 @@
         </div>
     {/if}
     {if $activePolicies.agePolicy}
-        {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='termsofuse' assign='policyUrl'}
+        {modurl modname=$module type='user' func='termsofuse' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -54,7 +54,7 @@
         {gt text='Terms of Use' assign='policyName'}
         {assign var='termsOfUseLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
 
-        {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='privacypolicy' assign='policyUrl'}
+        {modurl modname=$module type='user' func='privacypolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -76,7 +76,7 @@
         </div>
     {/if}
     {if $activePolicies.tradeConditions}
-        {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='tradeConditions' assign='policyUrl'}
+        {modurl modname=$module type='user' func='tradeConditions' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -96,7 +96,7 @@
         </div>
     {/if}
     {if $activePolicies.cancellationRightPolicy}
-        {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='cancellationRightPolicy' assign='policyUrl'}
+        {modurl modname=$module type='user' func='cancellationRightPolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
