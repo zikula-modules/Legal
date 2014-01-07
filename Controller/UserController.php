@@ -20,7 +20,7 @@ use ModUtil;
 use Zikula_Exception_Forbidden;
 use SecurityUtil;
 use ZLanguage;
-use Legal_Helper_AcceptPolicies;
+use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use UserUtil;
 use Zikula_Exception_Fatal;
 use DateTimeZone;
@@ -236,13 +236,15 @@ class UserController extends \Zikula_AbstractController
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
         $sessionVars = $this->request->getSession()->get(
+            // @todo check on this value
             'Legal_Controller_User_acceptPolicies',
             null,
             $this->name
         );
+        // @todo check this value
         $this->request->getSession()->del('Legal_Controller_User_acceptPolicies', $this->name);
         $processed = false;
-        $helper = new Legal_Helper_AcceptPolicies();
+        $helper = new AcceptPoliciesHelper();
         if ($this->request->isMethod('POST')) {
             $this->checkCsrfToken();
             $isLogin = isset($sessionVars) && !empty($sessionVars);
@@ -345,6 +347,7 @@ class UserController extends \Zikula_AbstractController
             // would have been orphaned, and it contains some sensitive information.
             SessionUtil::requireSession();
             $this->request->getSession()->set(
+                // @todo check this value
                 'Legal_Controller_User_acceptPolicies',
                 $sessionVars,
                 $this->name

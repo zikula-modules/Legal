@@ -45,8 +45,8 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
         $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, 13);
         // Set up the persistent event handler, hook bundles, and any other event-related features.
-        EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
-        EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_UsersUiHandler');
+        EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Zikula\LegalModule\Listener\UsersLoginVetoListener', 'acceptPoliciesListener'));
+        EventUtil::registerPersistentEventHandlerClass($this->name, 'Zikula\LegalModule\Listener\UsersUiHandlerListener');
         // Initialization successful
         return true;
     }
@@ -102,6 +102,11 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
                 $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
             case '2.0.1':
                 // Upgrade 2.0.1 -> ?.?.?
+                EventUtil::unregisterPersistentModuleHandlers('Legal');
+                // register handlers under new modname and with new classes
+                EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Zikula\LegalModule\Listener\UsersLoginVetoListener', 'acceptPoliciesListener'));
+                EventUtil::registerPersistentEventHandlerClass($this->name, 'Zikula\LegalModule\Listener\UsersUiHandlerListener');
+            case '2.0.3': //current version
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:

@@ -17,7 +17,7 @@ namespace Zikula\LegalModule\Listener;
 
 use Zikula\LegalModule\Constant as LegalConstant;
 use ZLanguage;
-use Legal_Helper_AcceptPolicies;
+use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula_View;
 use Zikula_Event;
 use Zikula_Exception_Redirect;
@@ -63,7 +63,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
     /**
      * Access to the helper.
      *
-     * @var Legal_Helper_AcceptPolicies
+     * @var AcceptPoliciesHelper
      */
     protected $helper;
     /**
@@ -72,7 +72,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
      * The name attribute is set to the module name; the view attribute is set to a current instance of
      * {@link Zikula_View}; the request attribute is set to the current request service instance, and the
      * domain attribute is initialized to the module name. The helper attribute is initialized with an instance
-     * of {@link Legal_Helper_AcceptPolicies}.
+     * of {@link AcceptPoliciesHelper}.
      *
      * @param $eventManager The current event manager instance.
      */
@@ -82,7 +82,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
         $this->name = LegalConstant::MODNAME;
         $this->request = $this->serviceManager->getService('request');
         $this->domain = ZLanguage::getModuleDomain($this->name);
-        $this->helper = new Legal_Helper_AcceptPolicies();
+        $this->helper = new AcceptPoliciesHelper();
     }
     
     public function getView()
