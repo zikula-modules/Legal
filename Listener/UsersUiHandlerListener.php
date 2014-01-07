@@ -151,7 +151,10 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
             if (array_sum($viewablePolicies) > 0) {
                 ModUtil::load('Legal');
                 // to enable translation domain
-                $templateVars = array('activePolicies' => $activePolicies, 'viewablePolicies' => $viewablePolicies, 'acceptedPolicies' => $acceptedPolicies);
+                $templateVars = array(
+                    'activePolicies' => $activePolicies,
+                    'viewablePolicies' => $viewablePolicies,
+                    'acceptedPolicies' => $acceptedPolicies);
                 $this->getView()->assign($templateVars);
                 $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_view.tpl');
             }
@@ -188,15 +191,28 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     if (isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
                         $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
                         // We only show the policies if one or more active policies have not been accepted by the user.
-                        if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse'] || $activePolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy'] || $activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
-                            $templateVars = array('policiesUid' => $user['uid'], 'activePolicies' => $activePolicies, 'originalAcceptedPolicies' => $acceptedPolicies, 'acceptedPolicies' => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies, 'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
+                        if ($activePolicies['termsOfUse']
+                            && !$acceptedPolicies['termsOfUse']
+                            || $activePolicies['privacyPolicy']
+                            && !$acceptedPolicies['privacyPolicy']
+                            || $activePolicies['agePolicy']
+                            && !$acceptedPolicies['agePolicy']) {
+                            $templateVars = array(
+                                'policiesUid' => $user['uid'],
+                                'activePolicies' => $activePolicies,
+                                'originalAcceptedPolicies' => $acceptedPolicies,
+                                'acceptedPolicies' => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies,
+                                'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
                             $this->getView()->assign($templateVars);
                             $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_login.tpl');
                         }
                     }
                 } else {
                     $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->helper->getAcceptedPolicies();
-                    $templateVars = array('activePolicies' => $activePolicies, 'acceptedPolicies' => $acceptedPolicies, 'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
+                    $templateVars = array(
+                        'activePolicies' => $activePolicies,
+                        'acceptedPolicies' => $acceptedPolicies,
+                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
                     $this->getView()->assign($templateVars);
                     $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_registration.tpl');
                 }
@@ -214,7 +230,13 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                 $viewablePolicies = $this->helper->getViewablePolicies(isset($user) ? $user['uid'] : null);
                 $editablePolicies = $this->helper->getEditablePolicies();
                 if (array_sum($viewablePolicies) > 0 || array_sum($editablePolicies) > 0) {
-                    $templateVars = array('policiesUid' => isset($user) ? $user['uid'] : '', 'activePolicies' => $activePolicies, 'viewablePolicies' => $viewablePolicies, 'editablePolicies' => $editablePolicies, 'acceptedPolicies' => $acceptedPolicies, 'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
+                    $templateVars = array(
+                        'policiesUid' => isset($user) ? $user['uid'] : '',
+                        'activePolicies' => $activePolicies,
+                        'viewablePolicies' => $viewablePolicies,
+                        'editablePolicies' => $editablePolicies,
+                        'acceptedPolicies' => $acceptedPolicies,
+                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
                     $this->getView()->assign($templateVars);
                     $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit.tpl');
                 }
@@ -256,7 +278,12 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
             ModUtil::load('Legal');
             // to enable translation domain
             // Set up the necessary objects for the validation response
-            $policiesAcceptedAtRegistration = array('termsOfUse' => $this->request->getPost()->get('acceptedpolicies_termsofuse', false), 'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false), 'agePolicy' => $this->request->getPost()->get('acceptedpolicies_agepolicy', false), 'cancellationRightPolicy' => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false), 'tradeConditions' => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false));
+            $policiesAcceptedAtRegistration = array(
+                'termsOfUse' => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy' => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
+                'cancellationRightPolicy' => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
+                'tradeConditions' => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false));
             $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
             $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
             $activePolicies = $this->helper->getActivePolicies();
@@ -294,7 +321,11 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
                 }
                 // Do the validation
-                if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse'] && (!isset($policiesAcceptedAtRegistration['termsOfUse']) || empty($policiesAcceptedAtRegistration['termsOfUse']) || !$policiesAcceptedAtRegistration['termsOfUse'])) {
+                if ($activePolicies['termsOfUse']
+                    && !$acceptedPolicies['termsOfUse']
+                    && (!isset($policiesAcceptedAtRegistration['termsOfUse'])
+                        || empty($policiesAcceptedAtRegistration['termsOfUse'])
+                        || !$policiesAcceptedAtRegistration['termsOfUse'])) {
                     if ($isRegistration) {
                         $validationErrorMsg = __('In order to register for a new account, you must accept this site\'s Terms of Use.', $this->domain);
                     } else {
@@ -302,7 +333,11 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     }
                     $this->validation->addError('termsofuse', $validationErrorMsg);
                 }
-                if ($activePolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy'] && (!isset($policiesAcceptedAtRegistration['privacyPolicy']) || empty($policiesAcceptedAtRegistration['privacyPolicy']) || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
+                if ($activePolicies['privacyPolicy']
+                    && !$acceptedPolicies['privacyPolicy']
+                    && (!isset($policiesAcceptedAtRegistration['privacyPolicy'])
+                        || empty($policiesAcceptedAtRegistration['privacyPolicy'])
+                        || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
                     if ($isRegistration) {
                         $validationErrorMsg = __('In order to register for a new account, you must accept this site\'s Privacy Policy.', $this->domain);
                     } else {
@@ -310,7 +345,11 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     }
                     $this->validation->addError('privacypolicy', $validationErrorMsg);
                 }
-                if ($activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy'] && (!isset($policiesAcceptedAtRegistration['agePolicy']) || empty($policiesAcceptedAtRegistration['agePolicy']) || !$policiesAcceptedAtRegistration['agePolicy'])) {
+                if ($activePolicies['agePolicy']
+                    && !$acceptedPolicies['agePolicy']
+                    && (!isset($policiesAcceptedAtRegistration['agePolicy'])
+                        || empty($policiesAcceptedAtRegistration['agePolicy'])
+                        || !$policiesAcceptedAtRegistration['agePolicy'])) {
                     if ($isRegistration) {
                         $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
                     } else {
@@ -318,7 +357,11 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     }
                     $this->validation->addError('agepolicy', $validationErrorMsg);
                 }
-                if ($activePolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy'] && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) || empty($policiesAcceptedAtRegistration['cancellationRightPolicy']) || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
+                if ($activePolicies['cancellationRightPolicy']
+                    && !$acceptedPolicies['cancellationRightPolicy']
+                    && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy'])
+                        || empty($policiesAcceptedAtRegistration['cancellationRightPolicy'])
+                        || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
                     if ($isRegistration) {
                         $validationErrorMsg = __('In order to register for a new account, you must accept our cancellation right policy.', $this->domain);
                     } else {
@@ -326,7 +369,11 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     }
                     $this->validation->addError('cancellationrightpolicy', $validationErrorMsg);
                 }
-                if ($activePolicies['tradeConditions'] && !$acceptedPolicies['tradeConditions'] && (!isset($policiesAcceptedAtRegistration['tradeConditions']) || empty($policiesAcceptedAtRegistration['tradeConditions']) || !$policiesAcceptedAtRegistration['tradeConditions'])) {
+                if ($activePolicies['tradeConditions']
+                    && !$acceptedPolicies['tradeConditions']
+                    && (!isset($policiesAcceptedAtRegistration['tradeConditions'])
+                        || empty($policiesAcceptedAtRegistration['tradeConditions'])
+                        || !$policiesAcceptedAtRegistration['tradeConditions'])) {
                     if ($isRegistration) {
                         $validationErrorMsg = __('In order to register for a new account, you must accept our general terms and conditions of trade.', $this->domain);
                     } else {

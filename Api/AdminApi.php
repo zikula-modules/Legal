@@ -96,7 +96,10 @@ class AdminApi extends \Zikula_AbstractApi
     {
         $links = array();
         if (SecurityUtil::checkPermission('Users::', '::', ACCESS_ADMIN)) {
-            $links[] = array('url' => ModUtil::url($this->name, 'admin', 'modifyConfig'), 'text' => $this->__('Settings'), 'class' => 'z-icon-es-config');
+            $links[] = array(
+                'url' => ModUtil::url($this->name, 'admin', 'modifyConfig'),
+                'text' => $this->__('Settings'),
+                'class' => 'z-icon-es-config');
         }
         return $links;
     }

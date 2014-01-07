@@ -84,7 +84,16 @@ class UsersLoginVetoListener
                 }
                 if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted || !$cancellationRightPolicyAccepted || !$tradeConditionsAccepted) {
                     $event->stopPropagation();
-                    $event->data['redirect_func'] = array('modname' => LegalConstant::MODNAME, 'type' => 'user', 'func' => 'acceptPolicies', 'args' => array('login' => true), 'session' => array('var' => 'Legal_Controller_User_acceptPolicies', 'namespace' => LegalConstant::MODNAME));
+                    $event->data['redirect_func'] = array(
+                        'modname' => LegalConstant::MODNAME,
+                        'type' => 'user',
+                        'func' => 'acceptPolicies',
+                        'args' => array('login' => true),
+                        'session' => array(
+                            'var' => 'Legal_Controller_User_acceptPolicies',
+                            'namespace' => LegalConstant::MODNAME
+                        )
+                    );
                     LogUtil::registerError(__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', $domain));
                 }
             }

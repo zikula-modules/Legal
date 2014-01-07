@@ -254,7 +254,12 @@ class UserController extends \Zikula_AbstractController
                 throw new Zikula_Exception_Fatal();
             }
             $policiesUid = $this->request->request->get('acceptedpolicies_uid', false);
-            $acceptedPolicies = array('termsOfUse' => $this->request->request->get('acceptedpolicies_termsofuse', false), 'privacyPolicy' => $this->request->request->get('acceptedpolicies_privacypolicy', false), 'agePolicy' => $this->request->request->get('acceptedpolicies_agepolicy', false), 'cancellationRightPolicy' => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false), 'tradeConditions' => $this->request->request->get('acceptedpolicies_tradeconditions', false));
+            $acceptedPolicies = array(
+                'termsOfUse' => $this->request->request->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy' => $this->request->request->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy' => $this->request->request->get('acceptedpolicies_agepolicy', false),
+                'cancellationRightPolicy' => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false),
+                'tradeConditions' => $this->request->request->get('acceptedpolicies_tradeconditions', false));
             if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
                 throw new Zikula_Exception_Fatal();
             }
@@ -330,7 +335,12 @@ class UserController extends \Zikula_AbstractController
         }
         // If we are coming here from the login process, then there are certain things that must have been
         // send along in the session variable. If not, then error.
-        if ($isLogin && (!isset($sessionVars['user_obj']) || !is_array($sessionVars['user_obj']) || !isset($sessionVars['authentication_info']) || !is_array($sessionVars['authentication_info']) || !isset($sessionVars['authentication_method']) || !is_array($sessionVars['authentication_method']))) {
+        if ($isLogin && (!isset($sessionVars['user_obj'])
+                || !is_array($sessionVars['user_obj'])
+                || !isset($sessionVars['authentication_info'])
+                || !is_array($sessionVars['authentication_info'])
+                || !isset($sessionVars['authentication_method'])
+                || !is_array($sessionVars['authentication_method']))) {
             throw new Zikula_Exception_Fatal();
         }
         if ($isLogin) {
@@ -353,7 +363,13 @@ class UserController extends \Zikula_AbstractController
                 $this->name
             );
         }
-        $templateVars = array('login' => $isLogin, 'policiesUid' => $policiesUid, 'activePolicies' => $helper->getActivePolicies(), 'acceptedPolicies' => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid), 'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid), 'fieldErrors' => $fieldErrors);
+        $templateVars = array(
+            'login' => $isLogin,
+            'policiesUid' => $policiesUid,
+            'activePolicies' => $helper->getActivePolicies(),
+            'acceptedPolicies' => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
+            'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
+            'fieldErrors' => $fieldErrors);
         return $this->view->assign($templateVars)->fetch('User/acceptpolicies.tpl');
     }
 
