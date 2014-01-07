@@ -13,7 +13,7 @@
     </div>
 {/if}
 
-<form id="legal_user_acceptpolicies" class="form-horizontal" action="{modurl modname="Legal" type="user" func="acceptPolicies"}" method="post">
+<form id="legal_user_acceptpolicies" class="form-horizontal" action="{modurl modname=$module type="user" func="acceptPolicies"}" method="post">
     <div>
         <input type="hidden" id="acceptpolicies_csrftoken" name="csrftoken" value="{insert name='csrftoken'}" />
         <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="{$policiesUid}" />
