@@ -149,7 +149,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
             $acceptedPolicies = $this->helper->getAcceptedPolicies($user['uid']);
             $viewablePolicies = $this->helper->getViewablePolicies($user['uid']);
             if (array_sum($viewablePolicies) > 0) {
-                ModUtil::load('Legal');
+                ModUtil::load(LegalConstant::MODNAME);
                 // to enable translation domain
                 $templateVars = array(
                     'activePolicies' => $activePolicies,
@@ -173,7 +173,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
         $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         if ($activePolicyCount > 0) {
-            ModUtil::load('Legal');
+            ModUtil::load(LegalConstant::MODNAME);
             // to enable translation domain
             $eventName = $event->getName();
             // Determine if the hook should be displayed, and also set up certain variables, based on the type of event
@@ -275,7 +275,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
         if ($this->request->getPost()->has('acceptedpolicies_uid')) {
-            ModUtil::load('Legal');
+            ModUtil::load(LegalConstant::MODNAME);
             // to enable translation domain
             // Set up the necessary objects for the validation response
             $policiesAcceptedAtRegistration = array(
@@ -315,7 +315,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                         // to proceed with this login attempt at all.
                         LogUtil::registerError(__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.', $this->domain));
                         $this->request->getSession()->clearNamespace('Zikula_Users');
-                        $this->request->getSession()->clearNamespace('Legal');
+                        $this->request->getSession()->clearNamespace(LegalConstant::MODNAME);
                         $this->redirect(ModUtil::url('Users', 'user', 'login'));
                     }
                     $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
@@ -351,9 +351,9 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                         || empty($policiesAcceptedAtRegistration['agePolicy'])
                         || !$policiesAcceptedAtRegistration['agePolicy'])) {
                     if ($isRegistration) {
-                        $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                        $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
                     } else {
-                        $validationErrorMsg = __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                        $validationErrorMsg = __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
                     }
                     $this->validation->addError('agepolicy', $validationErrorMsg);
                 }
@@ -441,7 +441,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
         $activePolicies = $this->helper->getActivePolicies();
         $eventName = $event->getName();
         if (isset($this->validation) && !$this->validation->hasErrors()) {
-            ModUtil::load('Legal');
+            ModUtil::load(LegalConstant::MODNAME);
             // to enable translation domain
             $user = $event->getSubject();
             $uid = $user['uid'];

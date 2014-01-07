@@ -1,5 +1,5 @@
 {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='termsofuse' assign='policyUrl'}
 {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
-{assign var='customUrl' value=$modvars.Legal.$customUrl}
+{assign var='customUrl' value=$modvars.$module.$customUrl}
 {if $customUrl ne ''}{assign var='policyUrl' value=$customUrl}{/if}
 <a class="legal_inlinelink_termsofuse" href="{$policyUrl|safetext}" target="{$target}">{gt text='Terms of Use'}</a>

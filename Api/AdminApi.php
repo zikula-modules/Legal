@@ -44,7 +44,7 @@ class AdminApi extends \Zikula_AbstractApi
     public function resetagreement($args)
     {
         // Security check
-        if (!SecurityUtil::checkPermission('legal::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
             throw new Zikula_Exception_Forbidden();
         }
         if (!isset($args['gid']) || $args['gid'] == -1) {
@@ -95,7 +95,7 @@ class AdminApi extends \Zikula_AbstractApi
     public function getLinks()
     {
         $links = array();
-        if (SecurityUtil::checkPermission('Users::', '::', ACCESS_ADMIN)) {
+        if (SecurityUtil::checkPermission('ZikulaUsersModule::', '::', ACCESS_ADMIN)) {
             $links[] = array(
                 'url' => ModUtil::url($this->name, 'admin', 'modifyConfig'),
                 'text' => $this->__('Settings'),

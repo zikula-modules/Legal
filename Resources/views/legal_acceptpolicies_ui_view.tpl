@@ -4,7 +4,7 @@
         {if $activePolicies.termsOfUse && $viewablePolicies.termsOfUse}
             {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='termsofuse' assign='policyUrl'}
             {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
-            {assign var='customUrl' value=$modvars.Legal.$customUrl}
+            {assign var='customUrl' value=$modvars.$module.$customUrl}
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
@@ -18,7 +18,7 @@
         {if $activePolicies.privacyPolicy && $viewablePolicies.privacyPolicy}
             {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='privacypolicy' assign='policyUrl'}
             {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
-            {assign var='customUrl' value=$modvars.Legal.$customUrl}
+            {assign var='customUrl' value=$modvars.$module.$customUrl}
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
@@ -32,13 +32,13 @@
         {if $activePolicies.agePolicy && $viewablePolicies.agePolicy}
             <div class="z-formrow">
                 <label>{gt text='Minimum Age'}</label>
-                <span>{if $acceptedPolicies.agePolicy}{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.Legal.minimumAge|safetext}{else}{gt text='Minimum age requirement not confirmed.'}{/if}</span>
+                <span>{if $acceptedPolicies.agePolicy}{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.$module.minimumAge|safetext}{else}{gt text='Minimum age requirement not confirmed.'}{/if}</span>
             </div>
         {/if}
         {if $activePolicies.tradeConditions && $viewablePolicies.tradeConditions}
             {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='tradeConditions' assign='policyUrl'}
             {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_URL'|constant}
-            {assign var='customUrl' value=$modvars.Legal.$customUrl}
+            {assign var='customUrl' value=$modvars.$module.$customUrl}
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
@@ -52,7 +52,7 @@
         {if $activePolicies.cancellationRightPolicy && $viewablePolicies.cancellationRightPolicy}
             {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='cancellationRightPolicy' assign='policyUrl'}
             {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
-            {assign var='customUrl' value=$modvars.Legal.$customUrl}
+            {assign var='customUrl' value=$modvars.$module.$customUrl}
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}

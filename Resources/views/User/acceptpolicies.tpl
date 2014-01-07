@@ -59,7 +59,7 @@
         {if $activePolicies.agePolicy && !$originalAcceptedPolicies.agePolicy}
             {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='termsofuse' assign='policyUrl'}
             {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
-            {assign var='customUrl' value=$modvars.Legal.$customUrl}
+            {assign var='customUrl' value=$modvars.$module.$customUrl}
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
@@ -68,7 +68,7 @@
 
             {modurl modname='Zikula\LegalModule\Constant::MODNAME'|constant type='user' func='privacypolicy' assign='policyUrl'}
             {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
-            {assign var='customUrl' value=$modvars.Legal.$customUrl}
+            {assign var='customUrl' value=$modvars.$module.$customUrl}
             {if $customUrl ne ''}
                 {assign var='policyUrl' value=$customUrl}
             {/if}
@@ -79,7 +79,7 @@
                 <label for="acceptpolicies_agepolicy">{gt text='Minimum Age'}</label>
                 <span class="z-formlist">
                     <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy"{if isset($fieldErrors.agePolicy) && !empty($fieldErrors.agePolicy)} class="z-form-error"{/if}{if $acceptedPolicies.agePolicy} checked="checked"{/if} value="1" />
-                    <label for="acceptpolicies_agepolicy">{gt text='Check this box to indicate that you are %1$s years of age or older.' tag1=$modvars.Legal.minimumAge|safetext}</label>
+                    <label for="acceptpolicies_agepolicy">{gt text='Check this box to indicate that you are %1$s years of age or older.' tag1=$modvars.$module.minimumAge|safetext}</label>
                 </span>
                 <em class="z-formnote z-sub">{gt text='Information on our minimum age policy, and on how we handle personally identifiable information can be found in our %1$s and in our %2$s.' tag1=$termsOfUseLink|safehtml tag2=$privacyPolicyLink|safehtml}</em>
                 <p id="acceptpolicies_agepolicy_error" class="z-formnote z-errormsg{if !isset($fieldErrors.agepolicy) || empty($fieldErrors.agepolicy)} z-hide{/if}">

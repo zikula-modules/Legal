@@ -101,12 +101,14 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
                 $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
                 $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
             case '2.0.1':
-                // Upgrade 2.0.1 -> ?.?.?
-                EventUtil::unregisterPersistentModuleHandlers('Legal');
+                // Upgrade 2.0.1 -> 2.0.3
+                EventUtil::unregisterPersistentModuleHandlers('Legal'); // using old name on purpose here
                 // register handlers under new modname and with new classes
                 EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Zikula\LegalModule\Listener\UsersLoginVetoListener', 'acceptPoliciesListener'));
                 EventUtil::registerPersistentEventHandlerClass($this->name, 'Zikula\LegalModule\Listener\UsersUiHandlerListener');
+                // @todo write upgrade for permissions?
             case '2.0.3': //current version
+                // Upgrade 2.0.3 -> ?.?.?
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:

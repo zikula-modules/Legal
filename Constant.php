@@ -28,7 +28,7 @@ class Constant
      *
      * @var string
      */
-    const MODNAME = 'Legal';
+    const MODNAME = 'ZikulaLegalModule';
     /**
      * The module variable name indicating that the legal notice is active.
      *
