@@ -15,7 +15,7 @@
 
 namespace Zikula\LegalModule\Listener;
 
-use Legal_Constant;
+use Zikula\LegalModule\Constant as LegalConstant;
 use ZLanguage;
 use Legal_Helper_AcceptPolicies;
 use Zikula_View;
@@ -78,7 +78,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
     public function __construct($eventManager)
     {
         parent::__construct($eventManager);
-        $this->name = Legal_Constant::MODNAME;
+        $this->name = LegalConstant::MODNAME;
         $this->request = $this->serviceManager->getService('request');
         $this->domain = ZLanguage::getModuleDomain($this->name);
         $this->helper = new Legal_Helper_AcceptPolicies();
@@ -311,9 +311,9 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                 }
                 if ($activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy'] && (!isset($policiesAcceptedAtRegistration['agePolicy']) || empty($policiesAcceptedAtRegistration['agePolicy']) || !$policiesAcceptedAtRegistration['agePolicy'])) {
                     if ($isRegistration) {
-                        $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                        $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar('Legal', LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
                     } else {
-                        $validationErrorMsg = __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                        $validationErrorMsg = __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
                     }
                     $this->validation->addError('agepolicy', $validationErrorMsg);
                 }
@@ -403,19 +403,19 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
                     $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
                     if ($activePolicies['termsOfUse'] && $policiesAcceptedAtLogin['termsOfUse']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['privacyPolicy'] && $policiesAcceptedAtLogin['privacyPolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['agePolicy'] && $policiesAcceptedAtLogin['agePolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['cancellationRightPolicy'] && $policiesAcceptedAtLogin['cancellationRightPolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['tradeConditions'] && $policiesAcceptedAtLogin['tradeConditions']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
                     }
                     // Force the reload of the user record
                     $user = UserUtil::getVars($uid, true);
@@ -429,19 +429,19 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                     $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
                     $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
                     if ($activePolicies['termsOfUse'] && $policiesAcceptedAtRegistration['termsOfUse']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['privacyPolicy'] && $policiesAcceptedAtRegistration['privacyPolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['agePolicy'] && $policiesAcceptedAtRegistration['agePolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['cancellationRightPolicy'] && $policiesAcceptedAtRegistration['cancellationRightPolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
                     }
                     if ($activePolicies['tradeConditions'] && $policiesAcceptedAtRegistration['tradeConditions']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
                     }
                     // Force the reload of the user record
                     $user = UserUtil::getVars($uid, true, 'uid', $isRegistration);
@@ -458,37 +458,37 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                 $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
                 if ($activePolicies['termsOfUse'] && $editablePolicies['termsOfUse']) {
                     if ($policiesAcceptedAtRegistration['termsOfUse']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
                     } elseif ($policiesAcceptedAtRegistration['termsOfUse'] === 0 || $policiesAcceptedAtRegistration['termsOfUse'] === '0') {
-                        UserUtil::delVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $uid);
+                        UserUtil::delVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $uid);
                     }
                 }
                 if ($activePolicies['privacyPolicy'] && $editablePolicies['privacyPolicy']) {
                     if ($policiesAcceptedAtRegistration['privacyPolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
                     } elseif ($policiesAcceptedAtRegistration['privacyPolicy'] === 0 || $policiesAcceptedAtRegistration['termsOfUse'] === '0') {
-                        UserUtil::delVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $uid);
+                        UserUtil::delVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $uid);
                     }
                 }
                 if ($activePolicies['agePolicy'] && $editablePolicies['agePolicy']) {
                     if ($policiesAcceptedAtRegistration['agePolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
                     } elseif ($policiesAcceptedAtRegistration['agePolicy'] === 0 || $policiesAcceptedAtRegistration['termsOfUse'] === '0') {
-                        UserUtil::delVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $uid);
+                        UserUtil::delVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $uid);
                     }
                 }
                 if ($activePolicies['cancellationRightPolicy'] && $editablePolicies['cancellationRightPolicy']) {
                     if ($policiesAcceptedAtRegistration['cancellationRightPolicy']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
                     } elseif ($policiesAcceptedAtRegistration['cancellationRightPolicy'] === 0 || $policiesAcceptedAtRegistration['cancellationRightPolicy'] === '0') {
-                        UserUtil::delVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $uid);
+                        UserUtil::delVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $uid);
                     }
                 }
                 if ($activePolicies['tradeConditions'] && $editablePolicies['tradeConditions']) {
                     if ($policiesAcceptedAtRegistration['tradeConditions']) {
-                        UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
+                        UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
                     } elseif ($policiesAcceptedAtRegistration['tradeConditions'] === 0 || $policiesAcceptedAtRegistration['tradeConditions'] === '0') {
-                        UserUtil::delVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $uid);
+                        UserUtil::delVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $uid);
                     }
                 }
                 // Force the reload of the user record

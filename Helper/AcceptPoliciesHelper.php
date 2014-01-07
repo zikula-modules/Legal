@@ -15,7 +15,7 @@
 
 namespace Zikula\LegalModule\Helper;
 
-use Legal_Constant;
+use Zikula\LegalModule\Constant as LegalConstant;
 use ModUtil;
 use UserUtil;
 use DateTimeZone;
@@ -38,7 +38,7 @@ class AcceptPoliciesHelper
      */
     public function __construct()
     {
-        $this->name = Legal_Constant::MODNAME;
+        $this->name = LegalConstant::MODNAME;
     }
     
     /**
@@ -48,11 +48,11 @@ class AcceptPoliciesHelper
      */
     public function getActivePolicies()
     {
-        $termsOfUseActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_MINIMUM_AGE, 0) != 0;
-        $cancellationRightPolicyActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-        $tradeConditionsActive = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+        $termsOfUseActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false);
+        $privacyPolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
+        $agePolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0) != 0;
+        $cancellationRightPolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $tradeConditionsActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
         return array('termsOfUse' => $termsOfUseActive, 'privacyPolicy' => $privacyPolicyActive, 'agePolicy' => $agePolicyActive, 'cancellationRightPolicy' => $cancellationRightPolicyActive, 'tradeConditions' => $tradeConditionsActive);
     }
     
@@ -101,27 +101,27 @@ class AcceptPoliciesHelper
         $termsOfUseAcceptedDateStr = $this->determineAcceptanceState(
             $uid,
             $isRegistration,
-            Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED
+            LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED
         );
         $privacyPolicyAcceptedDateStr = $this->determineAcceptanceState(
             $uid,
             $isRegistration,
-            Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED
+            LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED
         );
         $agePolicyConfirmedDateStr = $this->determineAcceptanceState(
             $uid,
             $isRegistration,
-            Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED
+            LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED
         );
         $cancellationRightPolicyAcceptedDateStr = $this->determineAcceptanceState(
             $uid,
             $isRegistration,
-            Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED
+            LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED
         );
         $tradeConditionsAcceptedDateStr = $this->determineAcceptanceState(
             $uid,
             $isRegistration,
-            Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
+            LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
         );
         $termsOfUseAcceptedDate = $termsOfUseAcceptedDateStr ? new DateTime($termsOfUseAcceptedDateStr) : false;
         $privacyPolicyAcceptedDate = $privacyPolicyAcceptedDateStr ? new DateTime($privacyPolicyAcceptedDateStr) : false;

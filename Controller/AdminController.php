@@ -18,7 +18,7 @@ namespace Zikula\LegalModule\Controller;
 use ModUtil;
 use Zikula_Exception_Forbidden;
 use SecurityUtil;
-use Legal_Constant;
+use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
  * Administrator-initiated actions for the Legal module.
@@ -81,32 +81,32 @@ class AdminController extends \Zikula_AbstractController
         // Confirm the forms authorisation key
         $this->checkCsrfToken();
         // set our module variables
-        $legalNoticeActive = $this->request->request->get(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, true);
-        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, $legalNoticeActive);
-        $termsOfUseActive = $this->request->request->get(Legal_Constant::MODVAR_TERMS_ACTIVE, false);
-        $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, $termsOfUseActive);
-        $privacyPolicyActive = $this->request->request->get(Legal_Constant::MODVAR_PRIVACY_ACTIVE, false);
-        $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, $privacyPolicyActive);
-        $accessibilityStmtActive = $this->request->request->get(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false);
-        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, $accessibilityStmtActive);
-        $tradeConditionsActive = $this->request->request->get(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
-        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, $tradeConditionsActive);
-        $cancellationRightPolicyActive = $this->request->request->get(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, $cancellationRightPolicyActive);
-        $legalNoticeUrl = $this->request->request->get(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, $legalNoticeUrl);
-        $termsOfUseUrl = $this->request->request->get(Legal_Constant::MODVAR_TERMS_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_TERMS_URL, $termsOfUseUrl);
-        $privacyPolicyUrl = $this->request->request->get(Legal_Constant::MODVAR_PRIVACY_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_PRIVACY_URL, $privacyPolicyUrl);
-        $accessibilityStmtUrl = $this->request->request->get(Legal_Constant::MODVAR_ACCESSIBILITY_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_URL, $accessibilityStmtUrl);
-        $tradeConditionsUrl = $this->request->request->get(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, $tradeConditionsUrl);
-        $cancellationRightPolicyUrl = $this->request->request->get(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, $cancellationRightPolicyUrl);
-        $minimumAge = $this->request->request->get(Legal_Constant::MODVAR_MINIMUM_AGE, 0);
-        $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, $minimumAge);
+        $legalNoticeActive = $this->request->request->get(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, true);
+        $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, $legalNoticeActive);
+        $termsOfUseActive = $this->request->request->get(LegalConstant::MODVAR_TERMS_ACTIVE, false);
+        $this->setVar(LegalConstant::MODVAR_TERMS_ACTIVE, $termsOfUseActive);
+        $privacyPolicyActive = $this->request->request->get(LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
+        $this->setVar(LegalConstant::MODVAR_PRIVACY_ACTIVE, $privacyPolicyActive);
+        $accessibilityStmtActive = $this->request->request->get(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false);
+        $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, $accessibilityStmtActive);
+        $tradeConditionsActive = $this->request->request->get(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+        $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, $tradeConditionsActive);
+        $cancellationRightPolicyActive = $this->request->request->get(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, $cancellationRightPolicyActive);
+        $legalNoticeUrl = $this->request->request->get(LegalConstant::MODVAR_LEGALNOTICE_URL, '');
+        $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_URL, $legalNoticeUrl);
+        $termsOfUseUrl = $this->request->request->get(LegalConstant::MODVAR_TERMS_URL, '');
+        $this->setVar(LegalConstant::MODVAR_TERMS_URL, $termsOfUseUrl);
+        $privacyPolicyUrl = $this->request->request->get(LegalConstant::MODVAR_PRIVACY_URL, '');
+        $this->setVar(LegalConstant::MODVAR_PRIVACY_URL, $privacyPolicyUrl);
+        $accessibilityStmtUrl = $this->request->request->get(LegalConstant::MODVAR_ACCESSIBILITY_URL, '');
+        $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_URL, $accessibilityStmtUrl);
+        $tradeConditionsUrl = $this->request->request->get(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
+        $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, $tradeConditionsUrl);
+        $cancellationRightPolicyUrl = $this->request->request->get(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+        $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, $cancellationRightPolicyUrl);
+        $minimumAge = $this->request->request->get(LegalConstant::MODVAR_MINIMUM_AGE, 0);
+        $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, $minimumAge);
         $resetagreement = $this->request->request->get('resetagreement', -1);
         if ($resetagreement != -1) {
             ModUtil::apiFunc($this->name, 'admin', 'resetagreement', array('gid' => $resetagreement));

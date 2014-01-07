@@ -12,6 +12,8 @@
  * information regarding copyright and licensing.
  */
 
+use Zikula\LegalModule\Constant as LegalConstant;
+
 /**
  * Smarty function to display user links for the Legal module.
  *
@@ -34,51 +36,51 @@
  */
 function smarty_function_legaluserlinks($params, &$view)
 {
-    $dom = ZLanguage::getModuleDomain(Legal_Constant::MODNAME);
+    $dom = ZLanguage::getModuleDomain(LegalConstant::MODNAME);
     $policies = array();
-    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
-        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'legalNotice');
-        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
+    if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
+        $url = ModUtil::url(LegalConstant::MODNAME, 'user', 'legalNotice');
+        $customUrl = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_LEGALNOTICE_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
         $policies['legalNotice'] = array('title' => __('Legal notice', $dom), 'url' => $url);
     }
-    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_ACTIVE, false)) {
-        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'termsOfUse');
-        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TERMS_URL, '');
+    if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false)) {
+        $url = ModUtil::url(LegalConstant::MODNAME, 'user', 'termsOfUse');
+        $customUrl = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
         $policies['termsOfUse'] = array('title' => __('Terms of use', $dom), 'url' => $url);
     }
-    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_ACTIVE, false)) {
-        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'privacyPolicy');
-        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_URL, '');
+    if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false)) {
+        $url = ModUtil::url(LegalConstant::MODNAME, 'user', 'privacyPolicy');
+        $customUrl = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
         $policies['privacyPolicy'] = array('title' => __('Privacy policy', $dom), 'url' => $url);
     }
-    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
-        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'tradeConditions');
-        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
+    if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
+        $url = ModUtil::url(LegalConstant::MODNAME, 'user', 'tradeConditions');
+        $customUrl = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
         $policies['tradeConditions'] = array('title' => __('Trade conditions', $dom), 'url' => $url);
     }
-    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
-        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'cancellationRightPolicy');
-        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+    if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
+        $url = ModUtil::url(LegalConstant::MODNAME, 'user', 'cancellationRightPolicy');
+        $customUrl = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }
         $policies['cancellationRightPolicy'] = array('title' => __('Cancellation right', $dom), 'url' => $url);
     }
-    if (ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
-        $url = ModUtil::url(Legal_Constant::MODNAME, 'user', 'accessibilityStatement');
-        $customUrl = ModUtil::getVar(Legal_Constant::MODNAME, Legal_Constant::MODVAR_PRIVACY_URL, '');
+    if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
+        $url = ModUtil::url(LegalConstant::MODNAME, 'user', 'accessibilityStatement');
+        $customUrl = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_URL, '');
         if (!empty($customUrl)) {
             $url = $customUrl;
         }

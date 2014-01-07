@@ -15,7 +15,7 @@
 
 namespace Zikula\LegalModule;
 
-use Legal_Constant;
+use Zikula\LegalModule\Constant as LegalConstant;
 use EventUtil;
 
 /**
@@ -31,19 +31,19 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
     public function install()
     {
         // Set default values for the module variables
-        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, true);
-        $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, true);
-        $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, true);
-        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, true);
-        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
-        $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_TERMS_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
-        $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, 13);
+        $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, true);
+        $this->setVar(LegalConstant::MODVAR_TERMS_ACTIVE, true);
+        $this->setVar(LegalConstant::MODVAR_PRIVACY_ACTIVE, true);
+        $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, true);
+        $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+        $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_URL, '');
+        $this->setVar(LegalConstant::MODVAR_TERMS_URL, '');
+        $this->setVar(LegalConstant::MODVAR_PRIVACY_URL, '');
+        $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_URL, '');
+        $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+        $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
+        $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, 13);
         // Set up the persistent event handler, hook bundles, and any other event-related features.
         EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
         EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_UsersUiHandler');
@@ -76,30 +76,30 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
             case '1.3':
                 // Upgrade 1.3 -> 2.0.0
                 // Convert the module variables to the new names
-                $this->setVar(Legal_Constant::MODVAR_TERMS_ACTIVE, $this->getVar('termsofuse', true));
+                $this->setVar(LegalConstant::MODVAR_TERMS_ACTIVE, $this->getVar('termsofuse', true));
                 $this->delVar('termsofuse');
-                $this->setVar(Legal_Constant::MODVAR_PRIVACY_ACTIVE, $this->getVar('privacypolicy', true));
+                $this->setVar(LegalConstant::MODVAR_PRIVACY_ACTIVE, $this->getVar('privacypolicy', true));
                 $this->delVar('privacypolicy');
-                $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE, $this->getVar('accessibilitystatement', true));
+                $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, $this->getVar('accessibilitystatement', true));
                 $this->delVar('accessibilitystatement');
                 // Set the new module variable -- but if Users set it for us during its upgrade, then don't overwrite it
-                $this->setVar(Legal_Constant::MODVAR_MINIMUM_AGE, $this->getVar(Legal_Constant::MODVAR_MINIMUM_AGE, 0));
+                $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, $this->getVar(LegalConstant::MODVAR_MINIMUM_AGE, 0));
                 // Set up the new persistent event handler, and any other event-related features.
                 EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
                 EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_UsersUiHandler');
             case '2.0.0':
                 // Upgrade 2.0.0 -> 2.0.1
                 // add vars for new document types
-                $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE, false);
-                $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-                $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+                $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, false);
+                $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+                $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
                 // add vars for optional custom urls
-                $this->setVar(Legal_Constant::MODVAR_LEGALNOTICE_URL, '');
-                $this->setVar(Legal_Constant::MODVAR_TERMS_URL, '');
-                $this->setVar(Legal_Constant::MODVAR_PRIVACY_URL, '');
-                $this->setVar(Legal_Constant::MODVAR_ACCESSIBILITY_URL, '');
-                $this->setVar(Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
-                $this->setVar(Legal_Constant::MODVAR_TRADECONDITIONS_URL, '');
+                $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_URL, '');
+                $this->setVar(LegalConstant::MODVAR_TERMS_URL, '');
+                $this->setVar(LegalConstant::MODVAR_PRIVACY_URL, '');
+                $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_URL, '');
+                $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+                $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
             case '2.0.1':
                 // Upgrade 2.0.1 -> ?.?.?
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.

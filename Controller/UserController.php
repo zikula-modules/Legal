@@ -15,7 +15,7 @@
 
 namespace Zikula\LegalModule\Controller;
 
-use Legal_Constant;
+use Zikula\LegalModule\Constant as LegalConstant;
 use ModUtil;
 use Zikula_Exception_Forbidden;
 use SecurityUtil;
@@ -43,7 +43,7 @@ class UserController extends \Zikula_AbstractController
     public function mainAction()
     {
         echo 1;
-        $url = $this->getVar(Legal_Constant::MODVAR_TERMS_URL, '');
+        $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
             $url = ModUtil::url($this->name, 'user', 'termsOfUse');
         }
@@ -63,11 +63,11 @@ class UserController extends \Zikula_AbstractController
      *                                      files in the format 'legal_user_documentname.tpl' and 'legal_text_documentname.tpl'.
      * @param string $accessInstanceKey The string used in the instance_right part of the permission access key for this document.
      * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
-     *                                      active or not; typically this is a constant from {@link Legal_Constant}, such as
-     *                                      {@link Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE}.
+     *                                      active or not; typically this is a constant from {@link LegalConstant}, such as
+     *                                      {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
      * @param string $customUrlKey      The string used to name the module variable that contains a custom static URL for the
-     *                                      legal document; typically this is a constant from {@link Legal_Constant}, such as
-     *                                      {@link Legal_Constant::MODVAR_TERMS_URL}.
+     *                                      legal document; typically this is a constant from {@link LegalConstant}, such as
+     *                                      {@link LegalConstant::MODVAR_TERMS_URL}.
      *
      * @return string HTML output string
      *
@@ -114,8 +114,8 @@ class UserController extends \Zikula_AbstractController
         return $this->renderDocument(
             'legalnotice',
             'legalnotice',
-            Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE,
-            Legal_Constant::MODVAR_LEGALNOTICE_URL
+            LegalConstant::MODVAR_LEGALNOTICE_ACTIVE,
+            LegalConstant::MODVAR_LEGALNOTICE_URL
         );
     }
     
@@ -131,8 +131,8 @@ class UserController extends \Zikula_AbstractController
         return $this->renderDocument(
             'termsofuse',
             'termsofuse',
-            Legal_Constant::MODVAR_TERMS_ACTIVE,
-            Legal_Constant::MODVAR_TERMS_URL
+            LegalConstant::MODVAR_TERMS_ACTIVE,
+            LegalConstant::MODVAR_TERMS_URL
         );
     }
     
@@ -162,8 +162,8 @@ class UserController extends \Zikula_AbstractController
         return $this->renderDocument(
             'privacypolicy',
             'privacypolicy',
-            Legal_Constant::MODVAR_PRIVACY_ACTIVE,
-            Legal_Constant::MODVAR_PRIVACY_URL
+            LegalConstant::MODVAR_PRIVACY_ACTIVE,
+            LegalConstant::MODVAR_PRIVACY_URL
         );
     }
     
@@ -179,8 +179,8 @@ class UserController extends \Zikula_AbstractController
         return $this->renderDocument(
             'accessibilitystatement',
             'accessibilitystatement',
-            Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE,
-            Legal_Constant::MODVAR_ACCESSIBILITY_URL
+            LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE,
+            LegalConstant::MODVAR_ACCESSIBILITY_URL
         );
     }
     
@@ -196,8 +196,8 @@ class UserController extends \Zikula_AbstractController
         return $this->renderDocument(
             'cancellationrightpolicy',
             'cancellationrightpolicy',
-            Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE,
-            Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL
+            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE,
+            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL
         );
     }
     
@@ -213,8 +213,8 @@ class UserController extends \Zikula_AbstractController
         return $this->renderDocument(
             'tradeconditions',
             'tradeconditions',
-            Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE,
-            Legal_Constant::MODVAR_TRADECONDITIONS_URL
+            LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE,
+            LegalConstant::MODVAR_TRADECONDITIONS_URL
         );
     }
     
@@ -266,7 +266,7 @@ class UserController extends \Zikula_AbstractController
                 $fieldErrors['privacypolicy'] = $this->__('You must accept this site\'s Privacy Policy in order to proceed.');
             }
             if ($activePolicies['agePolicy'] && !$originalAcceptedPolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
-                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', Legal_Constant::MODVAR_MINIMUM_AGE, 0)));
+                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar('Legal', LegalConstant::MODVAR_MINIMUM_AGE, 0)));
             }
             if ($activePolicies['cancellationRightPolicy'] && !$originalAcceptedPolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy']) {
                 $fieldErrors['cancellationrightpolicy'] = $this->__('You must accept our cancellation right policy in order to proceed.');
@@ -278,27 +278,27 @@ class UserController extends \Zikula_AbstractController
                 $now = new DateTime('now', new DateTimeZone('UTC'));
                 $nowStr = $now->format(DateTime::ISO8601);
                 if ($activePolicies['termsOfUse'] && $acceptedPolicies['termsOfUse']) {
-                    $termsOfUseProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $policiesUid);
+                    $termsOfUseProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $policiesUid);
                 } else {
                     $termsOfUseProcessed = !$activePolicies['termsOfUse'] || $originalAcceptedPolicies['termsOfUse'];
                 }
                 if ($activePolicies['privacyPolicy'] && $acceptedPolicies['privacyPolicy']) {
-                    $privacyPolicyProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $policiesUid);
+                    $privacyPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $policiesUid);
                 } else {
                     $privacyPolicyProcessed = !$activePolicies['privacyPolicy'] || $originalAcceptedPolicies['privacyPolicy'];
                 }
                 if ($activePolicies['agePolicy'] && $acceptedPolicies['agePolicy']) {
-                    $agePolicyProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr, $policiesUid);
+                    $agePolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr, $policiesUid);
                 } else {
                     $agePolicyProcessed = !$activePolicies['agePolicy'] || $originalAcceptedPolicies['agePolicy'];
                 }
                 if ($activePolicies['cancellationRightPolicy'] && $acceptedPolicies['cancellationRightPolicy']) {
-                    $cancellationRightPolicyProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr, $policiesUid);
+                    $cancellationRightPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr, $policiesUid);
                 } else {
                     $cancellationRightPolicyProcessed = !$activePolicies['cancellationRightPolicy'] || $originalAcceptedPolicies['cancellationRightPolicy'];
                 }
                 if ($activePolicies['tradeConditions'] && $acceptedPolicies['tradeConditions']) {
-                    $tradeConditionsProcessed = UserUtil::setVar(Legal_Constant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr, $policiesUid);
+                    $tradeConditionsProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr, $policiesUid);
                 } else {
                     $tradeConditionsProcessed = !$activePolicies['tradeConditions'] || $originalAcceptedPolicies['tradeConditions'];
                 }

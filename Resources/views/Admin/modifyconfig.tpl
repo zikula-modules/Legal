@@ -11,32 +11,32 @@
             <fieldset>
                 <legend>{gt text="Legal document types"}</legend>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_LEGALNOTICE_ACTIVE'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_LEGALNOTICE_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Legal notice"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_TERMS_ACTIVE'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TERMS_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Terms of use"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_PRIVACY_ACTIVE'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_TRADECONDITIONS_ACTIVE'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_ACCESSIBILITY_ACTIVE'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_ACCESSIBILITY_ACTIVE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.Legal.$fieldName == 1} checked="checked"{/if} />
                 </div>
@@ -45,32 +45,32 @@
                 <legend>{gt text="Custom urls"}</legend>
                 <p>{gt text='The following fields allow to reference any custom url. As soon as an url is given it will be used instead of the normal Legal templates. So you can now use any page you want for displaying and managing your legal data.'}</p>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_LEGALNOTICE_URL'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_LEGALNOTICE_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Legal notice"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_TERMS_URL'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Terms of use"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_PRIVACY_URL'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_TRADECONDITIONS_URL'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_ACCESSIBILITY_URL'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_ACCESSIBILITY_URL'|constant}
                     <label for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
                     <input id="legal_{$fieldName}" name="{$fieldName}" type="text" value="{$modvars.Legal.$fieldName}" />
                 </div>
@@ -78,9 +78,9 @@
             <fieldset>
                 <legend>{gt text="Further settings"}</legend>
                 <div class="z-formrow">
-                    {assign var='fieldName' value='Legal_Constant::MODVAR_MINIMUM_AGE'|constant}
+                    {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_MINIMUM_AGE'|constant}
                     <label for="legal_{$fieldName}">{gt text="Minimum age permitted to register"}<span class="z-form-mandatory-flag">{gt text="*"}</span></label>
-                    <input id="legal_{$fieldName}"{if isset($errorFields.legal_minage)} class="z-form-error"{/if} type="text" name="{'Legal_Constant::MODVAR_MINIMUM_AGE'|constant}" value="{$modvars.Legal.$fieldName|safetext}" size="2" maxlength="2" />
+                    <input id="legal_{$fieldName}"{if isset($errorFields.legal_minage)} class="z-form-error"{/if} type="text" name="{'Zikula\LegalModule\Constant::MODVAR_MINIMUM_AGE'|constant}" value="{$modvars.Legal.$fieldName|safetext}" size="2" maxlength="2" />
                     <em class="z-formnote z-sub">{gt text="Enter a positive integer, or 0 for no age check."}</em>
                 </div>
                 <div class="z-formrow">
