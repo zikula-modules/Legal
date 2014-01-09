@@ -19,22 +19,24 @@ use Zikula\LegalModule\Constant as LegalConstant;
 use ZLanguage;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula_View;
-use Zikula_Event;
-use Zikula_Exception_Redirect;
 use ModUtil;
 use UserUtil;
 use Users_Constant;
 use Zikula_Exception_Forbidden;
-use Zikula_Hook_ValidationResponse;
+use Zikula\Core\Hook\ValidationResponse;
 use Zikula_Exception_Fatal;
 use LogUtil;
 use DateTimeZone;
 use DateTime;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Zikula\Core\Event\GenericEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
  */
-class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
+class UsersUiListener implements EventSubscriberInterface
 {
     /**
      * Similar to a hook area, the event
@@ -42,12 +44,6 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
      * @var string
      */
     const EVENT_KEY = 'module.legal.users_ui_handler';
-    /**
-     * Convenience access to the module name.
-     *
-     * @var string
-     */
-    protected $name;
     /**
      * Access to the Zikula_View instance for this module.
      *
@@ -57,7 +53,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
     /**
      * Access to the request instance.
      *
-     * @var Zikula_Request_Request
+     * @var \Symfony\Component\HttpFoundation\Request
      */
     protected $request;
     /**
@@ -69,26 +65,23 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
     /**
      * Constructs a new instance of this class.
      *
-     * The name attribute is set to the module name; the view attribute is set to a current instance of
-     * {@link Zikula_View}; the request attribute is set to the current request service instance, and the
-     * domain attribute is initialized to the module name. The helper attribute is initialized with an instance
-     * of {@link AcceptPoliciesHelper}.
+     * the request attribute is set to the current request service instance.
+     * the domain attribute is initialized to the module name.
+     * The helper attribute is initialized with an instance of {@link AcceptPoliciesHelper}.
      *
-     * @param $eventManager The current event manager instance.
+     * @param RequestStack $requestStack
      */
-    public function __construct($eventManager)
+    public function __construct(RequestStack $requestStack)
     {
-        parent::__construct($eventManager);
-        $this->name = LegalConstant::MODNAME;
-        $this->request = $this->serviceManager->getService('request');
-        $this->domain = ZLanguage::getModuleDomain($this->name);
+        $this->request = $requestStack->getCurrentRequest();
+        $this->domain = ZLanguage::getModuleDomain(LegalConstant::MODNAME);
         $this->helper = new AcceptPoliciesHelper();
     }
     
     public function getView()
     {
         if (!$this->view) {
-            $this->view = Zikula_View::getInstance($this->name);
+            $this->view = Zikula_View::getInstance(LegalConstant::MODNAME);
         }
         return $this->view;
     }
@@ -98,49 +91,52 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
      *
      * @return void
      */
-    public function setupHandlerDefinitions()
+    public static function getSubscribedEvents()
     {
-        $this->addHandlerDefinition('module.users.ui.display_view', 'uiView');
-        $this->addHandlerDefinition('module.users.ui.form_edit.login_screen', 'uiEdit');
-        $this->addHandlerDefinition('module.users.ui.form_edit.new_user', 'uiEdit');
-        $this->addHandlerDefinition('module.users.ui.form_edit.modify_user', 'uiEdit');
-        $this->addHandlerDefinition('module.users.ui.form_edit.new_registration', 'uiEdit');
-        $this->addHandlerDefinition('module.users.ui.form_edit.modify_registration', 'uiEdit');
-        $this->addHandlerDefinition('module.users.ui.validate_edit.login_screen', 'validateEdit');
-        $this->addHandlerDefinition('module.users.ui.validate_edit.new_user', 'validateEdit');
-        $this->addHandlerDefinition('module.users.ui.validate_edit.modify_user', 'validateEdit');
-        $this->addHandlerDefinition('module.users.ui.validate_edit.new_registration', 'validateEdit');
-        $this->addHandlerDefinition('module.users.ui.validate_edit.modify_registration', 'validateEdit');
-        $this->addHandlerDefinition('module.users.ui.process_edit.login_screen', 'processEdit');
-        $this->addHandlerDefinition('module.users.ui.process_edit.new_user', 'processEdit');
-        $this->addHandlerDefinition('module.users.ui.process_edit.modify_user', 'processEdit');
-        $this->addHandlerDefinition('module.users.ui.process_edit.new_registration', 'processEdit');
-        $this->addHandlerDefinition('module.users.ui.process_edit.modify_registration', 'processEdit');
+        return array(
+            'module.users.ui.display_view' => array('uiView'),
+            'module.users.ui.form_edit.login_screen' => array('uiEdit'),
+            'module.users.ui.form_edit.new_user' => array('uiEdit'),
+            'module.users.ui.form_edit.modify_user' => array('uiEdit'),
+            'module.users.ui.form_edit.new_registration' => array('uiEdit'),
+            'module.users.ui.form_edit.modify_registration' => array('uiEdit'),
+            'module.users.ui.validate_edit.login_screen' => array('validateEdit'),
+            'module.users.ui.validate_edit.new_user' => array('validateEdit'),
+            'module.users.ui.validate_edit.modify_user' => array('validateEdit'),
+            'module.users.ui.validate_edit.new_registration' => array('validateEdit'),
+            'module.users.ui.validate_edit.modify_registration' => array('validateEdit'),
+            'module.users.ui.process_edit.login_screen' => array('processEdit'),
+            'module.users.ui.process_edit.new_user' => array('processEdit'),
+            'module.users.ui.process_edit.modify_user' => array('processEdit'),
+            'module.users.ui.process_edit.new_registration' => array('processEdit'),
+            'module.users.ui.process_edit.modify_registration' => array('processEdit'),
+            'user.login.veto' => array('acceptPolicies'),
+        );
     }
     
     /**
-     * Cause redirect by throwing exception which passes to front controller.
+     * Cause redirect.
      *
      * @param string  $url  Url to redirect to.
      * @param integer $type Redirect code, 302 default.
      *
-     * @return void
-     *
-     * @throws Zikula_Exception_Redirect Causing redirect.
+     * @return RedirectResponse
      */
     protected function redirect($url, $type = 302)
     {
-        throw new Zikula_Exception_Redirect($url, $type);
+        $response = new RedirectResponse(System::normalizeUrl($url), $type);
+        $response->send();
+        exit;
     }
     
     /**
      * Responds to ui.view hook-like event notifications.
      *
-     * @param Zikula_Event $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call.
      *
      * @return void
      */
-    public function uiView(Zikula_Event $event)
+    public function uiView(GenericEvent $event)
     {
         $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
@@ -164,11 +160,11 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
     /**
      * Responds to ui.edit hook notifications.
      *
-     * @param Zikula_Event $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call.
      *
      * @return void
      */
-    public function uiEdit(Zikula_Event $event)
+    public function uiEdit(GenericEvent $event)
     {
         $activePolicies = $this->helper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
@@ -247,7 +243,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
     /**
      * Responds to validate.edit hook notifications.
      *
-     * @param Zikula_Event $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call.
      *
      * @return void
      *
@@ -257,7 +253,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
      * @throws Zikula_Exception_Fatal Thrown if the user record retrieved from the POST is in an unexpected form or its data is
      *      unexpected.
      */
-    public function validateEdit(Zikula_Event $event)
+    public function validateEdit(GenericEvent $event)
     {
         if (!$this->request->isPost()) {
             // Check if we got here by a reentrant login method.
@@ -285,7 +281,7 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                 'cancellationRightPolicy' => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
                 'tradeConditions' => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false));
             $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
-            $this->validation = new Zikula_Hook_ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
+            $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
             $activePolicies = $this->helper->getActivePolicies();
             // Get the user record from the event. If there is no user record, create a dummy one.
             $user = $event->getSubject();
@@ -299,7 +295,8 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                 $eventName = $event->getName();
                 $isRegistration = $eventName != 'users.login.validate_edit';
                 if ($isRegistration) {
-                    // A registration. There will be no accepted policies stored yet (function returns the appropriate array for a null uid),
+                    // A registration. There will be no accepted policies stored yet (function returns the appropriate
+                    // array for a null uid),
                     // and there is no (or at least there *should* be no) uid to set on the validation response.
                     $acceptedPolicies = $this->helper->getAcceptedPolicies();
                 } else {
@@ -430,13 +427,13 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
     /**
      * Responds to process_edit hook-like event notifications.
      *
-     * @param Zikula_Event $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call.
      *
      * @return void
      *
      * @throws Zikula_Exception_Fatal Thrown if a user account does not exist for the uid specified by the event.
      */
-    public function processEdit(Zikula_Event $event)
+    public function processEdit(GenericEvent $event)
     {
         $activePolicies = $this->helper->getActivePolicies();
         $eventName = $event->getName();
@@ -541,6 +538,76 @@ class UsersUiHandlerListener extends \Zikula_AbstractEventHandler
                 }
                 // Force the reload of the user record
                 $user = UserUtil::getVars($uid, true, 'uid', $isRegistration);
+            }
+        }
+    }
+
+    /**
+     * Vetos (denies) a login attempt, and forces the user to accept policies.
+     *
+     * This handler is triggered by the 'user.login.veto' event.  It vetos (denies) a
+     * login attempt if the users's Legal record is flagged to force the user to accept
+     * one or more legal agreements.
+     *
+     * @param GenericEvent $event The event that triggered this handler.
+     *
+     * @return void
+     */
+    public function acceptPolicies(GenericEvent $event)
+    {
+        $domain = ZLanguage::getModuleDomain(LegalConstant::MODNAME);
+        $termsOfUseActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false);
+        $privacyPolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
+        $agePolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0) > 0;
+        $cancellationRightPolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $tradeConditionsActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+        if ($termsOfUseActive || $privacyPolicyActive || $agePolicyActive || $cancellationRightPolicyActive || $tradeConditionsActive) {
+            $userObj = $event->getSubject();
+            if (isset($userObj) && $userObj['uid'] > 2) {
+                if ($termsOfUseActive) {
+                    $termsOfUseAcceptedDateTimeStr = UserUtil::getVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $userObj['uid'], false);
+                    $termsOfUseAccepted = isset($termsOfUseAcceptedDateTimeStr) && !empty($termsOfUseAcceptedDateTimeStr);
+                } else {
+                    $termsOfUseAccepted = true;
+                }
+                if ($privacyPolicyActive) {
+                    $privacyPolicyAcceptedDateTimeStr = UserUtil::getVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $userObj['uid'], false);
+                    $privacyPolicyAccepted = isset($privacyPolicyAcceptedDateTimeStr) && !empty($privacyPolicyAcceptedDateTimeStr);
+                } else {
+                    $privacyPolicyAccepted = true;
+                }
+                if ($agePolicyActive) {
+                    $agePolicyAcceptedDateTimeStr = UserUtil::getVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $userObj['uid'], false);
+                    $agePolicyAccepted = isset($agePolicyAcceptedDateTimeStr) && !empty($agePolicyAcceptedDateTimeStr);
+                } else {
+                    $agePolicyAccepted = true;
+                }
+                if ($cancellationRightPolicyActive) {
+                    $cancellationRightPolicyAcceptedDateTimeStr = UserUtil::getVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $userObj['uid'], false);
+                    $cancellationRightPolicyAccepted = isset($cancellationRightPolicyAcceptedDateTimeStr) && !empty($cancellationRightPolicyAcceptedDateTimeStr);
+                } else {
+                    $cancellationRightPolicyAccepted = true;
+                }
+                if ($tradeConditionsActive) {
+                    $tradeConditionsAcceptedDateTimeStr = UserUtil::getVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $userObj['uid'], false);
+                    $tradeConditionsAccepted = isset($tradeConditionsAcceptedDateTimeStr) && !empty($tradeConditionsAcceptedDateTimeStr);
+                } else {
+                    $tradeConditionsAccepted = true;
+                }
+                if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted || !$cancellationRightPolicyAccepted || !$tradeConditionsAccepted) {
+                    $event->stopPropagation();
+                    $event->data['redirect_func'] = array(
+                        'modname' => LegalConstant::MODNAME,
+                        'type' => 'user',
+                        'func' => 'acceptPolicies',
+                        'args' => array('login' => true),
+                        'session' => array(
+                            'var' => 'Legal_Controller_User_acceptPolicies',
+                            'namespace' => LegalConstant::MODNAME
+                        )
+                    );
+                    LogUtil::registerError(__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', $domain));
+                }
             }
         }
     }

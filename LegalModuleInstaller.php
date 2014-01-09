@@ -44,9 +44,6 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
         $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
         $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, 13);
-        // Set up the persistent event handler, hook bundles, and any other event-related features.
-        EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Zikula\LegalModule\Listener\UsersLoginVetoListener', 'acceptPoliciesListener'));
-        EventUtil::registerPersistentEventHandlerClass($this->name, 'Zikula\LegalModule\Listener\UsersUiHandlerListener');
         // Initialization successful
         return true;
     }
@@ -103,9 +100,6 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
             case '2.0.1':
                 // Upgrade 2.0.1 -> 2.0.3
                 EventUtil::unregisterPersistentModuleHandlers('Legal'); // using old name on purpose here
-                // register handlers under new modname and with new classes
-                EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Zikula\LegalModule\Listener\UsersLoginVetoListener', 'acceptPoliciesListener'));
-                EventUtil::registerPersistentEventHandlerClass($this->name, 'Zikula\LegalModule\Listener\UsersUiHandlerListener');
                 // @todo write upgrade for permissions?
             case '2.0.3': //current version
                 // Upgrade 2.0.3 -> ?.?.?
