@@ -49,19 +49,19 @@ class UsersUiListener implements EventSubscriberInterface
      *
      * @var Zikula_View
      */
-    protected $view;
+    private $view;
     /**
      * Access to the request instance.
      *
      * @var \Symfony\Component\HttpFoundation\Request
      */
-    protected $request;
+    private $request;
     /**
      * Access to the helper.
      *
      * @var AcceptPoliciesHelper
      */
-    protected $helper;
+    private $helper;
     /**
      * Constructs a new instance of this class.
      *
