@@ -18,9 +18,7 @@
         {gt text='Terms of Use' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.termsofuse) && !empty($fieldErrors.termsofuse)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label for="acceptpolicies_termsofuse">{gt text='Terms of Use'}</label>
-            </div>
+            <label class="col-lg-3 control-label" for="acceptpolicies_termsofuse">{gt text='Terms of Use'}</label>
             <div class="col-lg-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptedpolicies_termsofuse"{if $acceptedPolicies.termsOfUse} checked="checked"{/if} value="1" />
@@ -42,9 +40,7 @@
         {gt text='Privacy Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.privacypolicy) && !empty($fieldErrors.privacypolicy)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}</label>
-            </div>
+            <label class="col-lg-3 control-label" for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}</label>
             <div class="col-lg-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy"{if $acceptedPolicies.privacyPolicy} checked="checked"{/if} value="1" />
@@ -76,9 +72,7 @@
         {assign var='privacyPolicyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
 
         <div class="form-group{if isset($fieldErrors.agepolicy) && !empty($fieldErrors.agepolicy)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label for="acceptpolicies_agepolicy">{gt text='Minimum Age'}</label>
-            </div>
+            <label class="col-lg-3 control-label" for="acceptpolicies_agepolicy">{gt text='Minimum Age'}</label>
             <div class="col-lg-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy"{if $acceptedPolicies.agePolicy} checked="checked"{/if} value="1" />
@@ -101,9 +95,7 @@
         {gt text='General Terms and Conditions of Trade' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.tradeconditions) && !empty($fieldErrors.tradeconditions)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label for="acceptpolicies_tradeconditions">{gt text='General Terms and Conditions of Trade'}</label>
-            </div>
+            <label class="col-lg-3 control-label" for="acceptpolicies_tradeconditions">{gt text='General Terms and Conditions of Trade'}</label>
             <div class="col-lg-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_tradeconditions" name="acceptedpolicies_tradeconditions"{if $acceptedPolicies.tradeConditions} checked="checked"{/if} value="1" />
@@ -125,9 +117,7 @@
         {gt text='Cancellation Right Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label for="acceptpolicies_cancellationrightpolicy">{gt text='Cancellation Right Policy'}</label>
-            </div>
+            <label class="col-lg-3 control-label" for="acceptpolicies_cancellationrightpolicy">{gt text='Cancellation Right Policy'}</label>
             <div class="col-lg-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_cancellationrightpolicy" name="acceptedpolicies_cancellationrightpolicy"{if $acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="1" />

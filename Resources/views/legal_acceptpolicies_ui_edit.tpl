@@ -14,9 +14,7 @@
         {gt text='Terms of Use' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.termsofuse) && !empty($fieldErrors.termsofuse)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label>{gt text='Terms of Use'}</label>
-            </div>
+            <label class="col-lg-3 control-label">{gt text='Terms of Use'}</label>
             {if ($editablePolicies.termsOfUse)}
             <div class="col-lg-9">
                 <div class="radio">
@@ -48,9 +46,7 @@
         {gt text='Privacy Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.privacypolicy) && !empty($fieldErrors.privacypolicy)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label>{gt text='Privacy Policy'}</label>
-            </div>
+            <label class="col-lg-3 control-label">{gt text='Privacy Policy'}</label>
             {if ($editablePolicies.privacyPolicy)}
             <div class="col-lg-9">
                 <div class="radio">
@@ -74,9 +70,7 @@
     {/if}
     {if $activePolicies.agePolicy && $viewablePolicies.agePolicy}
         <div class="form-group{if isset($fieldErrors.agepolicy) && !empty($fieldErrors.agepolicy)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label>{gt text='Minimum Age'}</label>
-            </div>
+            <label class="col-lg-3 control-label">{gt text='Minimum Age'}</label>
             {if ($editablePolicies.agePolicy)}
             <div class="col-lg-9">
                 <div class="radio">
@@ -108,9 +102,7 @@
         {gt text='General Terms and Conditions of Trade' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.tradeconditions) && !empty($fieldErrors.tradeconditions)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label>{gt text='General Terms and Conditions of Trade'}</label>
-            </div>
+            <label class="col-lg-3 control-label">{gt text='General Terms and Conditions of Trade'}</label>
             {if ($editablePolicies.tradeConditions)}
             <div class="col-lg-9">
                 <div class="radio">
@@ -142,9 +134,7 @@
         {gt text='Cancellation Right Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} has-error{/if}">
-            <div class="col-lg-3 control-label">
-                <label>{gt text='Cancellation Right Policy'}</label>
-            </div>
+            <label class="col-lg-3 control-label">{gt text='Cancellation Right Policy'}</label>
             {if ($editablePolicies.cancellationRightPolicy)}
             <div class="col-lg-9">
                 <div class="radio">
