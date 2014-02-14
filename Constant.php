@@ -108,6 +108,12 @@ class Constant
      */
     const MODVAR_MINIMUM_AGE = 'minimumAge';
     /**
+     * The module variable indicating that the EU cookie law complaince option is enabled.
+     *
+     * @var int
+     */
+    const MODVAR_EUCOOKIE = 'eucookie';
+    /**
      * Users account record attribute key for terms of use acceptance
      *
      * @var string
@@ -137,4 +143,10 @@ class Constant
      * @var string
      */
     const ATTRIBUTE_TRADECONDITIONS_ACCEPTED = '_Legal_tradeConditionsConfirmed';
+    /**
+     * Users account record attribute key for eu cookie acceptance.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_EUCOOKIE_ACCEPTED = '_Legal_euCookieConfirmed';
 }
