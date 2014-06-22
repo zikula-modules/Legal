@@ -15,12 +15,12 @@
 
 namespace Zikula\LegalModule;
 
-
 /**
  * Provides version information for the Legal module.
  */
 class LegalModuleVersion extends \Zikula_AbstractVersion
 {
+
     /**
      * Retrieve version and other metadata for the Legal module.
      *
@@ -28,6 +28,7 @@ class LegalModuleVersion extends \Zikula_AbstractVersion
      */
     public function getMetaData()
     {
+
         return array(
             'oldnames' => array('legal', 'Legal'),
             'displayname' => $this->__('Legal info manager'),
@@ -47,6 +48,7 @@ class LegalModuleVersion extends \Zikula_AbstractVersion
                 $this->name . '::tradeconditions' => '::'
             )
         );
+
     }
 
 }
