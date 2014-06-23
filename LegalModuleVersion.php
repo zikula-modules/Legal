@@ -31,7 +31,7 @@ class LegalModuleVersion extends \Zikula_AbstractVersion
 
         return array(
             'oldnames' => array('legal', 'Legal'),
-            'displayname' => $this->__('Legal info manager'),
+            'displayname' => $this->__('Legal'),
             'description' => $this->__('Provides an interface for managing the site\'s legal documents.'),
             'url' => $this->__('legalmod'),
             'version' => '2.0.3',
