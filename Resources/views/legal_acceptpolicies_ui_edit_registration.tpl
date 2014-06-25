@@ -165,9 +165,8 @@
             <div class="col-lg-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy"{if ($acceptedPolicies.agePolicy)} checked="checked"{/if} value="1" required="required" />
-                    <em class="help-text">{gt text='Check this box to indicate that you are %1$s years of age or older.' tag1=$modvars.$module.minimumAge|safetext}</em>
+                    <em class="help-text">{gt text='Check this box to indicate that you are %1$s years of age or older, in accordance with our minimum age requirement.' tag1=$modvars.$module.minimumAge|safetext}</em>
                 </div>
-                <div class="alert alert-info">{gt text='Information on our minimum age policy, and on how we handle personally identifiable information can be found in our %1$s and in our %2$s.' tag1=$termsOfUseLink tag2=$privacyPolicyLink}</div>
                 <p id="acceptpolicies_agepolicy_error" class="alert alert-danger{if !isset($fieldErrors.agepolicy) || empty($fieldErrors.agepolicy)} hidden{/if}">
                     {$fieldErrors.agepolicy|default:''|safetext}
                 </p>
