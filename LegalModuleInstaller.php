@@ -100,6 +100,8 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
             case '2.0.1':
                 // Upgrade 2.0.1 -> 2.0.3
                 EventUtil::unregisterPersistentModuleHandlers('Legal'); // using old name on purpose here
+                // migrate attributes for Legal module from objectdata_attributes to users_attributes
+                $this->migrateAttributes();
                 // @todo write upgrade for permissions?
             case '2.0.3': //current version
                 // Upgrade 2.0.3 -> ?.?.?
@@ -121,6 +123,31 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         $this->delVars();
         // Deletion successful
         return true;
+    }
+
+    /**
+     * migrate data from the objectdata_attributes table to the users_attributes
+     */
+    private function migrateAttributes()
+    {
+        $connection = $this->entityManager->getConnection();
+        $sqls = array();
+        // copy data from objectdata_attributes to users_attributes
+        $sqls[] = 'INSERT INTO users_attributes
+                    (user_id, name, value)
+                    SELECT object_id, attribute_name, value
+                    FROM objectdata_attributes
+                    WHERE object_type = \'users\'
+                    AND LEFT(attribute_name, 7) = \'_Legal_\'
+                    ORDER BY object_id, attribute_name';
+        // remove old data
+        $sqls[] = 'DELETE FROM objectdata_attributes
+                    WHERE object_type = \'users\'
+                    AND LEFT(attribute_name, 7) = \'_Legal_\'';
+        foreach ($sqls as $sql) {
+            $stmt = $connection->prepare($sql);
+            $stmt->execute();
+        }
     }
 
 }
