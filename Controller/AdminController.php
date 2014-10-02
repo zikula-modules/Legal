@@ -16,41 +16,69 @@
 namespace Zikula\LegalModule\Controller;
 
 use ModUtil;
-use Zikula_Exception_Forbidden;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use SecurityUtil;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route; // used in annotations - do not remove
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method; // used in annotations - do not remove
+use Symfony\Component\Routing\RouterInterface;
 
 /**
+ * @Route("/admin")
+ *
  * Administrator-initiated actions for the Legal module.
+ *
+ * Class AdminController
+ * @package Zikula\LegalModule\Controller
  */
 class AdminController extends \Zikula_AbstractController
 {
     /**
-     * The main administration entry point.
+     * Route not needed here because method is legacy-only
      *
-     * Redirects to the {@link modifyConfig()} function.
+     * The legacy administration entry point.
      *
-     * @return void
+     * @deprecated
+     *
+     * @return RedirectResponse
      */
     public function mainAction()
     {
-        $this->redirect(ModUtil::url($this->name, 'admin', 'modifyConfig'));
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_modifyconfig', array(), RouterInterface::ABSOLUTE_URL));
     }
-    
+
     /**
+     * @Route("")
+     *
+     * The main administration entry point.
+     *
+     * @return RedirectResponse
+     */
+    public function indexAction()
+    {
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_modifyconfig', array(), RouterInterface::ABSOLUTE_URL));
+    }
+
+    /**
+     * @Route("/config")
+     * @Method("GET")
+     *
      * Modify configuration.
      *
      * Modify the configuration parameters of the module.
      *
-     * @return string The rendered output of the modifyconfig template.
+     * @return Response The rendered output of the modifyconfig template.
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
     public function modifyconfigAction()
     {
         // Security check
         if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
-            throw new Zikula_Exception_Forbidden();
+            throw new AccessDeniedException();
         }
         // get all groups
         $groups = ModUtil::apiFunc('Groups', 'user', 'getall');
@@ -59,63 +87,70 @@ class AdminController extends \Zikula_AbstractController
         // add dummy group "no groups" on top
         array_unshift($groups, array('gid' => -1, 'name' => $this->__('No groups')));
         // Assign all the module vars
-        return $this->view->assign(ModUtil::getVar('legal'))->assign('groups', $groups)->fetch('Admin/modifyconfig.tpl');
+        $this->view->assign(ModUtil::getVar('legal'))
+            ->assign('groups', $groups);
+
+        return new Response($this->view->fetch('Admin/modifyconfig.tpl'));
     }
-    
+
     /**
+     * @Route("/config")
+     * @Method("POST")
+     *
      * Update the configuration.
      *
      * Save the results of modifying the configuration parameters of the module. Redirects to the module's main page
      * when completed.
      *
-     * @return void
+     * @param Request $request
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @return RedirectResponse
+     *
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
-    public function updateconfigAction()
+    public function updateconfigAction(Request $request)
     {
         // Security check
         if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
-            throw new Zikula_Exception_Forbidden();
+            throw new AccessDeniedException();
         }
         // Confirm the forms authorisation key
         $this->checkCsrfToken();
         // set our module variables
-        $legalNoticeActive = $this->request->request->get(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, true);
+        $legalNoticeActive = $request->request->get(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, true);
         $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, $legalNoticeActive);
-        $termsOfUseActive = $this->request->request->get(LegalConstant::MODVAR_TERMS_ACTIVE, false);
+        $termsOfUseActive = $request->request->get(LegalConstant::MODVAR_TERMS_ACTIVE, false);
         $this->setVar(LegalConstant::MODVAR_TERMS_ACTIVE, $termsOfUseActive);
-        $privacyPolicyActive = $this->request->request->get(LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
+        $privacyPolicyActive = $request->request->get(LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
         $this->setVar(LegalConstant::MODVAR_PRIVACY_ACTIVE, $privacyPolicyActive);
-        $accessibilityStmtActive = $this->request->request->get(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false);
+        $accessibilityStmtActive = $request->request->get(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false);
         $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, $accessibilityStmtActive);
-        $tradeConditionsActive = $this->request->request->get(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+        $tradeConditionsActive = $request->request->get(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
         $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, $tradeConditionsActive);
-        $cancellationRightPolicyActive = $this->request->request->get(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $cancellationRightPolicyActive = $request->request->get(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
         $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, $cancellationRightPolicyActive);
-        $legalNoticeUrl = $this->request->request->get(LegalConstant::MODVAR_LEGALNOTICE_URL, '');
+        $legalNoticeUrl = $request->request->get(LegalConstant::MODVAR_LEGALNOTICE_URL, '');
         $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_URL, $legalNoticeUrl);
-        $termsOfUseUrl = $this->request->request->get(LegalConstant::MODVAR_TERMS_URL, '');
+        $termsOfUseUrl = $request->request->get(LegalConstant::MODVAR_TERMS_URL, '');
         $this->setVar(LegalConstant::MODVAR_TERMS_URL, $termsOfUseUrl);
-        $privacyPolicyUrl = $this->request->request->get(LegalConstant::MODVAR_PRIVACY_URL, '');
+        $privacyPolicyUrl = $request->request->get(LegalConstant::MODVAR_PRIVACY_URL, '');
         $this->setVar(LegalConstant::MODVAR_PRIVACY_URL, $privacyPolicyUrl);
-        $accessibilityStmtUrl = $this->request->request->get(LegalConstant::MODVAR_ACCESSIBILITY_URL, '');
+        $accessibilityStmtUrl = $request->request->get(LegalConstant::MODVAR_ACCESSIBILITY_URL, '');
         $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_URL, $accessibilityStmtUrl);
-        $tradeConditionsUrl = $this->request->request->get(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
+        $tradeConditionsUrl = $request->request->get(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
         $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, $tradeConditionsUrl);
-        $cancellationRightPolicyUrl = $this->request->request->get(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
+        $cancellationRightPolicyUrl = $request->request->get(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
         $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, $cancellationRightPolicyUrl);
-        $minimumAge = $this->request->request->get(LegalConstant::MODVAR_MINIMUM_AGE, 0);
+        $minimumAge = $request->request->get(LegalConstant::MODVAR_MINIMUM_AGE, 0);
         $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, $minimumAge);
-        $resetagreement = $this->request->request->get('resetagreement', -1);
+        $resetagreement = $request->request->get('resetagreement', -1);
         if ($resetagreement != -1) {
             ModUtil::apiFunc($this->name, 'admin', 'resetagreement', array('gid' => $resetagreement));
         }
         // the module configuration has been updated successfuly
-        $this->registerStatus($this->__('Done! Saved module configuration.'));
-        // This function generated no output, and so now it is complete we redirect
-        // the user to an appropriate page for them to carry on their work
-        $this->redirect(ModUtil::url($this->name, 'admin', 'main'));
+        $request->getSession()->getFlashBag()->add('status', $this->__('Done! Saved module configuration.'));
+
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_index', array(), RouterInterface::ABSOLUTE_URL));
     }
 
 }

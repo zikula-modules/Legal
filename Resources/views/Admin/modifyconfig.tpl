@@ -9,7 +9,7 @@
     <a href="http://community.zikula.org/index.php?module=Wiki&tag=TemplateOverridng">overridden</a> by theme templates,
     or by global templates you would create in the "config/templates/legal/" directory (in the appropriate sub-directory
     for the language you are writing for).'}</p>
-<form id="legal_config" class="form-horizontal" role="form" action="{modurl modname=$module type="admin" func="updateconfig"}" method="post" enctype="application/x-www-form-urlencoded">
+<form id="legal_config" class="form-horizontal" role="form" action="{route name='zikulalegalmodule_admin_updateconfig'}" method="post" enctype="application/x-www-form-urlencoded">
     <div>
         <input type="hidden" name="csrftoken" value="{insert name='csrftoken'}" />
         <fieldset>
@@ -139,7 +139,7 @@
         </fieldset>
         <div class="col-lg-offset-3 col-lg-9">
             <button class="btn btn-success" type="submit" name="Save">{gt text="Save"}</button>
-            <a class="btn btn-danger" href="{modurl modname=$module type='admin' func='main'}" title="{gt text="Cancel"}">{gt text="Cancel"}</a>
+            <a class="btn btn-danger" href="{route name='zikulalegalmodule_admin_index'}" title="{gt text="Cancel"}">{gt text="Cancel"}</a>
         </div>
     </div>
 </form>

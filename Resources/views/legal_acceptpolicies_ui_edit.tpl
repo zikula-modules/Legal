@@ -5,7 +5,7 @@
     <input type="hidden" id="acceptpolicies_csrftoken" name="acceptpolicies_csrftoken" value="{insert name='csrftoken'}" />
     <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="{$policiesUid}" />
     {if $activePolicies.termsOfUse && $viewablePolicies.termsOfUse}
-        {modurl modname=$module type='user' func='termsofuse' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_termsofuse' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -37,7 +37,7 @@
         </div>
     {/if}
     {if $activePolicies.privacyPolicy && $viewablePolicies.privacyPolicy}
-        {modurl modname=$module type='user' func='privacypolicy' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_privacypolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -93,7 +93,7 @@
         </div>
     {/if}
     {if $activePolicies.tradeConditions && $viewablePolicies.tradeConditions}
-        {modurl modname=$module type='user' func='tradeConditions' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_tradeconditions' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}
@@ -125,7 +125,7 @@
         </div>
     {/if}
     {if $activePolicies.cancellationRightPolicy && $viewablePolicies.cancellationRightPolicy}
-        {modurl modname=$module type='user' func='cancellationRightPolicy' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_cancellationrightpolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if $customUrl ne ''}

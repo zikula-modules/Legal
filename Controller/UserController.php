@@ -17,16 +17,21 @@ namespace Zikula\LegalModule\Controller;
 
 use Zikula\LegalModule\Constant as LegalConstant;
 use ModUtil;
-use Zikula_Exception_Forbidden;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use SecurityUtil;
 use ZLanguage;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use UserUtil;
-use Zikula_Exception_Fatal;
 use DateTimeZone;
 use DateTime;
 use System;
 use SessionUtil;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route; // used in annotations - do not remove
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method; // used in annotations - do not remove
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Module controller for user-related operations.
@@ -34,22 +39,43 @@ use SessionUtil;
 class UserController extends \Zikula_AbstractController
 {
     /**
+     * Route not needed here because method is legacy-only
+     *
      * Legal Module main user function.
      *
      * Redirects to the Terms of Use legal document.
      *
-     * @return void
+     * @return RedirectResponse
      */
     public function mainAction()
     {
-        echo 1;
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
-            $url = ModUtil::url($this->name, 'user', 'termsOfUse');
+            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', array(), RouterInterface::ABSOLUTE_URL);
         }
-        $this->redirect($url);
+
+        return new RedirectResponse($url);
     }
-    
+
+    /**
+     * @Route("")
+     * 
+     * Legal Module main user function.
+     *
+     * Redirects to the Terms of Use legal document.
+     *
+     * @return RedirectResponse
+     */
+    public function indexAction()
+    {
+        $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
+        if (empty($url)) {
+            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', array(), RouterInterface::ABSOLUTE_URL);
+        }
+
+        return new RedirectResponse($url);
+    }
+
     /**
      * Render and display the specified legal document, or redirect to the specified custom URL if it exists.
      *
@@ -69,19 +95,15 @@ class UserController extends \Zikula_AbstractController
      *                                      legal document; typically this is a constant from {@link LegalConstant}, such as
      *                                      {@link LegalConstant::MODVAR_TERMS_URL}.
      *
-     * @return string HTML output string
+     * @return RedirectResponse|string HTML output string
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
-    private function renderDocument(
-        $documentName,
-        $accessInstanceKey,
-        $activeFlagKey,
-        $customUrlKey
-    ) {
+    private function renderDocument($documentName, $accessInstanceKey, $activeFlagKey, $customUrlKey)
+    {
         // Security check
         if (!SecurityUtil::checkPermission($this->name . '::' . $accessInstanceKey, '::', ACCESS_OVERVIEW)) {
-            throw new Zikula_Exception_Forbidden();
+            throw new AccessDeniedException();
         }
         if (!$this->getVar($activeFlagKey)) {
             return $this->view->fetch('User/policynotactive.tpl');
@@ -95,173 +117,176 @@ class UserController extends \Zikula_AbstractController
                 if (!$this->view->template_exists("{$languageCode}/legal_text_{$documentName}.tpl")) {
                     $languageCode = 'en';
                 }
+
+                // intentionally return non-Response
                 return $this->view->assign('languageCode', $languageCode)->fetch($template);
             } else {
-                $this->redirect($customUrl);
+
+                return new RedirectResponse($customUrl);
             }
         }
     }
-    
+
     /**
+     * @Route("/legalnotice")
+     * 
      * Display Legal notice.
      *
-     * @return string HTML output string
+     * @return Response
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
     public function legalNoticeAction()
     {
-        return $this->renderDocument(
-            'legalnotice',
-            'legalnotice',
-            LegalConstant::MODVAR_LEGALNOTICE_ACTIVE,
-            LegalConstant::MODVAR_LEGALNOTICE_URL
-        );
+        $doc = $this->renderDocument('legalnotice', 'legalnotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
+
+        return new Response($doc);
     }
     
     /**
+     * @Route("/termsofuse")
+     *
      * Display Terms of Use
      *
-     * @return string HTML output string
+     * @return Response
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
     public function termsofuseAction()
     {
-        return $this->renderDocument(
-            'termsofuse',
-            'termsofuse',
-            LegalConstant::MODVAR_TERMS_ACTIVE,
-            LegalConstant::MODVAR_TERMS_URL
-        );
+        $doc = $this->renderDocument('termsofuse', 'termsofuse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
+
+        return new Response($doc);
     }
     
     /**
+     * @Route("/privacy")
+     *
      * Display Privacy Policy.
      *
      * Redirects to {@link privacyPolicy()}.
      *
      * @deprecated Since 1.6.1
      *
-     * @return void
+     * @return RedirectResponse
      */
     public function privacyAction()
     {
-        $this->redirect(ModUtil::url($this->name, 'user', 'privacyPolicy'));
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_user_privacypolicy', array(), RouterInterface::ABSOLUTE_URL));
     }
     
     /**
+     * @Route("/privacypolicy")
+     *
      * Display Privacy Policy
      *
-     * @return string HTML output string
+     * @return Response
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
     public function privacyPolicyAction()
     {
-        return $this->renderDocument(
-            'privacypolicy',
-            'privacypolicy',
-            LegalConstant::MODVAR_PRIVACY_ACTIVE,
-            LegalConstant::MODVAR_PRIVACY_URL
-        );
+        $doc = $this->renderDocument('privacypolicy', 'privacypolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
+
+        return new Response($doc);
     }
     
     /**
+     * @Route("/accessibilitystatement")
+     *
      * Display Accessibility statement
      *
-     * @return string HTML output string
+     * @return Response
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
     public function accessibilitystatementAction()
     {
-        return $this->renderDocument(
-            'accessibilitystatement',
-            'accessibilitystatement',
-            LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE,
-            LegalConstant::MODVAR_ACCESSIBILITY_URL
-        );
+        $doc = $this->renderDocument('accessibilitystatement', 'accessibilitystatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
+
+        return new Response($doc);
     }
     
     /**
+     * @Route("/cancellationrightpolicy")
+     *
      * Display Cancellation right policy
      *
-     * @return string HTML output string
+     * @return Response
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
     public function cancellationRightPolicyAction()
     {
-        return $this->renderDocument(
-            'cancellationrightpolicy',
-            'cancellationrightpolicy',
-            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE,
-            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL
-        );
+        $doc = $this->renderDocument('cancellationrightpolicy', 'cancellationrightpolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
+
+        return new Response($doc);
     }
     
     /**
+     * @Route("/tradeconditions")
+     *
      * Display Trade conditions
      *
-     * @return string HTML output string
+     * @return Response
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      */
     public function tradeConditionsAction()
     {
-        return $this->renderDocument(
-            'tradeconditions',
-            'tradeconditions',
-            LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE,
-            LegalConstant::MODVAR_TRADECONDITIONS_URL
-        );
+        $doc = $this->renderDocument( 'tradeconditions', 'tradeconditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
+
+        return new Response($doc);
     }
     
     /**
+     * @Route("/acceptpolicies")
+     *
      * Allow the user to accept active terms of use and/or privacy policy.
      *
      * This function is currently used by the Legal module's handler for the users.login.veto event.
+     * 
+     * @param Request $request
      *
-     * @return string The rendered output from the template.
+     * @return Response
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user is not logged in and the acceptance attempt is not a result of a login attempt.
+     * @throws AccessDeniedException Thrown if the user is not logged in and the acceptance attempt is not a result of a login attempt.
      *
-     * @throws Zikula_Exception_Fatal Thrown if the user is already logged in and the acceptance attempt is a result of a login attempt;
+     * @throws \Exception Thrown if the user is already logged in and the acceptance attempt is a result of a login attempt;
      *      also thrown in cases where expected data is not present or not in an expected form;
      *      also thrown if the call to this function is not the result of a POST operation or a GET operation.
      */
-    public function acceptPoliciesAction()
+    public function acceptPoliciesAction(Request $request)
     {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
-        $sessionVars = $this->request->getSession()->get(
+        $sessionVars = $request->getSession()->get(
             // @todo check on this value
             'Legal_Controller_User_acceptPolicies',
             null,
             $this->name
         );
         // @todo check this value
-        $this->request->getSession()->del('Legal_Controller_User_acceptPolicies', $this->name);
+        $request->getSession()->remove('Legal_Controller_User_acceptPolicies', $this->name);
         $processed = false;
         $helper = new AcceptPoliciesHelper();
-        if ($this->request->isMethod('POST')) {
+        if ($request->isMethod('POST')) {
             $this->checkCsrfToken();
             $isLogin = isset($sessionVars) && !empty($sessionVars);
             if (!$isLogin && !UserUtil::isLoggedIn()) {
-                throw new Zikula_Exception_Forbidden();
+                throw new AccessDeniedException();
             } elseif ($isLogin && UserUtil::isLoggedIn()) {
-                throw new Zikula_Exception_Fatal();
+                throw new \Exception();
             }
-            $policiesUid = $this->request->request->get('acceptedpolicies_uid', false);
+            $policiesUid = $request->request->get('acceptedpolicies_uid', false);
             $acceptedPolicies = array(
-                'termsOfUse' => $this->request->request->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy' => $this->request->request->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy' => $this->request->request->get('acceptedpolicies_agepolicy', false),
-                'cancellationRightPolicy' => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false),
-                'tradeConditions' => $this->request->request->get('acceptedpolicies_tradeconditions', false));
+                'termsOfUse' => $request->request->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy' => $request->request->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy' => $request->request->get('acceptedpolicies_agepolicy', false),
+                'cancellationRightPolicy' => $request->request->get('acceptedpolicies_cancellationrightpolicy', false),
+                'tradeConditions' => $request->request->get('acceptedpolicies_tradeconditions', false));
             if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
-                throw new Zikula_Exception_Fatal();
+                throw new \Exception();
             }
             $activePolicies = $helper->getActivePolicies();
             $originalAcceptedPolicies = $helper->getAcceptedPolicies($policiesUid);
@@ -313,7 +338,7 @@ class UserController extends \Zikula_AbstractController
             }
             if ($processed) {
                 if ($isLogin) {
-                    $loginArgs = $this->request->getSession()->get(
+                    $loginArgs = $request->getSession()->get(
                         // @todo check on this value
                         'Users_Controller_User_login',
                         array(),
@@ -322,16 +347,19 @@ class UserController extends \Zikula_AbstractController
                     $loginArgs['authentication_method'] = $sessionVars['authentication_method'];
                     $loginArgs['authentication_info'] = $sessionVars['authentication_info'];
                     $loginArgs['rememberme'] = $sessionVars['rememberme'];
+
+                    // @TODO WARNING: direct call to controller function with `$args` array
                     return ModUtil::func('Users', 'user', 'login', $loginArgs);
                 } else {
-                    $this->redirect(System::getHomepageUrl());
+
+                    return new RedirectResponse(System::getHomepageUrl());
                 }
             }
-        } elseif ($this->request->isMethod('GET')) {
-            $isLogin = $this->request->query->get('login', false);
+        } elseif ($request->isMethod('GET')) {
+            $isLogin = $request->query->get('login', false);
             $fieldErrors = array();
         } else {
-            throw new Zikula_Exception_Forbidden();
+            throw new AccessDeniedException();
         }
         // If we are coming here from the login process, then there are certain things that must have been
         // send along in the session variable. If not, then error.
@@ -341,7 +369,7 @@ class UserController extends \Zikula_AbstractController
                 || !is_array($sessionVars['authentication_info'])
                 || !isset($sessionVars['authentication_method'])
                 || !is_array($sessionVars['authentication_method']))) {
-            throw new Zikula_Exception_Fatal();
+            throw new \Exception();
         }
         if ($isLogin) {
             $policiesUid = $sessionVars['user_obj']['uid'];
@@ -349,14 +377,14 @@ class UserController extends \Zikula_AbstractController
             $policiesUid = UserUtil::getVar('uid');
         }
         if (!$policiesUid || empty($policiesUid)) {
-            throw new Zikula_Exception_Fatal();
+            throw new \Exception();
         }
         if ($isLogin) {
             // Pass along the session vars to updateAcceptance. We didn't want to just keep them in the session variable
             // Legal_Controller_User_acceptPolicies because if we hit an exception or got redirected, then the data
             // would have been orphaned, and it contains some sensitive information.
             SessionUtil::requireSession();
-            $this->request->getSession()->set(
+            $request->getSession()->set(
                 // @todo check this value
                 'Legal_Controller_User_acceptPolicies',
                 $sessionVars,
@@ -370,6 +398,7 @@ class UserController extends \Zikula_AbstractController
             'acceptedPolicies' => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
             'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
             'fieldErrors' => $fieldErrors);
+
         return $this->view->assign($templateVars)->fetch('User/acceptpolicies.tpl');
     }
 

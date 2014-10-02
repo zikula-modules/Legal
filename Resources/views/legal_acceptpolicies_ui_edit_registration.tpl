@@ -4,7 +4,7 @@
     <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="" />
     {if ($activePolicies.termsOfUse)}
         {gt text='Terms of Use' assign='policyName'}
-        {modurl modname=$module type='user' func='termsofuse' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_termsofuse' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if (!empty($customUrl))}
@@ -50,7 +50,7 @@
     {/if}
     {if ($activePolicies.privacyPolicy)}
         {gt text='Privacy Policy' assign='policyName'}
-        {modurl modname=$module type='user' func='privacyPolicy' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_privacypolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if (!empty($customUrl))}
@@ -97,7 +97,7 @@
     {/if}
     {if ($activePolicies.agePolicy)}
         {gt text='Terms of Use' assign='policyName'}
-        {modurl modname=$module type='user' func='termsofuse' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_termsofuse' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if (!empty($customUrl))}
@@ -129,7 +129,7 @@
         </div>
         {* /Modal Window *}
         {gt text='Privacy Policy' assign='policyName'}
-        {modurl modname=$module type='user' func='privacypolicy' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_privacypolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if (!empty($customUrl))}
@@ -175,7 +175,7 @@
     {/if}
     {if ($activePolicies.tradeConditions)}
         {gt text='General Terms and Conditions of Trade' assign='policyName'}
-        {modurl modname=$module type='user' func='tradeConditions' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_tradeconditions' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if (!empty($customUrl))}
@@ -221,7 +221,7 @@
     {/if}
     {if ($activePolicies.cancellationRightPolicy)}
         {gt text='Cancellation Right Policy' assign='policyName'}
-        {modurl modname=$module type='user' func='cancellationRightPolicy' assign='policyUrl'}
+        {route name='zikulalegalmodule_user_cancellationrightpolicy' assign='policyUrl'}
         {assign var='customUrl' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
         {assign var='customUrl' value=$modvars.$module.$customUrl}
         {if (!empty($customUrl))}
