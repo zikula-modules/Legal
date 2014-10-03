@@ -15,9 +15,8 @@
 
 namespace Zikula\LegalModule\Api;
 
-use Zikula_Exception_Forbidden;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use SecurityUtil;
-use Zikula_Exception_Fatal;
 use DBUtil;
 use ModUtil;
 
@@ -37,28 +36,27 @@ class AdminApi extends \Zikula_AbstractApi
      *
      * @return bool True if successfully reset, otherwise false.
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      *
-     * @throws Zikula_Exception_Fatal Thrown in cases where expected data is not present or not in an expected form.
+     * @throws \Exception Thrown in cases where expected data is not present or not in an expected form.
      */
     public function resetagreement($args)
     {
         // Security check
         if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
-            throw new Zikula_Exception_Forbidden();
+            throw new AccessDeniedException();
         }
         if (!isset($args['gid']) || $args['gid'] == -1) {
-            throw new Zikula_Exception_Fatal();
+            throw new \Exception();
         }
-        // Get database setup
-        $pntable = DBUtil::getTables();
-        $userscolumn = $pntable['users_column'];
+        $qb = $this->entityManager->createQueryBuilder();
         if ($args['gid'] == 0) {
             //all users
-            // creative usage of DBUtil
-            $object = array('activated' => 2);
-            $where = "WHERE {$userscolumn['uid']} NOT IN (1,2)";
-            DBUtil::updateObject($object, 'users', $where, 'uid');
+            $query = $qb->update('ZikulaUsersModule:UserEntity', 'u')
+                ->set('u.activated', 2)
+                ->where('u.uid NOT IN (1,2)')
+                ->getQuery();
+            $query->execute();
         } else {
             // single group
             // get the group incl members
@@ -78,12 +76,14 @@ class AdminApi extends \Zikula_AbstractApi
             if (count($grp['members']) == 0) {
                 return false;
             }
-            $members = '(' . implode(array_keys($grp['members']), ',') . ')';
-            // creative usage of DBUtil
-            $object = array('activated' => 2);
-            $where = "WHERE {$userscolumn['uid']} IN {$members}";
-            DBUtil::updateObject($object, 'users', $where, 'uid');
+            $query = $qb->update('ZikulaUsersModule:UserEntity', 'u')
+                ->set('u.activated', 2)
+                ->where('u.uid IN (:members)')
+                ->setParameter('members', array_keys($grp['members']))
+                ->getQuery();
+            $query->execute();
         }
+
         return true;
     }
     
@@ -101,6 +101,7 @@ class AdminApi extends \Zikula_AbstractApi
                 'text' => $this->__('Settings'),
                 'class' => 'z-icon-es-config');
         }
+
         return $links;
     }
 
