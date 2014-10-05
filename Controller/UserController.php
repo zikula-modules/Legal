@@ -32,6 +32,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route; // used in annotations - do not remove
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method; // used in annotations - do not remove
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * Module controller for user-related operations.
@@ -338,18 +339,25 @@ class UserController extends \Zikula_AbstractController
             }
             if ($processed) {
                 if ($isLogin) {
-                    $loginArgs = $request->getSession()->get(
+                    $path = $request->getSession()->get(
                         // @todo check on this value
                         'Users_Controller_User_login',
                         array(),
                         'ZikulaUsersModule'
                     );
-                    $loginArgs['authentication_method'] = $sessionVars['authentication_method'];
-                    $loginArgs['authentication_info'] = $sessionVars['authentication_info'];
-                    $loginArgs['rememberme'] = $sessionVars['rememberme'];
+                    $path['authentication_method'] = $sessionVars['authentication_method'];
+                    $path['authentication_info'] = $sessionVars['authentication_info'];
+                    $path['rememberme'] = $sessionVars['rememberme'];
+                    $path['_controller'] = 'zikulausersmodule_user_login';
 
-                    // @TODO WARNING: direct call to controller function with `$args` array
-                    return ModUtil::func('Users', 'user', 'login', $loginArgs);
+                    $subRequest = $request->duplicate(array(), null, $path);
+                    $httpKernel = $this->get('http_kernel');
+                    $response = $httpKernel->handle(
+                        $subRequest,
+                        HttpKernelInterface::SUB_REQUEST
+                    );
+
+                    return $response;
                 } else {
 
                     return new RedirectResponse(System::getHomepageUrl());
