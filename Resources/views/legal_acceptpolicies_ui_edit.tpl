@@ -1,4 +1,3 @@
-{ajaxheader modname=$module filename='Legal.UI.Edit.js' noscriptaculous=true effects=true}
 {if (is_numeric($policiesUid) && ($policiesUid > 2) || ($policiesUid == ''))}
 <fieldset>
     <legend>{gt text='Site policies'}</legend>
