@@ -21,10 +21,10 @@ use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula_View;
 use ModUtil;
 use UserUtil;
-use Users_Constant;
-use Zikula_Exception_Forbidden;
+use Zikula\Module\UsersModule\Constant as UsersConstant;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Hook\ValidationResponse;
-use Zikula_Exception_Fatal;
+use Zikula\Core\Exception\FatalErrorException;
 use LogUtil;
 use DateTimeZone;
 use DateTime;
@@ -63,6 +63,10 @@ class UsersUiListener implements EventSubscriberInterface
      */
     private $helper;
     /**
+     * @var ValidationResponse
+     */
+    private $validation;
+    /**
      * Constructs a new instance of this class.
      *
      * the request attribute is set to the current request service instance.
@@ -89,7 +93,7 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Establish the handlers for various events.
      *
-     * @return void
+     * @return array
      */
     public static function getSubscribedEvents()
     {
@@ -124,7 +128,7 @@ class UsersUiListener implements EventSubscriberInterface
      */
     protected function redirect($url, $type = 302)
     {
-        $response = new RedirectResponse(System::normalizeUrl($url), $type);
+        $response = new RedirectResponse(\System::normalizeUrl($url), $type);
         $response->send();
         exit;
     }
@@ -247,40 +251,40 @@ class UsersUiListener implements EventSubscriberInterface
      *
      * @return void
      *
-     * @throws Zikula_Exception_Forbidden Thrown if the user does not have the appropriate access level for the function, or to
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function, or to
      *      modify the acceptance of policies on a user account other than his own.
      *
-     * @throws Zikula_Exception_Fatal Thrown if the user record retrieved from the POST is in an unexpected form or its data is
+     * @throws FatalErrorException Thrown if the user record retrieved from the POST is in an unexpected form or its data is
      *      unexpected.
      */
     public function validateEdit(GenericEvent $event)
     {
-        if (!$this->request->isPost()) {
+        if (!$this->request->isMethod('POST')) {
             // Check if we got here by a reentrant login method.
             $sessionVars = $this->request->getSession()->get(
                 'User_login',
                 array(),
-                Users_Constant::SESSION_VAR_NAMESPACE
+                UsersConstant::SESSION_VAR_NAMESPACE
             );
             $getReentrantToken = $this->request->query->get('reentranttoken', null);
             if (!isset($sessionVars['reentranttoken']) || !isset($getReentrantToken) || $getReentrantToken != $sessionVars['reentranttoken']) {
                 // Not reentrant login method,  it is probably a hack attempt.
-                throw new Zikula_Exception_Forbidden();
+                throw new AccessDeniedException();
             }
         }
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
-        if ($this->request->getPost()->has('acceptedpolicies_uid')) {
+        if ($this->request->request->has('acceptedpolicies_uid')) {
             ModUtil::load(LegalConstant::MODNAME);
             // to enable translation domain
             // Set up the necessary objects for the validation response
             $policiesAcceptedAtRegistration = array(
-                'termsOfUse' => $this->request->getPost()->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy' => $this->request->getPost()->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy' => $this->request->getPost()->get('acceptedpolicies_agepolicy', false),
-                'cancellationRightPolicy' => $this->request->getPost()->get('acceptedpolicies_cancellationrightpolicy', false),
-                'tradeConditions' => $this->request->getPost()->get('acceptedpolicies_tradeconditions', false));
-            $uid = $this->request->getPost()->get('acceptedpolicies_uid', false);
+                'termsOfUse' => $this->request->request->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy' => $this->request->request->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy' => $this->request->request->get('acceptedpolicies_agepolicy', false),
+                'cancellationRightPolicy' => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false),
+                'tradeConditions' => $this->request->request->get('acceptedpolicies_tradeconditions', false));
+            $uid = $this->request->request->get('acceptedpolicies_uid', false);
             $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
             $activePolicies = $this->helper->getActivePolicies();
             // Get the user record from the event. If there is no user record, create a dummy one.
@@ -305,14 +309,14 @@ class UsersUiListener implements EventSubscriberInterface
                     $goodUidUser = $goodUidUser && $user['uid'] > 2;
                     if (!$goodUidUser || !$goodUidAcceptPolicies) {
                         // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
-                        throw new Zikula_Exception_Fatal();
+                        throw new FatalErrorException();
                     } elseif ($user['uid'] != $uid) {
                         // Fail if the uid of the subject does not match the uid from the form. The user changed his
                         // login information, so not only should we not validate what was posted, we should not allow the user
                         // to proceed with this login attempt at all.
                         LogUtil::registerError(__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.', $this->domain));
-                        $this->request->getSession()->clearNamespace('Zikula_Users');
-                        $this->request->getSession()->clearNamespace(LegalConstant::MODNAME);
+                        $this->request->getSession()->remove('Zikula_Users');
+                        $this->request->getSession()->remove(LegalConstant::MODNAME);
                         $this->redirect(ModUtil::url('Users', 'user', 'login'));
                     }
                     $acceptedPolicies = $this->helper->getAcceptedPolicies($uid);
@@ -385,11 +389,11 @@ class UsersUiListener implements EventSubscriberInterface
                 // being changed.
                 $editablePolicies = $this->helper->getEditablePolicies();
                 if (!isset($user) || empty($user) || !is_array($user)) {
-                    throw new Zikula_Exception_Fatal();
+                    throw new FatalErrorException();
                 }
                 $isNewUser = !isset($user['uid']) || empty($user['uid']);
                 if (!$isNewUser && !is_numeric($user['uid'])) {
-                    throw new Zikula_Exception_Fatal();
+                    throw new FatalErrorException();
                 }
                 if ($isNewUser || $user['uid'] > 2) {
                     if (!$isNewUser) {
@@ -399,24 +403,24 @@ class UsersUiListener implements EventSubscriberInterface
                             // on the account (is that even possible?!) or somehow the main user form and the part for Legal point
                             // to different user account. In any case, that is a bad situation that should cause a critical failure.
                             // Also fail if the $user record is bad, or if the uid used for Legal is bad.
-                            throw new Zikula_Exception_Fatal();
+                            throw new FatalErrorException();
                         }
                     }
-                    // Fail on any attempt to accept a policy that is not edtiable.
+                    // Fail on any attempt to accept a policy that is not editable.
                     if (isset($policiesAcceptedAtRegistration['termsOfUse']) && !$editablePolicies['termsOfUse']) {
-                        throw new Zikula_Exception_Forbidden();
+                        throw new AccessDeniedException();
                     }
                     if (isset($policiesAcceptedAtRegistration['privacyPolicy']) && !$editablePolicies['privacyPolicy']) {
-                        throw new Zikula_Exception_Forbidden();
+                        throw new AccessDeniedException();
                     }
                     if (isset($policiesAcceptedAtRegistration['agePolicy']) && !$editablePolicies['agePolicy']) {
-                        throw new Zikula_Exception_Forbidden();
+                        throw new AccessDeniedException();
                     }
                     if (isset($policiesAcceptedAtRegistration['cancellationRightPolicy']) && !$editablePolicies['cancellationRightPolicy']) {
-                        throw new Zikula_Exception_Forbidden();
+                        throw new AccessDeniedException();
                     }
                     if (isset($policiesAcceptedAtRegistration['tradeConditions']) && !$editablePolicies['tradeConditions']) {
-                        throw new Zikula_Exception_Forbidden();
+                        throw new AccessDeniedException();
                     }
                 }
             }
@@ -431,7 +435,7 @@ class UsersUiListener implements EventSubscriberInterface
      *
      * @return void
      *
-     * @throws Zikula_Exception_Fatal Thrown if a user account does not exist for the uid specified by the event.
+     * @throws FatalErrorException Thrown if a user account does not exist for the uid specified by the event.
      */
     public function processEdit(GenericEvent $event)
     {
@@ -468,7 +472,7 @@ class UsersUiListener implements EventSubscriberInterface
                     $isRegistration = UserUtil::isRegistration($uid);
                     $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
                     if (!$user) {
-                        throw new Zikula_Exception_Fatal(__('A user account or registration does not exist for the specified uid.', $this->domain));
+                        throw new FatalErrorException(__('A user account or registration does not exist for the specified uid.', $this->domain));
                     }
                     $policiesAcceptedAtRegistration = $this->validation->getObject();
                     $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
@@ -495,7 +499,7 @@ class UsersUiListener implements EventSubscriberInterface
                 $isRegistration = UserUtil::isRegistration($uid);
                 $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
                 if (!$user) {
-                    throw new Zikula_Exception_Fatal(__('A user account or registration does not exist for the specified uid.', $this->domain));
+                    throw new FatalErrorException(__('A user account or registration does not exist for the specified uid.', $this->domain));
                 }
                 $policiesAcceptedAtRegistration = $this->validation->getObject();
                 $editablePolicies = $this->helper->getEditablePolicies();
