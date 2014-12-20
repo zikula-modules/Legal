@@ -106,8 +106,8 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
             case '2.0.3': //current version
                 // Upgrade 2.0.3 -> 2.0.4
                 $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
-            case '2.0.3': //current version
-                // Upgrade 2.0.3 -> ?.?.?
+            case '2.0.4': //current version
+                // Upgrade 2.0.4 -> ?.?.?
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:
