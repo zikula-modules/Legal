@@ -118,13 +118,14 @@
         <fieldset>
             <legend>{gt text="Compliance"}</legend>
             <div class="form-group">
+                {assign var='fieldName' value='Zikula\LegalModule\Constant::ATTRIBUTE_EUCOOKIE_ACCEPTED'|constant}
                 <label class="col-lg-3 control-label">{gt text="Enable cookie warning for EU Compliance"}</label>
                 <div class="col-lg-9">
                     <div>
-                        <input id="eucookie" type="radio" name="idnnames" value="1" {if $modvars.ZConfig.eucookie == 1}checked="checked" {/if}/>
-                        <label for="eucookie">{gt text="Yes"}</label>
-                        <input id="eucookie" type="radio" name="idnnames" value="0" {if $modvars.ZConfig.eucookie != 1}checked="checked" {/if}/>
-                        <label for="eucookie">{gt text="No"}</label>
+                        <input id="legal_{$fieldName}_1" type="radio" name="{$fieldName}" value="1" {if (!empty($modvars.$module.$fieldName) && ($modvars.$module.$fieldName == 1))}checked="checked" {/if}/>
+                        <label for="legal_{$fieldName}_1">{gt text="Yes"}</label>
+                        <input id="legal_{$fieldName}_0" type="radio" name="{$fieldName}" value="0" {if (empty($modvars.$module.$fieldName) || ($modvars.$module.$fieldName != 1))}checked="checked" {/if}/>
+                        <label for="legal_{$fieldName}_0">{gt text="No"}</label>
                     </div>
                     <div class="help-block sub italic">{gt text="Notice: This setting controls the 'eucookiewarning' template plugin. Use this plugin in a theme's page templates."}</div>
                 </div>
