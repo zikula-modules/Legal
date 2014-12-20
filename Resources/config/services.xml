@@ -6,12 +6,18 @@
 
     <parameters>
         <parameter key="zikulalegalmodule.event_listener.class">Zikula\LegalModule\Listener\UsersUiListener</parameter>
+        <parameter key="zikulalegalmodule.eu_warning_listener.class">Zikula\LegalModule\Listener\EuCookieWarningInjectorListener</parameter>
+        <parameter key="euwarning.stylesheet">null</parameter>
     </parameters>
 
     <services>
         <service id="zikulalegalmodule.event_listener" class="%zikulalegalmodule.event_listener.class%">
             <tag name="kernel.event_subscriber" />
             <argument type="service" id="request_stack" />
+        </service>
+        <service id="zikulalegalmodule.eu_warning_listener" class="%zikulalegalmodule.eu_warning_listener.class%">
+            <tag name="kernel.event_subscriber" />
+            <argument>%euwarning.stylesheet%</argument>
         </service>
     </services>
 </container>
