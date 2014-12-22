@@ -143,8 +143,8 @@ class AdminController extends \Zikula_AbstractController
         $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, $cancellationRightPolicyUrl);
         $minimumAge = $request->request->get(LegalConstant::MODVAR_MINIMUM_AGE, 0);
         $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, $minimumAge);
-        $euCookieAccepted = $request->request->get(LegalConstant::ATTRIBUTE_EUCOOKIE_ACCEPTED, false);
-        $this->setVar(LegalConstant::ATTRIBUTE_EUCOOKIE_ACCEPTED, $euCookieAccepted);
+        $euCookieAccepted = $request->request->get(LegalConstant::MODVAR_EUCOOKIE, false);
+        $this->setVar(LegalConstant::MODVAR_EUCOOKIE, $euCookieAccepted);
         $resetagreement = $request->request->get('resetagreement', -1);
         if ($resetagreement != -1) {
             ModUtil::apiFunc($this->name, 'admin', 'resetagreement', array('gid' => $resetagreement));

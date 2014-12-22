@@ -1,3 +1,7 @@
+2.0.4
+-----
+  * Added EU Cookie compliance method (see doc)
+
 2.0.1
 -----
   * Added new document types (Issue #4)
