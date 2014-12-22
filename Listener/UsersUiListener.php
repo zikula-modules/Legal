@@ -15,6 +15,7 @@
 
 namespace Zikula\LegalModule\Listener;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Zikula\LegalModule\Constant as LegalConstant;
 use ZLanguage;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
@@ -66,6 +67,12 @@ class UsersUiListener implements EventSubscriberInterface
      * @var ValidationResponse
      */
     private $validation;
+    /**
+     * The translation domain
+     *
+     * @var string
+     */
+    private $domain;
     /**
      * Constructs a new instance of this class.
      *
@@ -254,7 +261,7 @@ class UsersUiListener implements EventSubscriberInterface
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function, or to
      *      modify the acceptance of policies on a user account other than his own.
      *
-     * @throws FatalErrorException Thrown if the user record retrieved from the POST is in an unexpected form or its data is
+     * @throws FatalErrorException|\InvalidArgumentException Thrown if the user record retrieved from the POST is in an unexpected form or its data is
      *      unexpected.
      */
     public function validateEdit(GenericEvent $event)
@@ -309,7 +316,7 @@ class UsersUiListener implements EventSubscriberInterface
                     $goodUidUser = $goodUidUser && $user['uid'] > 2;
                     if (!$goodUidUser || !$goodUidAcceptPolicies) {
                         // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
-                        throw new FatalErrorException();
+                        throw new \InvalidArgumentException(__("The UID is invalid.", $this->domain));
                     } elseif ($user['uid'] != $uid) {
                         // Fail if the uid of the subject does not match the uid from the form. The user changed his
                         // login information, so not only should we not validate what was posted, we should not allow the user
@@ -389,11 +396,11 @@ class UsersUiListener implements EventSubscriberInterface
                 // being changed.
                 $editablePolicies = $this->helper->getEditablePolicies();
                 if (!isset($user) || empty($user) || !is_array($user)) {
-                    throw new FatalErrorException();
+                    throw new \InvalidArgumentException(__("The &dollar;user is invalid.", $this->domain));
                 }
                 $isNewUser = !isset($user['uid']) || empty($user['uid']);
                 if (!$isNewUser && !is_numeric($user['uid'])) {
-                    throw new FatalErrorException();
+                    throw new \InvalidArgumentException(__("The UID is invalid.", $this->domain));
                 }
                 if ($isNewUser || $user['uid'] > 2) {
                     if (!$isNewUser) {
@@ -403,7 +410,7 @@ class UsersUiListener implements EventSubscriberInterface
                             // on the account (is that even possible?!) or somehow the main user form and the part for Legal point
                             // to different user account. In any case, that is a bad situation that should cause a critical failure.
                             // Also fail if the $user record is bad, or if the uid used for Legal is bad.
-                            throw new FatalErrorException();
+                            throw new FatalErrorException(__("The &dollar;user record or the UID is invalid or the UID does not match."));
                         }
                     }
                     // Fail on any attempt to accept a policy that is not editable.
@@ -435,7 +442,7 @@ class UsersUiListener implements EventSubscriberInterface
      *
      * @return void
      *
-     * @throws FatalErrorException Thrown if a user account does not exist for the uid specified by the event.
+     * @throws NotFoundHttpException Thrown if a user account does not exist for the uid specified by the event.
      */
     public function processEdit(GenericEvent $event)
     {
@@ -472,7 +479,7 @@ class UsersUiListener implements EventSubscriberInterface
                     $isRegistration = UserUtil::isRegistration($uid);
                     $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
                     if (!$user) {
-                        throw new FatalErrorException(__('A user account or registration does not exist for the specified uid.', $this->domain));
+                        throw new NotFoundHttpException(__('A user account or registration does not exist for the specified uid.', $this->domain));
                     }
                     $policiesAcceptedAtRegistration = $this->validation->getObject();
                     $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
@@ -499,7 +506,7 @@ class UsersUiListener implements EventSubscriberInterface
                 $isRegistration = UserUtil::isRegistration($uid);
                 $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
                 if (!$user) {
-                    throw new FatalErrorException(__('A user account or registration does not exist for the specified uid.', $this->domain));
+                    throw new NotFoundHttpException(__('A user account or registration does not exist for the specified uid.', $this->domain));
                 }
                 $policiesAcceptedAtRegistration = $this->validation->getObject();
                 $editablePolicies = $this->helper->getEditablePolicies();
