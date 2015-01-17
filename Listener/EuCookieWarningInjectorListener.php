@@ -57,7 +57,8 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         }
 
         // is modvar enabled?
-        if (empty(\ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_EUCOOKIE))) {
+        $cookieSetting = \ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_EUCOOKIE);
+        if (empty($cookieSetting)) {
             return;
         }
 
