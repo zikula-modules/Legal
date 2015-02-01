@@ -15,6 +15,7 @@
 
 namespace Zikula\LegalModule\Listener;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -67,15 +68,16 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
             return;
         }
 
-        $this->injectWarning($response);
+        $this->injectWarning($request, $response);
     }
 
     /**
      * Injects the warning into the Response.
      *
+     * @param Request $request A Request instance
      * @param Response $response A Response instance
      */
-    protected function injectWarning(Response $response)
+    protected function injectWarning(Request $request, Response $response)
     {
         $content = $response->getContent();
         // jquery is assumed to be present
@@ -83,7 +85,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         $pos = strripos($content, '</body>');
         if (false !== $pos) {
             $module = \ModUtil::getModule('ZikulaLegalModule');
-            $path = $module->getRelativePath() . "/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js";
+            $path = $request->getBasePath() . "/" . $module->getRelativePath() . "/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js";
             $javascript = '<script type="text/javascript" src="' . $path . '"></script>';
             // allow translation of content
             $message = __('We use cookies to track usage and preferences', $module->getTranslationDomain());
@@ -107,7 +109,7 @@ jQuery(document).ready(function(){
             if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {
                 $path = $this->stylesheetOverride;
             } else {
-                $path = $module->getRelativePath() . "/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css";
+                $path = $request->getBasePath() . "/" . $module->getRelativePath() . "/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css";
             }
             $css = '<link rel="stylesheet" type="text/css" href="' . $path .'" />';
             $content = substr($content, 0, $pos) . $css . substr($content, $pos);
