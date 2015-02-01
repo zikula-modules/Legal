@@ -5,8 +5,7 @@
 
 <p class="alert alert-danger">{gt text='<strong>Important Usage Note</strong>: The provided legal statements are samples only.
     They need to be adapted to your specific needs and locales. You will find the content of the statements in files in the
-    "/modules/Legal/Resources/views/en" directory. These templates can be
-    <a href="http://community.zikula.org/index.php?module=Wiki&tag=TemplateOverridng">overridden</a> by theme templates,
+    "/Resources/views/en" directory. These templates can be overridden by theme templates,
     or by global templates you would create in the "config/templates/legal/" directory (in the appropriate sub-directory
     for the language you are writing for).'}</p>
 <form id="legal_config" class="form-horizontal" role="form" action="{route name='zikulalegalmodule_admin_updateconfig'}" method="post" enctype="application/x-www-form-urlencoded">
