@@ -99,15 +99,15 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
                 $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
                 $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
             case '2.0.1':
-                // Upgrade 2.0.1 -> 2.0.3
+                // Nothing to do.
+            case '2.0.2':
+                // Upgrade 2.0.2 -> 2.1.0
                 EventUtil::unregisterPersistentModuleHandlers('Legal'); // using old name on purpose here
                 // attributes migrated by Users mod
                 // @todo write upgrade for permissions?
-            case '2.0.3': //current version
-                // Upgrade 2.0.3 -> 2.0.4
                 $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
-            case '2.0.4': //current version
-                // Upgrade 2.0.4 -> ?.?.?
+            case '2.1.0': //current version
+                // Upgrade 2.1.0 -> ?.?.?
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:
