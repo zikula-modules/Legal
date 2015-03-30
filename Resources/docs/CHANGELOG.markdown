@@ -1,3 +1,7 @@
+2.1.0
+-----
+  * Core 1.4.0 Compatibilty
+
 2.0.4
 -----
   * Added EU Cookie compliance method (see doc)

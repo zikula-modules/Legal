@@ -1,7 +1,7 @@
 Legal
 =====
 
-**__Requires Zikula Core 1.3.7+__**
+**__Requires Zikula Core 1.4.0+__**
 
 This module provides a site with the ability to manage and display legal information such as terms of use
 and privacy policies. It also allows the site to require that these policies be accepted during registration
