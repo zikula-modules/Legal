@@ -13,9 +13,9 @@
         {gt text='Terms of Use' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.termsofuse) && !empty($fieldErrors.termsofuse)} has-error{/if}">
-            <label class="col-lg-3 control-label">{gt text='Terms of Use'}</label>
+            <label class="col-sm-3 control-label">{gt text='Terms of Use'}</label>
             {if ($editablePolicies.termsOfUse)}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <div class="radio">
                     <input type="radio" id="acceptpolicies_termsofuse_yes" name="acceptedpolicies_termsofuse"{if $acceptedPolicies.termsOfUse} checked="checked"{/if} value="1" />
                     <label for="acceptpolicies_termsofuse_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
@@ -29,7 +29,7 @@
                 </p>
             </div>
             {else}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <span class="form-control-static">{if $acceptedPolicies.termsOfUse}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
             </div>
             {/if}
@@ -45,9 +45,9 @@
         {gt text='Privacy Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.privacypolicy) && !empty($fieldErrors.privacypolicy)} has-error{/if}">
-            <label class="col-lg-3 control-label">{gt text='Privacy Policy'}</label>
+            <label class="col-sm-3 control-label">{gt text='Privacy Policy'}</label>
             {if ($editablePolicies.privacyPolicy)}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <div class="radio">
                     <input type="radio" id="acceptpolicies_privacypolicy_yes" name="acceptedpolicies_privacypolicy"{if $acceptedPolicies.privacyPolicy} checked="checked"{/if} value="1" />
                     <label for="acceptpolicies_privacypolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
@@ -61,7 +61,7 @@
                 </p>
             </div>
             {else}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <span class="form-control-static">{if $acceptedPolicies.privacyPolicy}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
             </div>
             {/if}
@@ -69,9 +69,9 @@
     {/if}
     {if $activePolicies.agePolicy && $viewablePolicies.agePolicy}
         <div class="form-group{if isset($fieldErrors.agepolicy) && !empty($fieldErrors.agepolicy)} has-error{/if}">
-            <label class="col-lg-3 control-label">{gt text='Minimum Age'}</label>
+            <label class="col-sm-3 control-label">{gt text='Minimum Age'}</label>
             {if ($editablePolicies.agePolicy)}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <div class="radio">
                     <input type="radio" id="acceptpolicies_agepolicy_yes" name="acceptedpolicies_agepolicy"{if $acceptedPolicies.agePolicy} checked="checked"{/if} value="1" />
                     <label for="acceptpolicies_agepolicy_yes">{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.$module.minimumAge|safetext}</label>
@@ -85,7 +85,7 @@
                 </p>
             </div>
             {else}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <span class="form-control-static">{if $acceptedPolicies.agePolicy}{gt text='Confirmed minimum age requirement (%1$s years of age) met.' tag1=$modvars.$module.minimumAge|safetext}{else}{gt text='Minimum age requirement not confirmed.'}{/if}</span>
             </div>
             {/if}
@@ -101,9 +101,9 @@
         {gt text='General Terms and Conditions of Trade' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.tradeconditions) && !empty($fieldErrors.tradeconditions)} has-error{/if}">
-            <label class="col-lg-3 control-label">{gt text='General Terms and Conditions of Trade'}</label>
+            <label class="col-sm-3 control-label">{gt text='General Terms and Conditions of Trade'}</label>
             {if ($editablePolicies.tradeConditions)}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <div class="radio">
                     <input type="radio" id="acceptpolicies_tradeconditions_yes" name="acceptedpolicies_tradeconditions"{if $acceptedPolicies.tradeConditions} checked="checked"{/if} value="1" />
                     <label for="acceptpolicies_tradeconditions_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
@@ -117,7 +117,7 @@
                 </p>
             </div>
             {else}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <span class="form-control-static">{if $acceptedPolicies.tradeConditions}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
             </div>
             {/if}
@@ -133,9 +133,9 @@
         {gt text='Cancellation Right Policy' assign='policyName'}
         {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
         <div class="form-group{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} has-error{/if}">
-            <label class="col-lg-3 control-label">{gt text='Cancellation Right Policy'}</label>
+            <label class="col-sm-3 control-label">{gt text='Cancellation Right Policy'}</label>
             {if ($editablePolicies.cancellationRightPolicy)}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <div class="radio">
                     <input type="radio" id="acceptpolicies_cancellationrightpolicy_yes" name="acceptedpolicies_cancellationrightpolicy"{if $acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="1" />
                     <label for="acceptpolicies_cancellationrightpolicy_yes">{gt text='%1$s accepted.' tag1=$policyLink|safehtml}</label>
@@ -149,7 +149,7 @@
                 </p>
             </div>
             {else}
-            <div class="col-lg-9">
+            <div class="col-sm-9">
                 <span class="form-control-static">{if $acceptedPolicies.cancellationRightPolicy}{gt text='Accepted.'}{else}{gt text='Not accepted.'}{/if}</span>
             </div>
             {/if}

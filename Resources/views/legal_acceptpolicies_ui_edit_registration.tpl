@@ -36,8 +36,8 @@
         </div>
         {* /Modal Window *}
         <div class="form-group{if isset($fieldErrors.termsofuse) && !empty($fieldErrors.termsofuse)} has-error{/if}">
-            <label class="col-lg-3 control-label" for="acceptpolicies_termsofuse">{gt text='Terms of Use'}&nbsp;<span class="required"></span></label>
-            <div class="col-lg-9">
+            <label class="col-sm-3 control-label" for="acceptpolicies_termsofuse">{gt text='Terms of Use'}&nbsp;<span class="required"></span></label>
+            <div class="col-sm-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptedpolicies_termsofuse"{if $acceptedPolicies.termsOfUse} checked="checked"{/if} value="1" required="required" />
                     <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</em>
@@ -83,8 +83,8 @@
         </div>
         {* /Modal Window *}
         <div class="form-group{if isset($fieldErrors.privacypolicy) && !empty($fieldErrors.privacypolicy)} has-error{/if}">
-            <label class="col-lg-3 control-label" for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}&nbsp;<span class="required"></span></label>
-            <div class="col-lg-9">
+            <label class="col-sm-3 control-label" for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}&nbsp;<span class="required"></span></label>
+            <div class="col-sm-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy"{if $acceptedPolicies.privacyPolicy} checked="checked"{/if} value="1" required="required" />
                     <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</em>
@@ -161,8 +161,8 @@
         </div>
         {* /Modal Window *}
         <div class="form-group{if ((isset($fieldErrors.agepolicy)) && (!empty($fieldErrors.agepolicy)))} has-error{/if}">
-            <label class="col-lg-3 control-label" for="acceptpolicies_agepolicy">{gt text='Minimum Age'}&nbsp;<span class="required"></span></label>
-            <div class="col-lg-9">
+            <label class="col-sm-3 control-label" for="acceptpolicies_agepolicy">{gt text='Minimum Age'}&nbsp;<span class="required"></span></label>
+            <div class="col-sm-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy"{if ($acceptedPolicies.agePolicy)} checked="checked"{/if} value="1" required="required" />
                     <em class="help-text">{gt text='Check this box to indicate that you are %1$s years of age or older, in accordance with our minimum age requirement.' tag1=$modvars.$module.minimumAge|safetext}</em>
@@ -207,8 +207,8 @@
         </div>
         {* /Modal Window *}
         <div class="form-group{if isset($fieldErrors.tradeconditions) && !empty($fieldErrors.tradeconditions)} has-error{/if}">
-            <label class="col-lg-3 control-label" for="acceptpolicies_tradeconditions">{gt text='General Terms and Conditions of Trade'}&nbsp;<span class="required"></span></label>
-            <div class="col-lg-9">
+            <label class="col-sm-3 control-label" for="acceptpolicies_tradeconditions">{gt text='General Terms and Conditions of Trade'}&nbsp;<span class="required"></span></label>
+            <div class="col-sm-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_tradeconditions" name="acceptedpolicies_tradeconditions"{if $acceptedPolicies.tradeConditions} checked="checked"{/if} value="1" required="required" />
                     <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</em>
@@ -253,8 +253,8 @@
         </div>
         {* /Modal Window *}
         <div class="form-group{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} has-error{/if}">
-            <label class="col-lg-3 control-label" for="acceptpolicies_cancellationrightpolicy">{gt text='Cancellation Right Policy'}&nbsp;<span class="required"></span></label>
-            <div class="col-lg-9">
+            <label class="col-sm-3 control-label" for="acceptpolicies_cancellationrightpolicy">{gt text='Cancellation Right Policy'}&nbsp;<span class="required"></span></label>
+            <div class="col-sm-9">
                 <div class="checkbox">
                     <input type="checkbox" id="acceptpolicies_cancellationrightpolicy" name="acceptedpolicies_cancellationrightpolicy"{if $acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="1" required="required" />
                     <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink}</em>
