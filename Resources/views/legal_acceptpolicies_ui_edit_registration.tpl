@@ -59,7 +59,6 @@
         {else}
             {assign var='policyLink' value='<a data-toggle="modal" data-target="#modal-privacy-policy">%1$s</a>'|sprintf:$policyName}
         {/if}
-        {assign var='policyLink' value='<a data-toggle="modal" data-target="#modal-privacy-policy" href="%1$s">%2$s</a>'|sprintf:$policyUrl:$policyName}
         {* Modal Window *}
         <div class="modal fade" id="modal-privacy-policy" tabindex="-1" role="dialog" aria-labelledby="modal-title-privacy-policy" aria-hidden="true">
             <div class="modal-dialog modal-lg">
