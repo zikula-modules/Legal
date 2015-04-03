@@ -27,10 +27,10 @@
             {gt text='Terms of Use' assign='policyName'}
             {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="form-group{if isset($fieldErrors.termsOfUse) && !empty($fieldErrors.termsOfUse)} has-error{/if}">
-                <div class="col-lg-3 control-label">
+                <div class="col-sm-3 control-label">
                     <label for="acceptpolicies_termsofuse">{gt text='Terms of Use'}</label>
                 </div>
-                <div class="col-lg-9">
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptedpolicies_termsofuse"{if $acceptedPolicies.termsOfUse} checked="checked"{/if} value="1" />
                         <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink|safehtml}</em>
@@ -50,10 +50,10 @@
             {gt text='Privacy Policy' assign='policyName'}
             {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="form-group{if isset($fieldErrors.privacyPolicy) && !empty($fieldErrors.privacyPolicy)} has-error{/if}">
-                <div class="col-lg-3 control-label">
+                <div class="col-sm-3 control-label">
                     <label for="acceptpolicies_privacypolicy">{gt text='Privacy Policy'}</label>
                 </div>
-                <div class="col-lg-9">
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy"{if $acceptedPolicies.privacyPolicy} checked="checked"{/if} value="1" />
                         <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink|safehtml}</em>
@@ -84,10 +84,10 @@
             {assign var='privacyPolicyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
 
             <div class="form-group{if isset($fieldErrors.agePolicy) && !empty($fieldErrors.agePolicy)} has-error{/if}">
-                <div class="col-lg-3 control-label">
+                <div class="col-sm-3 control-label">
                     <label for="acceptpolicies_agepolicy">{gt text='Minimum Age'}</label>
                 </div>
-                <div class="col-lg-9">
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy"{if $acceptedPolicies.agePolicy} checked="checked"{/if} value="1" />
                         <em class="help-text">{gt text='Check this box to indicate that you are %1$s years of age or older.' tag1=$modvars.$module.minimumAge|safetext}</em>
@@ -108,10 +108,10 @@
             {gt text='General Terms and Conditions of Trade' assign='policyName'}
             {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="form-group{if isset($fieldErrors.tradeconditions) && !empty($fieldErrors.tradeconditions)} has-error{/if}">
-                <div class="col-lg-3 control-label">
+                <div class="col-sm-3 control-label">
                     <label for="acceptpolicies_tradeconditions">{gt text='General Terms and Conditions of Trade'}</label>
                 </div>
-                <div class="col-lg-9">
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input type="checkbox" id="acceptpolicies_tradeconditions" name="acceptedpolicies_tradeconditions"{if $acceptedPolicies.tradeConditions} checked="checked"{/if} value="1" />
                         <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink|safehtml}</em>
@@ -131,10 +131,10 @@
             {gt text='Cancellation Right Policy' assign='policyName'}
             {assign var='policyLink' value='<a class="legal_popup" href="%1$s" target="_blank">%2$s</a>'|sprintf:$policyUrl:$policyName}
             <div class="form-group{if isset($fieldErrors.cancellationrightpolicy) && !empty($fieldErrors.cancellationrightpolicy)} has-error{/if}">
-                <div class="col-lg-3 control-label">
+                <div class="col-sm-3 control-label">
                     <label for="acceptpolicies_cancellationrightpolicy">{gt text='Cancellation Right Policy'}</label>
                 </div>
-                <div class="col-lg-9">
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input type="checkbox" id="acceptpolicies_cancellationrightpolicy" name="acceptedpolicies_cancellationrightpolicy"{if $acceptedPolicies.cancellationRightPolicy} checked="checked"{/if} value="1" />
                         <em class="help-text">{gt text='Check this box to indicate your acceptance of this site\'s %1$s.' tag1=$policyLink|safehtml}</em>
@@ -146,7 +146,7 @@
             </div>
         {/if}
         </fieldset>
-        <div class="col-lg-offset-3 col-lg-9">
+        <div class="col-sm-offset-3 col-sm-9">
             {if $login}
             <button class="btn btn-success" type="submit" name="Save">{gt text="Save and continue logging in"}</button>
             {else}

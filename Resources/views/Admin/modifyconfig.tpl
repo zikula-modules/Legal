@@ -15,8 +15,8 @@
             <legend>{gt text="Legal document types"}</legend>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_LEGALNOTICE_ACTIVE'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Legal notice"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Legal notice"}</label>
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.$module.$fieldName == 1} checked="checked"{/if} />
                     </div>
@@ -24,8 +24,8 @@
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TERMS_ACTIVE'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Terms of use"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Terms of use"}</label>
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.$module.$fieldName == 1} checked="checked"{/if} />
                     </div>
@@ -33,8 +33,8 @@
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_ACTIVE'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.$module.$fieldName == 1} checked="checked"{/if} />
                     </div>
@@ -42,8 +42,8 @@
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_ACTIVE'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.$module.$fieldName == 1} checked="checked"{/if} />
                     </div>
@@ -51,8 +51,8 @@
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.$module.$fieldName == 1} checked="checked"{/if} />
                     </div>
@@ -60,8 +60,8 @@
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_ACCESSIBILITY_ACTIVE'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
+                <div class="col-sm-9">
                     <div class="checkbox">
                         <input id="legal_{$fieldName}" name="{$fieldName}" type="checkbox" value="1"{if $modvars.$module.$fieldName == 1} checked="checked"{/if} />
                     </div>
@@ -73,43 +73,43 @@
             <p>{gt text='The following fields allow to reference any custom url. As soon as an url is given it will be used instead of the normal Legal templates. So you can now use any page you want for displaying and managing your legal data.'}</p>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_LEGALNOTICE_URL'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Legal notice"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Legal notice"}</label>
+                <div class="col-sm-9">
                     <input id="legal_{$fieldName}" class="form-control" name="{$fieldName}" type="text" value="{$modvars.$module.$fieldName}" />
                 </div>
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TERMS_URL'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Terms of use"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Terms of use"}</label>
+                <div class="col-sm-9">
                     <input id="legal_{$fieldName}" class="form-control" name="{$fieldName}" type="text" value="{$modvars.$module.$fieldName}" />
                 </div>
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_PRIVACY_URL'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Privacy policy"}</label>
+                <div class="col-sm-9">
                     <input id="legal_{$fieldName}" class="form-control" name="{$fieldName}" type="text" value="{$modvars.$module.$fieldName}" />
                 </div>
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_TRADECONDITIONS_URL'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="General Terms and Conditions of Trade"}</label>
+                <div class="col-sm-9">
                     <input id="legal_{$fieldName}" class="form-control" name="{$fieldName}" type="text" value="{$modvars.$module.$fieldName}" />
                 </div>
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Cancellation Right Policy"}</label>
+                <div class="col-sm-9">
                     <input id="legal_{$fieldName}" class="form-control" name="{$fieldName}" type="text" value="{$modvars.$module.$fieldName}" />
                 </div>
             </div>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_ACCESSIBILITY_URL'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Accessibility statement"}</label>
+                <div class="col-sm-9">
                     <input id="legal_{$fieldName}" class="form-control" name="{$fieldName}" type="text" value="{$modvars.$module.$fieldName}" />
                 </div>
             </div>
@@ -118,8 +118,8 @@
             <legend>{gt text="Compliance"}</legend>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_EUCOOKIE'|constant}
-                <label class="col-lg-3 control-label">{gt text="Enable cookie warning for EU Compliance"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label">{gt text="Enable cookie warning for EU Compliance"}</label>
+                <div class="col-sm-9">
                     <div>
                         <input id="legal_{$fieldName}_1" type="radio" name="{$fieldName}" value="1" {if (!empty($modvars.$module.$fieldName) && ($modvars.$module.$fieldName == 1))}checked="checked" {/if}/>
                         <label for="legal_{$fieldName}_1">{gt text="Yes"}</label>
@@ -134,15 +134,15 @@
             <legend>{gt text="Further settings"}</legend>
             <div class="form-group">
                 {assign var='fieldName' value='Zikula\LegalModule\Constant::MODVAR_MINIMUM_AGE'|constant}
-                <label class="col-lg-3 control-label" for="legal_{$fieldName}">{gt text="Minimum age permitted to register"}<span class="z-form-mandatory-flag">{gt text="*"}</span></label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_{$fieldName}">{gt text="Minimum age permitted to register"}<span class="z-form-mandatory-flag">{gt text="*"}</span></label>
+                <div class="col-sm-9">
                     <input id="legal_{$fieldName}" class="form-control{if isset($errorFields.legal_minage)} z-form-error{/if}" type="text" name="{'Zikula\LegalModule\Constant::MODVAR_MINIMUM_AGE'|constant}" value="{$modvars.$module.$fieldName|safetext}" size="2" maxlength="2" />
                     <em class="z-formnote z-sub">{gt text="Enter a positive integer, or 0 for no age check."}</em>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-lg-3 control-label" for="legal_resetagreement">{gt text="Reset user group's acceptance of 'Terms of use'"}</label>
-                <div class="col-lg-9">
+                <label class="col-sm-3 control-label" for="legal_resetagreement">{gt text="Reset user group's acceptance of 'Terms of use'"}</label>
+                <div class="col-sm-9">
                     <select id="legal_resetagreement" class="form-control" name="resetagreement">
                         {foreach item=group from=$groups}
                         <option value="{$group.gid|safetext}">{$group.name|safetext}</option>
@@ -152,7 +152,7 @@
                 </div>
             </div>
         </fieldset>
-        <div class="col-lg-offset-3 col-lg-9">
+        <div class="col-sm-offset-3 col-sm-9">
             <button class="btn btn-success" type="submit" name="Save">{gt text="Save"}</button>
             <a class="btn btn-danger" href="{route name='zikulalegalmodule_admin_index'}" title="{gt text="Cancel"}">{gt text="Cancel"}</a>
         </div>
