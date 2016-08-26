@@ -48,7 +48,7 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         // Initialization successful
         return true;
     }
-    
+
     /**
      * Upgrade the module from a prior version.
      *
@@ -107,7 +107,10 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
                 // @todo write upgrade for permissions?
                 $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
             case '2.1.0': //current version
-                // Upgrade 2.1.0 -> ?.?.?
+                // nothing
+            case '2.1.1':
+                // future upgrades
+
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:
@@ -115,7 +118,7 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         // Update successful
         return true;
     }
-    
+
     /**
      * Delete the Legal module.
      *
