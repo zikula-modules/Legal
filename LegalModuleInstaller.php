@@ -109,6 +109,8 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
             case '2.1.0': //current version
                 // nothing
             case '2.1.1':
+                // nothing
+            case '2.1.2':
                 // future upgrades
 
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
