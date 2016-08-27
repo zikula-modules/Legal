@@ -88,7 +88,7 @@ class UsersUiListener implements EventSubscriberInterface
         $this->domain = ZLanguage::getModuleDomain(LegalConstant::MODNAME);
         $this->helper = new AcceptPoliciesHelper();
     }
-    
+
     public function getView()
     {
         if (!$this->view) {
@@ -96,7 +96,7 @@ class UsersUiListener implements EventSubscriberInterface
         }
         return $this->view;
     }
-    
+
     /**
      * Establish the handlers for various events.
      *
@@ -124,7 +124,7 @@ class UsersUiListener implements EventSubscriberInterface
             'user.login.veto' => array('acceptPolicies'),
         );
     }
-    
+
     /**
      * Cause redirect.
      *
@@ -139,7 +139,7 @@ class UsersUiListener implements EventSubscriberInterface
         $response->send();
         exit;
     }
-    
+
     /**
      * Responds to ui.view hook-like event notifications.
      *
@@ -167,7 +167,7 @@ class UsersUiListener implements EventSubscriberInterface
             }
         }
     }
-    
+
     /**
      * Responds to ui.edit hook notifications.
      *
@@ -250,7 +250,7 @@ class UsersUiListener implements EventSubscriberInterface
             }
         }
     }
-    
+
     /**
      * Responds to validate.edit hook notifications.
      *
@@ -266,19 +266,6 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function validateEdit(GenericEvent $event)
     {
-        if (!$this->request->isMethod('POST')) {
-            // Check if we got here by a reentrant login method.
-            $sessionVars = $this->request->getSession()->get(
-                'User_login',
-                array(),
-                UsersConstant::SESSION_VAR_NAMESPACE
-            );
-            $getReentrantToken = $this->request->query->get('reentranttoken', null);
-            if (!isset($sessionVars['reentranttoken']) || !isset($getReentrantToken) || $getReentrantToken != $sessionVars['reentranttoken']) {
-                // Not reentrant login method,  it is probably a hack attempt.
-                throw new AccessDeniedException();
-            }
-        }
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
         if ($this->request->request->has('acceptedpolicies_uid')) {
@@ -395,7 +382,7 @@ class UsersUiListener implements EventSubscriberInterface
                 // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
                 // being changed.
                 $editablePolicies = $this->helper->getEditablePolicies();
-                if (!isset($user) || empty($user) || !is_array($user)) {
+                if (!isset($user) || empty($user)) {
                     throw new \InvalidArgumentException(__("The &dollar;user is invalid.", $this->domain));
                 }
                 $isNewUser = !isset($user['uid']) || empty($user['uid']);
@@ -434,7 +421,7 @@ class UsersUiListener implements EventSubscriberInterface
             $event->data->set(self::EVENT_KEY, $this->validation);
         }
     }
-    
+
     /**
      * Responds to process_edit hook-like event notifications.
      *
