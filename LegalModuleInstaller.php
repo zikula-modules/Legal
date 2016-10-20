@@ -12,12 +12,13 @@
 namespace Zikula\LegalModule;
 
 use EventUtil;
+use Zikula\Core\AbstractExtensionInstaller;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
  * Installs, upgrades, and uninstalls the Legal module.
  */
-class LegalModuleInstaller extends \Zikula_AbstractInstaller
+class LegalModuleInstaller extends AbstractExtensionInstaller
 {
     /**
      * Install the module.
@@ -27,22 +28,24 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
     public function install()
     {
         // Set default values for the module variables
-        $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, true);
-        $this->setVar(LegalConstant::MODVAR_TERMS_ACTIVE, true);
-        $this->setVar(LegalConstant::MODVAR_PRIVACY_ACTIVE, true);
-        $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, true);
-        $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-        $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
-        $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_URL, '');
-        $this->setVar(LegalConstant::MODVAR_TERMS_URL, '');
-        $this->setVar(LegalConstant::MODVAR_PRIVACY_URL, '');
-        $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_URL, '');
-        $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
-        $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
-        $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, 13);
-        $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
+        $this->setVars([
+            LegalConstant::MODVAR_LEGALNOTICE_ACTIVE => true,
+            LegalConstant::MODVAR_TERMS_ACTIVE => true,
+            LegalConstant::MODVAR_PRIVACY_ACTIVE => true,
+            LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE => true,
+            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE => false,
+            LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE => false,
+            LegalConstant::MODVAR_LEGALNOTICE_URL => '',
+            LegalConstant::MODVAR_TERMS_URL => '',
+            LegalConstant::MODVAR_PRIVACY_URL => '',
+            LegalConstant::MODVAR_ACCESSIBILITY_URL => '',
+            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL => '',
+            LegalConstant::MODVAR_TRADECONDITIONS_URL => '',
+            LegalConstant::MODVAR_MINIMUM_AGE => 13,
+            LegalConstant::MODVAR_EUCOOKIE => 0
+        ]);
 
-        // Initialization successful
+        // Initialisation successful
         return true;
     }
 
@@ -62,9 +65,11 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         switch ($oldVersion) {
             case '1.1':
                 // Upgrade 1.1 -> 1.2
-                $this->setVar('termsofuse', true);
-                $this->setVar('privacypolicy', true);
-                $this->setVar('accessibilitystatement', true);
+                $this->setVars([
+                    'termsofuse' => true,
+                    'privacypolicy' => true,
+                    'accessibilitystatement' => true
+                ]);
             case '1.2':
             // Upgrade 1.2 -> 1.3
             // Nothing to do.
@@ -84,17 +89,18 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
                 EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_UsersUiHandler');
             case '2.0.0':
                 // Upgrade 2.0.0 -> 2.0.1
-                // add vars for new document types
-                $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, false);
-                $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-                $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
-                // add vars for optional custom urls
-                $this->setVar(LegalConstant::MODVAR_LEGALNOTICE_URL, '');
-                $this->setVar(LegalConstant::MODVAR_TERMS_URL, '');
-                $this->setVar(LegalConstant::MODVAR_PRIVACY_URL, '');
-                $this->setVar(LegalConstant::MODVAR_ACCESSIBILITY_URL, '');
-                $this->setVar(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, '');
-                $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
+                // add vars for new document types and optional custom urls
+                $this->setVars([
+                    LegalConstant::MODVAR_LEGALNOTICE_ACTIVE => false,
+                    LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE => false,
+                    LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE => false,
+                    LegalConstant::MODVAR_LEGALNOTICE_URL => '',
+                    LegalConstant::MODVAR_TERMS_URL => '',
+                    LegalConstant::MODVAR_PRIVACY_URL => '',
+                    LegalConstant::MODVAR_ACCESSIBILITY_URL => '',
+                    LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL => '',
+                    LegalConstant::MODVAR_TRADECONDITIONS_URL => ''
+                ]);
             case '2.0.1':
                 // Nothing to do.
             case '2.0.2':
@@ -108,12 +114,15 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
             case '2.1.1':
                 // nothing
             case '2.1.2':
+                // nothing
+            case '3.0.0':
                 // future upgrades
 
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.
                 break;
             default:
         }
+
         // Update successful
         return true;
     }
@@ -126,6 +135,7 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
     public function uninstall()
     {
         $this->delVars();
+
         // Deletion successful
         return true;
     }
