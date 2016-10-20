@@ -83,7 +83,7 @@ class UserController extends \Zikula_AbstractController
      * specified by $documentName. If the legal document
      *
      * @param string $documentName      The "name" of the document, as specified by the names of the user and text template
-     *                                  files in the format 'legal_user_documentname.tpl' and 'legal_text_documentname.tpl'.
+     *                                  files in the format 'documentname.tpl'.
      * @param string $accessInstanceKey The string used in the instance_right part of the permission access key for this document.
      * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
      *                                  active or not; typically this is a constant from {@link LegalConstant}, such as
@@ -103,23 +103,25 @@ class UserController extends \Zikula_AbstractController
             throw new AccessDeniedException();
         }
         if (!$this->getVar($activeFlagKey)) {
-            return $this->view->fetch('User/policynotactive.tpl');
-        } else {
-            $customUrl = $this->getVar($customUrlKey, '');
-            if (empty($customUrl)) {
-                // work out the template path
-                $template = "User/{$documentName}.tpl";
-                // get the current users language
-                $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-                if (!$this->view->template_exists("{$languageCode}/legal_text_{$documentName}.tpl")) {
-                    $languageCode = 'en';
-                }
+            return $this->view->fetch('User/policyNotActive.tpl');
+        }
 
-                // intentionally return non-Response
-                return $this->view->assign('languageCode', $languageCode)->fetch($template);
-            } else {
-                return new RedirectResponse($customUrl);
+        $customUrl = $this->getVar($customUrlKey, '');
+        if (empty($customUrl)) {
+            // work out the template path
+            $template = "User/{$documentName}.tpl";
+            // get the current users language
+            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+            if (!$this->view->template_exists("{$languageCode}/{$documentName}.tpl")) {
+                $languageCode = 'en';
             }
+
+            // intentionally return non-Response
+            return $this->view
+                ->assign('languageCode', $languageCode)
+                ->fetch($template);
+        } else {
+            return new RedirectResponse($customUrl);
         }
     }
 
@@ -134,7 +136,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function legalNoticeAction()
     {
-        $doc = $this->renderDocument('legalnotice', 'legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
+        $doc = $this->renderDocument('legalNotice', 'legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
 
         return new Response($doc);
     }
@@ -150,7 +152,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function termsofuseAction()
     {
-        $doc = $this->renderDocument('termsofuse', 'termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
+        $doc = $this->renderDocument('termsOfUse', 'termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
 
         return new Response($doc);
     }
@@ -182,7 +184,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function privacyPolicyAction()
     {
-        $doc = $this->renderDocument('privacypolicy', 'privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
+        $doc = $this->renderDocument('privacyPolicy', 'privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
 
         return new Response($doc);
     }
@@ -198,7 +200,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function accessibilitystatementAction()
     {
-        $doc = $this->renderDocument('accessibilitystatement', 'accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
+        $doc = $this->renderDocument('accessibilityStatement', 'accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
 
         return new Response($doc);
     }
@@ -214,7 +216,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function cancellationRightPolicyAction()
     {
-        $doc = $this->renderDocument('cancellationrightpolicy', 'cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
+        $doc = $this->renderDocument('cancellationRightPolicy', 'cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
 
         return new Response($doc);
     }
@@ -230,7 +232,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function tradeConditionsAction()
     {
-        $doc = $this->renderDocument('tradeconditions', 'tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
+        $doc = $this->renderDocument('tradeConditions', 'tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
 
         return new Response($doc);
     }
@@ -402,6 +404,6 @@ class UserController extends \Zikula_AbstractController
             'fieldErrors'              => $fieldErrors,
         ];
 
-        return $this->view->assign($templateVars)->fetch('User/acceptpolicies.tpl');
+        return $this->view->assign($templateVars)->fetch('User/acceptPolicies.tpl');
     }
 }

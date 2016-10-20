@@ -166,7 +166,7 @@ class UsersUiListener implements EventSubscriberInterface
                     'acceptedPolicies' => $acceptedPolicies,
                 ];
                 $this->getView()->assign($templateVars);
-                $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_view.tpl');
+                $event->data[self::EVENT_KEY] = $this->getView()->fetch('UsersUI/view.tpl');
             }
         }
     }
@@ -215,7 +215,7 @@ class UsersUiListener implements EventSubscriberInterface
                                 'fieldErrors'              => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                             ];
                             $this->getView()->assign($templateVars);
-                            $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_login.tpl');
+                            $event->data[self::EVENT_KEY] = $this->getView()->fetch('UsersUI/editLogin.tpl');
                         }
                     }
                 } else {
@@ -226,7 +226,7 @@ class UsersUiListener implements EventSubscriberInterface
                         'fieldErrors'      => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                     ];
                     $this->getView()->assign($templateVars);
-                    $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_registration.tpl');
+                    $event->data[self::EVENT_KEY] = $this->getView()->fetch('UsersUI/editRegistration.tpl');
                 }
             } else {
                 // The user is logged in. A few possibilities here. The user is editing his own account information,
@@ -251,7 +251,7 @@ class UsersUiListener implements EventSubscriberInterface
                         'fieldErrors'      => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                     ];
                     $this->getView()->assign($templateVars);
-                    $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit.tpl');
+                    $event->data[self::EVENT_KEY] = $this->getView()->fetch('UsersUI/edit.tpl');
                 }
             }
         }
