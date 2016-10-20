@@ -168,6 +168,6 @@ class LinkContainer implements LinkContainerInterface
      */
     public function getBundleName()
     {
-        return 'ZikulaLegalModule';
+        return LegalConstant::MODNAME;
     }
 }

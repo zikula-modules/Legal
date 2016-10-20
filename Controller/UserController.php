@@ -31,7 +31,7 @@ use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use ZLanguage;
 
 /**
- * Module controller for user-related operations.
+ * Class UserController
  */
 class UserController extends \Zikula_AbstractController
 {

@@ -81,7 +81,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         // add javascript to bottom of body
         $pos = strripos($content, '</body>');
         if (false !== $pos) {
-            $module = \ModUtil::getModule('ZikulaLegalModule');
+            $module = \ModUtil::getModule(LegalConstant::MODNAME);
             $path = $request->getBasePath().'/'.$module->getRelativePath().'/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js';
             $javascript = '<script type="text/javascript" src="'.$path.'"></script>';
             // allow translation of content
@@ -103,7 +103,7 @@ jQuery(document).ready(function(){
         // add stylesheet to head
         $pos = strripos($content, '</head>');
         if (false !== $pos) {
-            $module = \ModUtil::getModule('ZikulaLegalModule');
+            $module = \ModUtil::getModule(LegalConstant::MODNAME);
             if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {
                 $path = $this->stylesheetOverride;
             } else {

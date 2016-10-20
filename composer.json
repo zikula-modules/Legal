@@ -23,7 +23,7 @@
             "displayname": "Legal",
             "url": "legal",
             "capabilities": {
-                "admin": {"route": "zikulalegalmodule_admin_modifyconfig"},
+                "admin": {"route": "zikulalegalmodule_config_config"},
                 "user": {"route": "zikulalegalmodule_user_termsofuse"}
             },
             "securityschema": {
