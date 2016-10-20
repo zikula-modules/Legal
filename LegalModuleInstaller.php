@@ -29,20 +29,20 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
     {
         // Set default values for the module variables
         $this->setVars([
-            LegalConstant::MODVAR_LEGALNOTICE_ACTIVE => true,
-            LegalConstant::MODVAR_TERMS_ACTIVE => true,
-            LegalConstant::MODVAR_PRIVACY_ACTIVE => true,
-            LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE => true,
+            LegalConstant::MODVAR_LEGALNOTICE_ACTIVE             => true,
+            LegalConstant::MODVAR_TERMS_ACTIVE                   => true,
+            LegalConstant::MODVAR_PRIVACY_ACTIVE                 => true,
+            LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE           => true,
             LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE => false,
-            LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE => false,
-            LegalConstant::MODVAR_LEGALNOTICE_URL => '',
-            LegalConstant::MODVAR_TERMS_URL => '',
-            LegalConstant::MODVAR_PRIVACY_URL => '',
-            LegalConstant::MODVAR_ACCESSIBILITY_URL => '',
-            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL => '',
-            LegalConstant::MODVAR_TRADECONDITIONS_URL => '',
-            LegalConstant::MODVAR_MINIMUM_AGE => 13,
-            LegalConstant::MODVAR_EUCOOKIE => 0
+            LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE         => false,
+            LegalConstant::MODVAR_LEGALNOTICE_URL                => '',
+            LegalConstant::MODVAR_TERMS_URL                      => '',
+            LegalConstant::MODVAR_PRIVACY_URL                    => '',
+            LegalConstant::MODVAR_ACCESSIBILITY_URL              => '',
+            LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL    => '',
+            LegalConstant::MODVAR_TRADECONDITIONS_URL            => '',
+            LegalConstant::MODVAR_MINIMUM_AGE                    => 13,
+            LegalConstant::MODVAR_EUCOOKIE                       => 0,
         ]);
 
         // Initialisation successful
@@ -66,9 +66,9 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
             case '1.1':
                 // Upgrade 1.1 -> 1.2
                 $this->setVars([
-                    'termsofuse' => true,
-                    'privacypolicy' => true,
-                    'accessibilitystatement' => true
+                    'termsofuse'             => true,
+                    'privacypolicy'          => true,
+                    'accessibilitystatement' => true,
                 ]);
             case '1.2':
             // Upgrade 1.2 -> 1.3
@@ -91,15 +91,15 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                 // Upgrade 2.0.0 -> 2.0.1
                 // add vars for new document types and optional custom urls
                 $this->setVars([
-                    LegalConstant::MODVAR_LEGALNOTICE_ACTIVE => false,
+                    LegalConstant::MODVAR_LEGALNOTICE_ACTIVE             => false,
                     LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE => false,
-                    LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE => false,
-                    LegalConstant::MODVAR_LEGALNOTICE_URL => '',
-                    LegalConstant::MODVAR_TERMS_URL => '',
-                    LegalConstant::MODVAR_PRIVACY_URL => '',
-                    LegalConstant::MODVAR_ACCESSIBILITY_URL => '',
-                    LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL => '',
-                    LegalConstant::MODVAR_TRADECONDITIONS_URL => ''
+                    LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE         => false,
+                    LegalConstant::MODVAR_LEGALNOTICE_URL                => '',
+                    LegalConstant::MODVAR_TERMS_URL                      => '',
+                    LegalConstant::MODVAR_PRIVACY_URL                    => '',
+                    LegalConstant::MODVAR_ACCESSIBILITY_URL              => '',
+                    LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL    => '',
+                    LegalConstant::MODVAR_TRADECONDITIONS_URL            => '',
                 ]);
             case '2.0.1':
                 // Nothing to do.
