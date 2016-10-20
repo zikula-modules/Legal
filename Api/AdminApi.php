@@ -11,7 +11,6 @@
 
 namespace Zikula\LegalModule\Api;
 
-use DBUtil;
 use ModUtil;
 use SecurityUtil;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -30,16 +29,15 @@ class AdminApi extends \Zikula_AbstractApi
      *
      * @param array $args All arguments passed to the function.
      *
-     * @return bool True if successfully reset, otherwise false.
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws \Exception            Thrown in cases where expected data is not present or not in an expected form.
      *
-     * @throws \Exception Thrown in cases where expected data is not present or not in an expected form.
+     * @return bool True if successfully reset, otherwise false.
      */
     public function resetagreement($args)
     {
         // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission($this->name.'::', '::', ACCESS_ADMIN)) {
             throw new AccessDeniedException();
         }
         if (!isset($args['gid']) || $args['gid'] == -1) {
@@ -82,7 +80,7 @@ class AdminApi extends \Zikula_AbstractApi
 
         return true;
     }
-    
+
     /**
      * Get available admin panel links.
      *
@@ -93,9 +91,9 @@ class AdminApi extends \Zikula_AbstractApi
         $links = [];
         if (SecurityUtil::checkPermission('ZikulaUsersModule::', '::', ACCESS_ADMIN)) {
             $links[] = [
-                'url' => $this->get('router')->generate('zikulalegalmodule_admin_modifyconfig'),
-                'text' => $this->__('Settings'),
-                'class' => 'z-icon-es-config'
+                'url'   => $this->get('router')->generate('zikulalegalmodule_admin_modifyconfig'),
+                'text'  => $this->__('Settings'),
+                'class' => 'z-icon-es-config',
             ];
         }
 

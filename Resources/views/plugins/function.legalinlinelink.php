@@ -44,7 +44,7 @@ function smarty_function_legalinlinelink($params, Zikula_View &$view)
         $template = 'InlineLink/legal_function_legalinlinelink_notfound.tpl';
     } else {
         $params['policyType'] = strtolower($params['policyType']);
-        $template = 'InlineLink/legal_function_legalinlinelink_' . $params['policyType'] . '.tpl';
+        $template = 'InlineLink/legal_function_legalinlinelink_'.$params['policyType'].'.tpl';
 
         if (!$view->template_exists($template)) {
             $template = 'InlineLink/legal_function_legalinlinelink_notfound.tpl';
@@ -52,7 +52,7 @@ function smarty_function_legalinlinelink($params, Zikula_View &$view)
     }
 
     $templateVars = [
-        'target' => isset($params['target']) ? $params['target'] : ''
+        'target' => isset($params['target']) ? $params['target'] : '',
     ];
 
     $view->assign($templateVars);

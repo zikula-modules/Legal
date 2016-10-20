@@ -70,7 +70,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     /**
      * Injects the warning into the Response.
      *
-     * @param Request $request A Request instance
+     * @param Request  $request  A Request instance
      * @param Response $response A Response instance
      */
     protected function injectWarning(Request $request, Response $response)
@@ -82,8 +82,8 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         $pos = strripos($content, '</body>');
         if (false !== $pos) {
             $module = \ModUtil::getModule('ZikulaLegalModule');
-            $path = $request->getBasePath() . '/' . $module->getRelativePath() . '/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js';
-            $javascript = '<script type="text/javascript" src="' . $path . '"></script>';
+            $path = $request->getBasePath().'/'.$module->getRelativePath().'/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js';
+            $javascript = '<script type="text/javascript" src="'.$path.'"></script>';
             // allow translation of content
             $message = __('We use cookies to track usage and preferences', $module->getTranslationDomain());
             $acceptText = __('I Understand', $module->getTranslationDomain());
@@ -91,12 +91,12 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
 <script type="text/javascript">
 jQuery(document).ready(function(){
     jQuery.cookieBar({
-        message: \'' . $message . '\',
-        acceptText: \'' . $acceptText .'\'
+        message: \''.$message.'\',
+        acceptText: \''.$acceptText.'\'
     });
 });
 </script>';
-            $content = substr($content, 0, $pos) . $javascript . substr($content, $pos);
+            $content = substr($content, 0, $pos).$javascript.substr($content, $pos);
             $response->setContent($content);
         }
 
@@ -107,10 +107,10 @@ jQuery(document).ready(function(){
             if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {
                 $path = $this->stylesheetOverride;
             } else {
-                $path = $request->getBasePath() . '/' . $module->getRelativePath() . '/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css';
+                $path = $request->getBasePath().'/'.$module->getRelativePath().'/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css';
             }
-            $css = '<link rel="stylesheet" type="text/css" href="' . $path .'" />';
-            $content = substr($content, 0, $pos) . $css . substr($content, $pos);
+            $css = '<link rel="stylesheet" type="text/css" href="'.$path.'" />';
+            $content = substr($content, 0, $pos).$css.substr($content, $pos);
             $response->setContent($content);
         }
     }
@@ -118,7 +118,7 @@ jQuery(document).ready(function(){
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::RESPONSE => ['onKernelResponse']
+            KernelEvents::RESPONSE => ['onKernelResponse'],
         ];
     }
 }

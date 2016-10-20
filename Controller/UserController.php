@@ -15,19 +15,19 @@ use DateTime;
 use DateTimeZone;
 use ModUtil;
 use SecurityUtil;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SessionUtil;
-use System;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use System;
 use UserUtil;
-use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use ZLanguage;
 
 /**
@@ -36,7 +36,7 @@ use ZLanguage;
 class UserController extends \Zikula_AbstractController
 {
     /**
-     * Route not needed here because method is legacy-only
+     * Route not needed here because method is legacy-only.
      *
      * Legal Module main user function.
      *
@@ -56,7 +56,7 @@ class UserController extends \Zikula_AbstractController
 
     /**
      * @Route("")
-     * 
+     *
      * Legal Module main user function.
      *
      * Redirects to the Terms of Use legal document.
@@ -83,23 +83,23 @@ class UserController extends \Zikula_AbstractController
      * specified by $documentName. If the legal document
      *
      * @param string $documentName      The "name" of the document, as specified by the names of the user and text template
-     *                                      files in the format 'legal_user_documentname.tpl' and 'legal_text_documentname.tpl'.
+     *                                  files in the format 'legal_user_documentname.tpl' and 'legal_text_documentname.tpl'.
      * @param string $accessInstanceKey The string used in the instance_right part of the permission access key for this document.
      * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
-     *                                      active or not; typically this is a constant from {@link LegalConstant}, such as
-     *                                      {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
+     *                                  active or not; typically this is a constant from {@link LegalConstant}, such as
+     *                                  {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
      * @param string $customUrlKey      The string used to name the module variable that contains a custom static URL for the
-     *                                      legal document; typically this is a constant from {@link LegalConstant}, such as
-     *                                      {@link LegalConstant::MODVAR_TERMS_URL}.
-     *
-     * @return RedirectResponse|string HTML output string
+     *                                  legal document; typically this is a constant from {@link LegalConstant}, such as
+     *                                  {@link LegalConstant::MODVAR_TERMS_URL}.
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return RedirectResponse|string HTML output string
      */
     private function renderDocument($documentName, $accessInstanceKey, $activeFlagKey, $customUrlKey)
     {
         // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::' . $accessInstanceKey, '::', ACCESS_OVERVIEW)) {
+        if (!SecurityUtil::checkPermission($this->name.'::'.$accessInstanceKey, '::', ACCESS_OVERVIEW)) {
             throw new AccessDeniedException();
         }
         if (!$this->getVar($activeFlagKey)) {
@@ -118,7 +118,6 @@ class UserController extends \Zikula_AbstractController
                 // intentionally return non-Response
                 return $this->view->assign('languageCode', $languageCode)->fetch($template);
             } else {
-
                 return new RedirectResponse($customUrl);
             }
         }
@@ -126,12 +125,12 @@ class UserController extends \Zikula_AbstractController
 
     /**
      * @Route("/legalnotice")
-     * 
+     *
      * Display Legal notice.
      *
-     * @return Response
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return Response
      */
     public function legalNoticeAction()
     {
@@ -139,15 +138,15 @@ class UserController extends \Zikula_AbstractController
 
         return new Response($doc);
     }
-    
+
     /**
      * @Route("/termsofuse")
      *
      * Display Terms of Use
      *
-     * @return Response
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return Response
      */
     public function termsofuseAction()
     {
@@ -155,7 +154,7 @@ class UserController extends \Zikula_AbstractController
 
         return new Response($doc);
     }
-    
+
     /**
      * @Route("/privacy")
      *
@@ -171,15 +170,15 @@ class UserController extends \Zikula_AbstractController
     {
         return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_user_privacypolicy', [], RouterInterface::ABSOLUTE_URL));
     }
-    
+
     /**
      * @Route("/privacypolicy")
      *
      * Display Privacy Policy
      *
-     * @return Response
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return Response
      */
     public function privacyPolicyAction()
     {
@@ -187,15 +186,15 @@ class UserController extends \Zikula_AbstractController
 
         return new Response($doc);
     }
-    
+
     /**
      * @Route("/accessibilitystatement")
      *
      * Display Accessibility statement
      *
-     * @return Response
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return Response
      */
     public function accessibilitystatementAction()
     {
@@ -203,15 +202,15 @@ class UserController extends \Zikula_AbstractController
 
         return new Response($doc);
     }
-    
+
     /**
      * @Route("/cancellationrightpolicy")
      *
      * Display Cancellation right policy
      *
-     * @return Response
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return Response
      */
     public function cancellationRightPolicyAction()
     {
@@ -219,39 +218,38 @@ class UserController extends \Zikula_AbstractController
 
         return new Response($doc);
     }
-    
+
     /**
      * @Route("/tradeconditions")
      *
      * Display Trade conditions
      *
-     * @return Response
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return Response
      */
     public function tradeConditionsAction()
     {
-        $doc = $this->renderDocument( 'tradeconditions', 'tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
+        $doc = $this->renderDocument('tradeconditions', 'tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
 
         return new Response($doc);
     }
-    
+
     /**
      * @Route("/acceptpolicies")
      *
      * Allow the user to accept active terms of use and/or privacy policy.
      *
      * This function is currently used by the Legal module's handler for the users.login.veto event.
-     * 
+     *
      * @param Request $request
      *
-     * @return Response
-     *
      * @throws AccessDeniedException Thrown if the user is not logged in and the acceptance attempt is not a result of a login attempt.
+     * @throws \Exception            Thrown if the user is already logged in and the acceptance attempt is a result of a login attempt;
+     *                               also thrown in cases where expected data is not present or not in an expected form;
+     *                               also thrown if the call to this function is not the result of a POST operation or a GET operation.
      *
-     * @throws \Exception Thrown if the user is already logged in and the acceptance attempt is a result of a login attempt;
-     *      also thrown in cases where expected data is not present or not in an expected form;
-     *      also thrown if the call to this function is not the result of a POST operation or a GET operation.
+     * @return Response
      */
     public function acceptPoliciesAction(Request $request)
     {
@@ -277,11 +275,11 @@ class UserController extends \Zikula_AbstractController
             }
             $policiesUid = $request->request->get('acceptedpolicies_uid', false);
             $acceptedPolicies = [
-                'termsOfUse' => $request->request->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy' => $request->request->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy' => $request->request->get('acceptedpolicies_agepolicy', false),
+                'termsOfUse'              => $request->request->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy'           => $request->request->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy'               => $request->request->get('acceptedpolicies_agepolicy', false),
                 'cancellationRightPolicy' => $request->request->get('acceptedpolicies_cancellationrightpolicy', false),
-                'tradeConditions' => $request->request->get('acceptedpolicies_tradeconditions', false)
+                'tradeConditions'         => $request->request->get('acceptedpolicies_tradeconditions', false),
             ];
             if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
                 throw new \Exception();
@@ -356,7 +354,6 @@ class UserController extends \Zikula_AbstractController
 
                     return $response;
                 } else {
-
                     return new RedirectResponse(System::getHomepageUrl());
                 }
             }
@@ -397,12 +394,12 @@ class UserController extends \Zikula_AbstractController
             );
         }
         $templateVars = [
-            'login' => $isLogin,
-            'policiesUid' => $policiesUid,
-            'activePolicies' => $helper->getActivePolicies(),
-            'acceptedPolicies' => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
+            'login'                    => $isLogin,
+            'policiesUid'              => $policiesUid,
+            'activePolicies'           => $helper->getActivePolicies(),
+            'acceptedPolicies'         => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
             'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
-            'fieldErrors' => $fieldErrors
+            'fieldErrors'              => $fieldErrors,
         ];
 
         return $this->view->assign($templateVars)->fetch('User/acceptpolicies.tpl');

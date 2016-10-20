@@ -12,7 +12,6 @@
 namespace Zikula\LegalModule\Api;
 
 use ModUtil;
-use SecurityUtil;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
@@ -37,7 +36,7 @@ class UserApi extends \Zikula_AbstractApi
             }
             $links[] = [
                 'text' => $this->__('Legal notice'),
-                'url' => $url
+                'url'  => $url,
             ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false)) {
@@ -48,7 +47,7 @@ class UserApi extends \Zikula_AbstractApi
             }
             $links[] = [
                 'text' => $this->__('Terms of use'),
-                'url' => $url
+                'url'  => $url,
             ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false)) {
@@ -59,7 +58,7 @@ class UserApi extends \Zikula_AbstractApi
             }
             $links[] = [
                 'text' => $this->__('Privacy policy'),
-                'url' => $url
+                'url'  => $url,
             ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
@@ -70,7 +69,7 @@ class UserApi extends \Zikula_AbstractApi
             }
             $links[] = [
                 'text' => $this->__('Trade conditions'),
-                'url' => $url
+                'url'  => $url,
             ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
@@ -81,7 +80,7 @@ class UserApi extends \Zikula_AbstractApi
             }
             $links[] = [
                 'text' => $this->__('Cancellation right'),
-                'url' => $url
+                'url'  => $url,
             ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
@@ -92,7 +91,7 @@ class UserApi extends \Zikula_AbstractApi
             }
             $links[] = [
                 'text' => $this->__('Accessibility statement'),
-                'url' => $url
+                'url'  => $url,
             ];
         }
 

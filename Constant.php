@@ -124,14 +124,14 @@ class Constant
     const MODVAR_EUCOOKIE = 'eucookie';
 
     /**
-     * Users account record attribute key for terms of use acceptance
+     * Users account record attribute key for terms of use acceptance.
      *
      * @var string
      */
     const ATTRIBUTE_TERMSOFUSE_ACCEPTED = '_Legal_termsOfUseAccepted';
 
     /**
-     * Users account record attribute key for terms of use acceptance
+     * Users account record attribute key for terms of use acceptance.
      *
      * @var string
      */
