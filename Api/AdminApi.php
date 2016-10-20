@@ -1,24 +1,20 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule\Api;
 
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use SecurityUtil;
 use DBUtil;
 use ModUtil;
+use SecurityUtil;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Administrative API functions.
@@ -60,7 +56,7 @@ class AdminApi extends \Zikula_AbstractApi
         } else {
             // single group
             // get the group incl members
-            $grp = ModUtil::apiFunc('Groups', 'user', 'get', array('gid' => $args['gid']));
+            $grp = ModUtil::apiFunc('Groups', 'user', 'get', ['gid' => $args['gid']]);
             if ($grp == false) {
                 return false;
             }
@@ -94,15 +90,15 @@ class AdminApi extends \Zikula_AbstractApi
      */
     public function getLinks()
     {
-        $links = array();
+        $links = [];
         if (SecurityUtil::checkPermission('ZikulaUsersModule::', '::', ACCESS_ADMIN)) {
-            $links[] = array(
+            $links[] = [
                 'url' => $this->get('router')->generate('zikulalegalmodule_admin_modifyconfig'),
                 'text' => $this->__('Settings'),
-                'class' => 'z-icon-es-config');
+                'class' => 'z-icon-es-config'
+            ];
         }
 
         return $links;
     }
-
 }

@@ -1,38 +1,34 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule\Controller;
 
-use Zikula\LegalModule\Constant as LegalConstant;
-use ModUtil;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use SecurityUtil;
-use ZLanguage;
-use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
-use UserUtil;
-use DateTimeZone;
 use DateTime;
-use System;
+use DateTimeZone;
+use ModUtil;
+use SecurityUtil;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use SessionUtil;
+use System;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route; // used in annotations - do not remove
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method; // used in annotations - do not remove
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use UserUtil;
+use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
+use Zikula\LegalModule\Constant as LegalConstant;
+use ZLanguage;
 
 /**
  * Module controller for user-related operations.
@@ -52,7 +48,7 @@ class UserController extends \Zikula_AbstractController
     {
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
-            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', array(), RouterInterface::ABSOLUTE_URL);
+            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', [], RouterInterface::ABSOLUTE_URL);
         }
 
         return new RedirectResponse($url);
@@ -71,7 +67,7 @@ class UserController extends \Zikula_AbstractController
     {
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
-            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', array(), RouterInterface::ABSOLUTE_URL);
+            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', [], RouterInterface::ABSOLUTE_URL);
         }
 
         return new RedirectResponse($url);
@@ -139,7 +135,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function legalNoticeAction()
     {
-        $doc = $this->renderDocument('legalnotice', 'legalnotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
+        $doc = $this->renderDocument('legalnotice', 'legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
 
         return new Response($doc);
     }
@@ -155,7 +151,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function termsofuseAction()
     {
-        $doc = $this->renderDocument('termsofuse', 'termsofuse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
+        $doc = $this->renderDocument('termsofuse', 'termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
 
         return new Response($doc);
     }
@@ -173,7 +169,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function privacyAction()
     {
-        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_user_privacypolicy', array(), RouterInterface::ABSOLUTE_URL));
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_user_privacypolicy', [], RouterInterface::ABSOLUTE_URL));
     }
     
     /**
@@ -187,7 +183,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function privacyPolicyAction()
     {
-        $doc = $this->renderDocument('privacypolicy', 'privacypolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
+        $doc = $this->renderDocument('privacypolicy', 'privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
 
         return new Response($doc);
     }
@@ -203,7 +199,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function accessibilitystatementAction()
     {
-        $doc = $this->renderDocument('accessibilitystatement', 'accessibilitystatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
+        $doc = $this->renderDocument('accessibilitystatement', 'accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
 
         return new Response($doc);
     }
@@ -219,7 +215,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function cancellationRightPolicyAction()
     {
-        $doc = $this->renderDocument('cancellationrightpolicy', 'cancellationrightpolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
+        $doc = $this->renderDocument('cancellationrightpolicy', 'cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
 
         return new Response($doc);
     }
@@ -235,7 +231,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function tradeConditionsAction()
     {
-        $doc = $this->renderDocument( 'tradeconditions', 'tradeconditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
+        $doc = $this->renderDocument( 'tradeconditions', 'tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
 
         return new Response($doc);
     }
@@ -280,18 +276,19 @@ class UserController extends \Zikula_AbstractController
                 throw new \Exception();
             }
             $policiesUid = $request->request->get('acceptedpolicies_uid', false);
-            $acceptedPolicies = array(
+            $acceptedPolicies = [
                 'termsOfUse' => $request->request->get('acceptedpolicies_termsofuse', false),
                 'privacyPolicy' => $request->request->get('acceptedpolicies_privacypolicy', false),
                 'agePolicy' => $request->request->get('acceptedpolicies_agepolicy', false),
                 'cancellationRightPolicy' => $request->request->get('acceptedpolicies_cancellationrightpolicy', false),
-                'tradeConditions' => $request->request->get('acceptedpolicies_tradeconditions', false));
+                'tradeConditions' => $request->request->get('acceptedpolicies_tradeconditions', false)
+            ];
             if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
                 throw new \Exception();
             }
             $activePolicies = $helper->getActivePolicies();
             $originalAcceptedPolicies = $helper->getAcceptedPolicies($policiesUid);
-            $fieldErrors = array();
+            $fieldErrors = [];
             if ($activePolicies['termsOfUse'] && !$originalAcceptedPolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']) {
                 $fieldErrors['termsofuse'] = $this->__('You must accept this site\'s Terms of Use in order to proceed.');
             }
@@ -299,7 +296,7 @@ class UserController extends \Zikula_AbstractController
                 $fieldErrors['privacypolicy'] = $this->__('You must accept this site\'s Privacy Policy in order to proceed.');
             }
             if ($activePolicies['agePolicy'] && !$originalAcceptedPolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
-                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar($this->name, LegalConstant::MODVAR_MINIMUM_AGE, 0)));
+                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', [ModUtil::getVar($this->name, LegalConstant::MODVAR_MINIMUM_AGE, 0)]);
             }
             if ($activePolicies['cancellationRightPolicy'] && !$originalAcceptedPolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy']) {
                 $fieldErrors['cancellationrightpolicy'] = $this->__('You must accept our cancellation right policy in order to proceed.');
@@ -342,7 +339,7 @@ class UserController extends \Zikula_AbstractController
                     $path = $request->getSession()->get(
                         // @todo check on this value
                         'Users_Controller_User_login',
-                        array(),
+                        [],
                         'ZikulaUsersModule'
                     );
                     $path['authentication_method'] = $sessionVars['authentication_method'];
@@ -350,7 +347,7 @@ class UserController extends \Zikula_AbstractController
                     $path['rememberme'] = $sessionVars['rememberme'];
                     $path['_controller'] = 'zikulausersmodule_user_login';
 
-                    $subRequest = $request->duplicate(array(), null, $path);
+                    $subRequest = $request->duplicate([], null, $path);
                     $httpKernel = $this->get('http_kernel');
                     $response = $httpKernel->handle(
                         $subRequest,
@@ -365,7 +362,7 @@ class UserController extends \Zikula_AbstractController
             }
         } elseif ($request->isMethod('GET')) {
             $isLogin = $request->query->get('login', false);
-            $fieldErrors = array();
+            $fieldErrors = [];
         } else {
             throw new AccessDeniedException();
         }
@@ -399,15 +396,15 @@ class UserController extends \Zikula_AbstractController
                 $this->name
             );
         }
-        $templateVars = array(
+        $templateVars = [
             'login' => $isLogin,
             'policiesUid' => $policiesUid,
             'activePolicies' => $helper->getActivePolicies(),
             'acceptedPolicies' => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
             'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
-            'fieldErrors' => $fieldErrors);
+            'fieldErrors' => $fieldErrors
+        ];
 
         return $this->view->assign($templateVars)->fetch('User/acceptpolicies.tpl');
     }
-
 }

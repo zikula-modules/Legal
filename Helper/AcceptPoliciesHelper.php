@@ -1,26 +1,22 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule\Helper;
 
-use Zikula\LegalModule\Constant as LegalConstant;
-use ModUtil;
-use UserUtil;
-use DateTimeZone;
 use DateTime;
+use DateTimeZone;
+use ModUtil;
 use SecurityUtil;
+use UserUtil;
+use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
  * Helper class to process acceptance of policies.
@@ -33,6 +29,7 @@ class AcceptPoliciesHelper
      * @var string
      */
     protected $name;
+
     /**
      * Construct a new instance of the helper, setting the $name attribute to the module name.
      */
@@ -40,7 +37,7 @@ class AcceptPoliciesHelper
     {
         $this->name = LegalConstant::MODNAME;
     }
-    
+
     /**
      * Retrieves flags indicating which policies are active.
      *
@@ -48,17 +45,19 @@ class AcceptPoliciesHelper
      */
     public function getActivePolicies()
     {
-        $termsOfUseActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0) != 0;
-        $cancellationRightPolicyActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-        $tradeConditionsActive = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
-        return array(
+        $termsOfUseActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_TERMS_ACTIVE, false);
+        $privacyPolicyActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
+        $agePolicyActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_MINIMUM_AGE, 0) != 0;
+        $cancellationRightPolicyActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $tradeConditionsActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+
+        return [
             'termsOfUse' => $termsOfUseActive,
             'privacyPolicy' => $privacyPolicyActive,
             'agePolicy' => $agePolicyActive,
             'cancellationRightPolicy' => $cancellationRightPolicyActive,
-            'tradeConditions' => $tradeConditionsActive);
+            'tradeConditions' => $tradeConditionsActive
+        ];
     }
     
     /**
@@ -70,12 +69,9 @@ class AcceptPoliciesHelper
      *
      * @return boolean Fetched acceptance / confirmation state.
      */
-    private function determineAcceptanceState(
-        $uid,
-        $isRegistration,
-        $modVarName
-    ) {
+    private function determineAcceptanceState($uid, $isRegistration, $modVarName) {
         $acceptanceState = false;
+
         if (!is_null($uid) && !empty($uid) && is_numeric($uid) && $uid > 0) {
             if ($uid > 2) {
                 $acceptanceState = UserUtil::getVar($modVarName, $uid, false, $isRegistration);
@@ -86,9 +82,10 @@ class AcceptPoliciesHelper
                 $acceptanceState = $nowStr;
             }
         }
+
         return $acceptanceState;
     }
-    
+
     /**
      * Retrieves flags indicating which policies the user with the given uid has already accepted.
      *
@@ -103,50 +100,45 @@ class AcceptPoliciesHelper
         } else {
             $isRegistration = false;
         }
-        $termsOfUseAcceptedDateStr = $this->determineAcceptanceState(
-            $uid,
-            $isRegistration,
+
+        $termsOfUseAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
             LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED
         );
-        $privacyPolicyAcceptedDateStr = $this->determineAcceptanceState(
-            $uid,
-            $isRegistration,
+        $privacyPolicyAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
             LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED
         );
-        $agePolicyConfirmedDateStr = $this->determineAcceptanceState(
-            $uid,
-            $isRegistration,
+        $agePolicyConfirmedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
             LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED
         );
-        $cancellationRightPolicyAcceptedDateStr = $this->determineAcceptanceState(
-            $uid,
-            $isRegistration,
+        $cancellationRightPolicyAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
             LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED
         );
-        $tradeConditionsAcceptedDateStr = $this->determineAcceptanceState(
-            $uid,
-            $isRegistration,
+        $tradeConditionsAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
             LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
         );
+
         $termsOfUseAcceptedDate = $termsOfUseAcceptedDateStr ? new DateTime($termsOfUseAcceptedDateStr) : false;
         $privacyPolicyAcceptedDate = $privacyPolicyAcceptedDateStr ? new DateTime($privacyPolicyAcceptedDateStr) : false;
         $agePolicyConfirmedDate = $agePolicyConfirmedDateStr ? new DateTime($agePolicyConfirmedDateStr) : false;
         $cancellationRightPolicyAcceptedDate = $cancellationRightPolicyAcceptedDateStr ? new DateTime($cancellationRightPolicyAcceptedDateStr) : false;
         $tradeConditionsAcceptedDate = $tradeConditionsAcceptedDateStr ? new DateTime($tradeConditionsAcceptedDateStr) : false;
+
         $now = new DateTime();
         $termsOfUseAccepted = $termsOfUseAcceptedDate ? $termsOfUseAcceptedDate <= $now : false;
         $privacyPolicyAccepted = $privacyPolicyAcceptedDate ? $privacyPolicyAcceptedDate <= $now : false;
         $agePolicyConfirmed = $agePolicyConfirmedDate ? $agePolicyConfirmedDate <= $now : false;
         $cancellationRightPolicyAccepted = $cancellationRightPolicyAcceptedDate ? $cancellationRightPolicyAcceptedDate <= $now : false;
         $tradeConditionsAccepted = $tradeConditionsAcceptedDate ? $tradeConditionsAcceptedDate <= $now : false;
-        return array(
+
+        return [
             'termsOfUse' => $termsOfUseAccepted,
             'privacyPolicy' => $privacyPolicyAccepted,
             'agePolicy' => $agePolicyConfirmed,
             'cancellationRightPolicy' => $cancellationRightPolicyAccepted,
-            'tradeConditions' => $tradeConditionsAccepted);
+            'tradeConditions' => $tradeConditionsAccepted
+        ];
     }
-    
+
     /**
      * Determine whether the current user can view the acceptance/confirmation status of certain policies.
      *
@@ -161,14 +153,16 @@ class AcceptPoliciesHelper
     {
         $currentUid = UserUtil::getVar('uid');
         $isCurrentUser = !is_null($uid) && $uid == $currentUid;
-        return array(
-            'termsOfUse' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::termsofuse', '::', ACCESS_MODERATE),
-            'privacyPolicy' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::privacypolicy', '::', ACCESS_MODERATE),
-            'agePolicy' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::agepolicy', '::', ACCESS_MODERATE),
-            'cancellationRightPolicy' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::cancellationrightpolicy', '::', ACCESS_MODERATE),
-            'tradeConditions' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::tradeconditions', '::', ACCESS_MODERATE));
+
+        return [
+            'termsOfUse' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::termsOfUse', '::', ACCESS_MODERATE),
+            'privacyPolicy' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::privacyPolicy', '::', ACCESS_MODERATE),
+            'agePolicy' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::agePolicy', '::', ACCESS_MODERATE),
+            'cancellationRightPolicy' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::cancellationRightPolicy', '::', ACCESS_MODERATE),
+            'tradeConditions' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name . '::tradeConditions', '::', ACCESS_MODERATE)
+        ];
     }
-    
+
     /**
      * Determine whether the current user can edit the acceptance/confirmation status of certain policies.
      *
@@ -179,12 +173,12 @@ class AcceptPoliciesHelper
      */
     public function getEditablePolicies()
     {
-        return array(
-            'termsOfUse' => SecurityUtil::checkPermission($this->name . '::termsofuse', '::', ACCESS_EDIT),
-            'privacyPolicy' => SecurityUtil::checkPermission($this->name . '::privacypolicy', '::', ACCESS_EDIT),
-            'agePolicy' => SecurityUtil::checkPermission($this->name . '::agepolicy', '::', ACCESS_EDIT),
-            'cancellationRightPolicy' => SecurityUtil::checkPermission($this->name . '::cancellationrightpolicy', '::', ACCESS_EDIT),
-            'tradeConditions' => SecurityUtil::checkPermission($this->name . '::tradeconditions', '::', ACCESS_EDIT));
+        return [
+            'termsOfUse' => SecurityUtil::checkPermission($this->name . '::termsOfUse', '::', ACCESS_EDIT),
+            'privacyPolicy' => SecurityUtil::checkPermission($this->name . '::privacyPolicy', '::', ACCESS_EDIT),
+            'agePolicy' => SecurityUtil::checkPermission($this->name . '::agePolicy', '::', ACCESS_EDIT),
+            'cancellationRightPolicy' => SecurityUtil::checkPermission($this->name . '::cancellationRightPolicy', '::', ACCESS_EDIT),
+            'tradeConditions' => SecurityUtil::checkPermission($this->name . '::tradeConditions', '::', ACCESS_EDIT)
+        ];
     }
-
 }

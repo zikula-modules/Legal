@@ -1,22 +1,18 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule\Api;
 
-use SecurityUtil;
 use ModUtil;
+use SecurityUtil;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
@@ -31,7 +27,7 @@ class UserApi extends \Zikula_AbstractApi
      */
     public function getLinks()
     {
-        $links = array();
+        $links = [];
 
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
             $url = $this->get('router')->generate('zikulalegalmodule_user_legalnotice');
@@ -39,9 +35,10 @@ class UserApi extends \Zikula_AbstractApi
             if (!empty($customUrl)) {
                 $url = $customUrl;
             }
-            $links[] = array(
+            $links[] = [
                 'text' => $this->__('Legal notice'),
-                'url' => $url);
+                'url' => $url
+            ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false)) {
             $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse');
@@ -49,9 +46,10 @@ class UserApi extends \Zikula_AbstractApi
             if (!empty($customUrl)) {
                 $url = $customUrl;
             }
-            $links[] = array(
+            $links[] = [
                 'text' => $this->__('Terms of use'),
-                'url' => $url);
+                'url' => $url
+            ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false)) {
             $url = $this->get('router')->generate('zikulalegalmodule_user_privacypolicy');
@@ -59,9 +57,10 @@ class UserApi extends \Zikula_AbstractApi
             if (!empty($customUrl)) {
                 $url = $customUrl;
             }
-            $links[] = array(
+            $links[] = [
                 'text' => $this->__('Privacy policy'),
-                'url' => $url);
+                'url' => $url
+            ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
             $url = $this->get('router')->generate('zikulalegalmodule_user_tradeconditions');
@@ -69,9 +68,10 @@ class UserApi extends \Zikula_AbstractApi
             if (!empty($customUrl)) {
                 $url = $customUrl;
             }
-            $links[] = array(
+            $links[] = [
                 'text' => $this->__('Trade conditions'),
-                'url' => $url);
+                'url' => $url
+            ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
             $url = $this->get('router')->generate('zikulalegalmodule_user_cancellationrightpolicy');
@@ -79,9 +79,10 @@ class UserApi extends \Zikula_AbstractApi
             if (!empty($customUrl)) {
                 $url = $customUrl;
             }
-            $links[] = array(
+            $links[] = [
                 'text' => $this->__('Cancellation right'),
-                'url' => $url);
+                'url' => $url
+            ];
         }
         if (ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
             $url = $this->get('router')->generate('zikulalegalmodule_user_accessibilitystatement');
@@ -89,12 +90,12 @@ class UserApi extends \Zikula_AbstractApi
             if (!empty($customUrl)) {
                 $url = $customUrl;
             }
-            $links[] = array(
+            $links[] = [
                 'text' => $this->__('Accessibility statement'),
-                'url' => $url);
+                'url' => $url
+            ];
         }
 
         return $links;
     }
-
 }

@@ -1,25 +1,21 @@
 <?php
 
-/**
- * Copyright (c) 2014 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule\Listener;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
@@ -52,7 +48,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         // do not capture redirects or modify XML HTTP Requests or routing or toolbar requests
         if ($request->isXmlHttpRequest()
             || $response->isRedirect()
-            || $request->getPathInfo() == "/js/routing"
+            || $request->getPathInfo() == '/js/routing'
             || strpos($request->getPathInfo(), '/_wdt')) {
             return;
         }
@@ -81,11 +77,12 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     {
         $content = $response->getContent();
         // jquery is assumed to be present
+
         // add javascript to bottom of body
         $pos = strripos($content, '</body>');
         if (false !== $pos) {
             $module = \ModUtil::getModule('ZikulaLegalModule');
-            $path = $request->getBasePath() . "/" . $module->getRelativePath() . "/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js";
+            $path = $request->getBasePath() . '/' . $module->getRelativePath() . '/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js';
             $javascript = '<script type="text/javascript" src="' . $path . '"></script>';
             // allow translation of content
             $message = __('We use cookies to track usage and preferences', $module->getTranslationDomain());
@@ -102,6 +99,7 @@ jQuery(document).ready(function(){
             $content = substr($content, 0, $pos) . $javascript . substr($content, $pos);
             $response->setContent($content);
         }
+
         // add stylesheet to head
         $pos = strripos($content, '</head>');
         if (false !== $pos) {
@@ -109,7 +107,7 @@ jQuery(document).ready(function(){
             if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {
                 $path = $this->stylesheetOverride;
             } else {
-                $path = $request->getBasePath() . "/" . $module->getRelativePath() . "/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css";
+                $path = $request->getBasePath() . '/' . $module->getRelativePath() . '/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css';
             }
             $css = '<link rel="stylesheet" type="text/css" href="' . $path .'" />';
             $content = substr($content, 0, $pos) . $css . substr($content, $pos);
@@ -119,8 +117,8 @@ jQuery(document).ready(function(){
 
     public static function getSubscribedEvents()
     {
-        return array(
-            KernelEvents::RESPONSE => array('onKernelResponse'),
-        );
+        return [
+            KernelEvents::RESPONSE => ['onKernelResponse']
+        ];
     }
 }

@@ -1,30 +1,26 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule\Controller;
 
 use ModUtil;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use SecurityUtil;
-use Zikula\LegalModule\Constant as LegalConstant;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route; // used in annotations - do not remove
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method; // used in annotations - do not remove
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
  * @Route("/admin")
@@ -47,7 +43,7 @@ class AdminController extends \Zikula_AbstractController
      */
     public function mainAction()
     {
-        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_modifyconfig', array(), RouterInterface::ABSOLUTE_URL));
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_modifyconfig', [], RouterInterface::ABSOLUTE_URL));
     }
 
     /**
@@ -59,7 +55,7 @@ class AdminController extends \Zikula_AbstractController
      */
     public function indexAction()
     {
-        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_modifyconfig', array(), RouterInterface::ABSOLUTE_URL));
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_modifyconfig', [], RouterInterface::ABSOLUTE_URL));
     }
 
     /**
@@ -83,9 +79,9 @@ class AdminController extends \Zikula_AbstractController
         // get all groups
         $groups = ModUtil::apiFunc('Groups', 'user', 'getall');
         // add dummy group "all groups" on top
-        array_unshift($groups, array('gid' => 0, 'name' => $this->__('All users')));
+        array_unshift($groups, ['gid' => 0, 'name' => $this->__('All users')]);
         // add dummy group "no groups" on top
-        array_unshift($groups, array('gid' => -1, 'name' => $this->__('No groups')));
+        array_unshift($groups, ['gid' => -1, 'name' => $this->__('No groups')]);
         // Assign all the module vars
         $this->view->assign(ModUtil::getVar('legal'))
             ->assign('groups', $groups);
@@ -147,12 +143,11 @@ class AdminController extends \Zikula_AbstractController
         $this->setVar(LegalConstant::MODVAR_EUCOOKIE, $euCookieAccepted);
         $resetagreement = $request->request->get('resetagreement', -1);
         if ($resetagreement != -1) {
-            ModUtil::apiFunc($this->name, 'admin', 'resetagreement', array('gid' => $resetagreement));
+            ModUtil::apiFunc($this->name, 'admin', 'resetagreement', ['gid' => $resetagreement]);
         }
         // the module configuration has been updated successfuly
         $request->getSession()->getFlashBag()->add('status', $this->__('Done! Saved module configuration.'));
 
-        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_index', array(), RouterInterface::ABSOLUTE_URL));
+        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_admin_index', [], RouterInterface::ABSOLUTE_URL));
     }
-
 }

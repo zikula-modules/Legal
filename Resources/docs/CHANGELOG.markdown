@@ -1,3 +1,7 @@
+3.0.0
+-----
+  * Migrated to 2.0 module specification
+
 2.1.0
 -----
   * Core 1.4.0 Compatibilty

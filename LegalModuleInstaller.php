@@ -1,22 +1,18 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule;
 
-use Zikula\LegalModule\Constant as LegalConstant;
 use EventUtil;
+use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
  * Installs, upgrades, and uninstalls the Legal module.
@@ -45,6 +41,7 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         $this->setVar(LegalConstant::MODVAR_TRADECONDITIONS_URL, '');
         $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, 13);
         $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
+
         // Initialization successful
         return true;
     }
@@ -83,7 +80,7 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
                 // Set the new module variable -- but if Users set it for us during its upgrade, then don't overwrite it
                 $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, $this->getVar(LegalConstant::MODVAR_MINIMUM_AGE, 0));
                 // Set up the new persistent event handler, and any other event-related features.
-                EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', array('Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener'));
+                EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', ['Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener']);
                 EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_UsersUiHandler');
             case '2.0.0':
                 // Upgrade 2.0.0 -> 2.0.1
@@ -132,5 +129,4 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
         // Deletion successful
         return true;
     }
-
 }

@@ -1,38 +1,34 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Zikula\LegalModule\Listener;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Zikula\LegalModule\Constant as LegalConstant;
-use ZLanguage;
-use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
-use Zikula_View;
-use ModUtil;
-use UserUtil;
-use Zikula\UsersModule\Constant as UsersConstant;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Zikula\Bundle\HookBundle\Hook\ValidationResponse;
-use Zikula\Core\Exception\FatalErrorException;
-use LogUtil;
-use DateTimeZone;
 use DateTime;
+use DateTimeZone;
+use LogUtil;
+use ModUtil;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Zikula\Core\Event\GenericEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use UserUtil;
+use Zikula\Bundle\HookBundle\Hook\ValidationResponse;
+use Zikula\Core\Event\GenericEvent;
+use Zikula\Core\Exception\FatalErrorException;
+use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
+use Zikula\UsersModule\Constant as UsersConstant;
+use Zikula_View;
+use ZLanguage;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -45,34 +41,40 @@ class UsersUiListener implements EventSubscriberInterface
      * @var string
      */
     const EVENT_KEY = 'module.legal.users_ui_handler';
+
     /**
      * Access to the Zikula_View instance for this module.
      *
      * @var Zikula_View
      */
     private $view;
+
     /**
      * Access to the request instance.
      *
      * @var \Symfony\Component\HttpFoundation\Request
      */
     private $request;
+
     /**
      * Access to the helper.
      *
      * @var AcceptPoliciesHelper
      */
     private $helper;
+
     /**
      * @var ValidationResponse
      */
     private $validation;
+
     /**
      * The translation domain
      *
      * @var string
      */
     private $domain;
+
     /**
      * Constructs a new instance of this class.
      *
@@ -104,25 +106,25 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array(
-            'module.users.ui.display_view' => array('uiView'),
-            'module.users.ui.form_edit.login_screen' => array('uiEdit'),
-            'module.users.ui.form_edit.new_user' => array('uiEdit'),
-            'module.users.ui.form_edit.modify_user' => array('uiEdit'),
-            'module.users.ui.form_edit.new_registration' => array('uiEdit'),
-            'module.users.ui.form_edit.modify_registration' => array('uiEdit'),
-            'module.users.ui.validate_edit.login_screen' => array('validateEdit'),
-            'module.users.ui.validate_edit.new_user' => array('validateEdit'),
-            'module.users.ui.validate_edit.modify_user' => array('validateEdit'),
-            'module.users.ui.validate_edit.new_registration' => array('validateEdit'),
-            'module.users.ui.validate_edit.modify_registration' => array('validateEdit'),
-            'module.users.ui.process_edit.login_screen' => array('processEdit'),
-            'module.users.ui.process_edit.new_user' => array('processEdit'),
-            'module.users.ui.process_edit.modify_user' => array('processEdit'),
-            'module.users.ui.process_edit.new_registration' => array('processEdit'),
-            'module.users.ui.process_edit.modify_registration' => array('processEdit'),
-            'user.login.veto' => array('acceptPolicies'),
-        );
+        return [
+            'module.users.ui.display_view' => ['uiView'],
+            'module.users.ui.form_edit.login_screen' => ['uiEdit'],
+            'module.users.ui.form_edit.new_user' => ['uiEdit'],
+            'module.users.ui.form_edit.modify_user' => ['uiEdit'],
+            'module.users.ui.form_edit.new_registration' => ['uiEdit'],
+            'module.users.ui.form_edit.modify_registration' => ['uiEdit'],
+            'module.users.ui.validate_edit.login_screen' => ['validateEdit'],
+            'module.users.ui.validate_edit.new_user' => ['validateEdit'],
+            'module.users.ui.validate_edit.modify_user' => ['validateEdit'],
+            'module.users.ui.validate_edit.new_registration' => ['validateEdit'],
+            'module.users.ui.validate_edit.modify_registration' => ['validateEdit'],
+            'module.users.ui.process_edit.login_screen' => ['processEdit'],
+            'module.users.ui.process_edit.new_user' => ['processEdit'],
+            'module.users.ui.process_edit.modify_user' => ['processEdit'],
+            'module.users.ui.process_edit.new_registration' => ['processEdit'],
+            'module.users.ui.process_edit.modify_registration' => ['processEdit'],
+            'user.login.veto' => ['acceptPolicies']
+        ];
     }
 
     /**
@@ -158,10 +160,11 @@ class UsersUiListener implements EventSubscriberInterface
             if (array_sum($viewablePolicies) > 0) {
                 ModUtil::load(LegalConstant::MODNAME);
                 // to enable translation domain
-                $templateVars = array(
+                $templateVars = [
                     'activePolicies' => $activePolicies,
                     'viewablePolicies' => $viewablePolicies,
-                    'acceptedPolicies' => $acceptedPolicies);
+                    'acceptedPolicies' => $acceptedPolicies
+                ];
                 $this->getView()->assign($templateVars);
                 $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_view.tpl');
             }
@@ -191,7 +194,7 @@ class UsersUiListener implements EventSubscriberInterface
                 // the user is looking at the new user registration form.
                 $user = $event->getSubject();
                 if (!isset($user) || empty($user)) {
-                    $user = array('__ATTRIBUTES__' => array());
+                    $user = ['__ATTRIBUTES__' => []];
                 }
                 if ($eventName == 'module.users.ui.form_edit.login_screen') {
                     // It is not shown unless we have a user record (meaning that the first log-in attempt was vetoed.
@@ -204,22 +207,24 @@ class UsersUiListener implements EventSubscriberInterface
                             && !$acceptedPolicies['privacyPolicy']
                             || $activePolicies['agePolicy']
                             && !$acceptedPolicies['agePolicy']) {
-                            $templateVars = array(
+                            $templateVars = [
                                 'policiesUid' => $user['uid'],
                                 'activePolicies' => $activePolicies,
                                 'originalAcceptedPolicies' => $acceptedPolicies,
                                 'acceptedPolicies' => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies,
-                                'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
+                                'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : []
+                            ];
                             $this->getView()->assign($templateVars);
                             $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_login.tpl');
                         }
                     }
                 } else {
                     $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->helper->getAcceptedPolicies();
-                    $templateVars = array(
+                    $templateVars = [
                         'activePolicies' => $activePolicies,
                         'acceptedPolicies' => $acceptedPolicies,
-                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
+                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : []
+                    ];
                     $this->getView()->assign($templateVars);
                     $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_registration.tpl');
                 }
@@ -237,13 +242,14 @@ class UsersUiListener implements EventSubscriberInterface
                 $viewablePolicies = $this->helper->getViewablePolicies(isset($user) ? $user['uid'] : null);
                 $editablePolicies = $this->helper->getEditablePolicies();
                 if (array_sum($viewablePolicies) > 0 || array_sum($editablePolicies) > 0) {
-                    $templateVars = array(
+                    $templateVars = [
                         'policiesUid' => isset($user) ? $user['uid'] : '',
                         'activePolicies' => $activePolicies,
                         'viewablePolicies' => $viewablePolicies,
                         'editablePolicies' => $editablePolicies,
                         'acceptedPolicies' => $acceptedPolicies,
-                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : array());
+                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : []
+                    ];
                     $this->getView()->assign($templateVars);
                     $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit.tpl');
                 }
@@ -272,19 +278,20 @@ class UsersUiListener implements EventSubscriberInterface
             ModUtil::load(LegalConstant::MODNAME);
             // to enable translation domain
             // Set up the necessary objects for the validation response
-            $policiesAcceptedAtRegistration = array(
+            $policiesAcceptedAtRegistration = [
                 'termsOfUse' => $this->request->request->get('acceptedpolicies_termsofuse', false),
                 'privacyPolicy' => $this->request->request->get('acceptedpolicies_privacypolicy', false),
                 'agePolicy' => $this->request->request->get('acceptedpolicies_agepolicy', false),
                 'cancellationRightPolicy' => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false),
-                'tradeConditions' => $this->request->request->get('acceptedpolicies_tradeconditions', false));
+                'tradeConditions' => $this->request->request->get('acceptedpolicies_tradeconditions', false)
+            ];
             $uid = $this->request->request->get('acceptedpolicies_uid', false);
             $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
             $activePolicies = $this->helper->getActivePolicies();
             // Get the user record from the event. If there is no user record, create a dummy one.
             $user = $event->getSubject();
             if (!isset($user) || empty($user)) {
-                $user = array('__ATTRIBUTES__' => array());
+                $user = ['__ATTRIBUTES__' => []];
             }
             $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid);
             $goodUidUser = is_array($user) && isset($user['uid']) && is_numeric($user['uid']);
@@ -346,9 +353,9 @@ class UsersUiListener implements EventSubscriberInterface
                         || empty($policiesAcceptedAtRegistration['agePolicy'])
                         || !$policiesAcceptedAtRegistration['agePolicy'])) {
                     if ($isRegistration) {
-                        $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', array(ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                        $validationErrorMsg = __f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', [ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)], $this->domain);
                     } else {
-                        $validationErrorMsg = __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', array(ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)), $this->domain);
+                        $validationErrorMsg = __f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', [ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)], $this->domain);
                     }
                     $this->validation->addError('agepolicy', $validationErrorMsg);
                 }
@@ -594,20 +601,19 @@ class UsersUiListener implements EventSubscriberInterface
                 }
                 if (!$termsOfUseAccepted || !$privacyPolicyAccepted || !$agePolicyAccepted || !$cancellationRightPolicyAccepted || !$tradeConditionsAccepted) {
                     $event->stopPropagation();
-                    $event->data['redirect_func'] = array(
+                    $event->data['redirect_func'] = [
                         'modname' => LegalConstant::MODNAME,
                         'type' => 'user',
                         'func' => 'acceptPolicies',
-                        'args' => array('login' => true),
-                        'session' => array(
+                        'args' => ['login' => true],
+                        'session' => [
                             'var' => 'Legal_Controller_User_acceptPolicies',
                             'namespace' => LegalConstant::MODNAME
-                        )
-                    );
+                        ]
+                    ];
                     LogUtil::registerError(__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', $domain));
                 }
             }
         }
     }
-
 }

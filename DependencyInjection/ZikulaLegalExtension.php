@@ -1,18 +1,13 @@
 <?php
 
-/**
- * Copyright (c) 2001-2012 Zikula Foundation
+/*
+ * This file is part of the Zikula package.
  *
- * This work is contributed to the Zikula Foundation under one or more
- * Contributor Agreements and licensed to You under the following license:
+ * Copyright Zikula Foundation - http://zikula.org/
  *
- * @license http://www.gnu.org/licenses/lgpl-3.0.html GNU/LGPLv3 (or at your option any later version).
- * @package Legal
- *
- * Please see the NOTICE file distributed with this source code for further
- * information regarding copyright and licensing.
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
-
 
 namespace Zikula\LegalModule\DependencyInjection;
 
@@ -21,6 +16,9 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\Config\FileLocator;
 
+/**
+ * Dependency injection extension for the Legal module.
+ */
 class ZikulaLegalExtension extends Extension
 {
     /**
@@ -31,9 +29,8 @@ class ZikulaLegalExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new XmlFileLoader($container, new FileLocator(realpath(__DIR__.'/../Resources/config')));
+        $loader = new XmlFileLoader($container, new FileLocator(realpath(__DIR__ . '/../Resources/config')));
 
         $loader->load('services.xml');
-
     }
 }
