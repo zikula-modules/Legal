@@ -28,12 +28,11 @@ use Zikula\LegalModule\Constant as LegalConstant;
  * Administrator-initiated actions for the Legal module.
  *
  * Class AdminController
- * @package Zikula\LegalModule\Controller
  */
 class AdminController extends \Zikula_AbstractController
 {
     /**
-     * Route not needed here because method is legacy-only
+     * Route not needed here because method is legacy-only.
      *
      * The legacy administration entry point.
      *
@@ -66,14 +65,14 @@ class AdminController extends \Zikula_AbstractController
      *
      * Modify the configuration parameters of the module.
      *
-     * @return Response The rendered output of the modifyconfig template.
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return Response The rendered output of the modifyconfig template.
      */
     public function modifyconfigAction()
     {
         // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission($this->name.'::', '::', ACCESS_ADMIN)) {
             throw new AccessDeniedException();
         }
         // get all groups
@@ -100,14 +99,14 @@ class AdminController extends \Zikula_AbstractController
      *
      * @param Request $request
      *
-     * @return RedirectResponse
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return RedirectResponse
      */
     public function updateconfigAction(Request $request)
     {
         // Security check
-        if (!SecurityUtil::checkPermission($this->name . '::', '::', ACCESS_ADMIN)) {
+        if (!SecurityUtil::checkPermission($this->name.'::', '::', ACCESS_ADMIN)) {
             throw new AccessDeniedException();
         }
         // Confirm the forms authorisation key

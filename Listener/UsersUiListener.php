@@ -26,7 +26,6 @@ use Zikula\Core\Event\GenericEvent;
 use Zikula\Core\Exception\FatalErrorException;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
-use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula_View;
 use ZLanguage;
 
@@ -36,7 +35,7 @@ use ZLanguage;
 class UsersUiListener implements EventSubscriberInterface
 {
     /**
-     * Similar to a hook area, the event
+     * Similar to a hook area, the event.
      *
      * @var string
      */
@@ -69,7 +68,7 @@ class UsersUiListener implements EventSubscriberInterface
     private $validation;
 
     /**
-     * The translation domain
+     * The translation domain.
      *
      * @var string
      */
@@ -96,6 +95,7 @@ class UsersUiListener implements EventSubscriberInterface
         if (!$this->view) {
             $this->view = Zikula_View::getInstance(LegalConstant::MODNAME);
         }
+
         return $this->view;
     }
 
@@ -107,31 +107,31 @@ class UsersUiListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'module.users.ui.display_view' => ['uiView'],
-            'module.users.ui.form_edit.login_screen' => ['uiEdit'],
-            'module.users.ui.form_edit.new_user' => ['uiEdit'],
-            'module.users.ui.form_edit.modify_user' => ['uiEdit'],
-            'module.users.ui.form_edit.new_registration' => ['uiEdit'],
-            'module.users.ui.form_edit.modify_registration' => ['uiEdit'],
-            'module.users.ui.validate_edit.login_screen' => ['validateEdit'],
-            'module.users.ui.validate_edit.new_user' => ['validateEdit'],
-            'module.users.ui.validate_edit.modify_user' => ['validateEdit'],
-            'module.users.ui.validate_edit.new_registration' => ['validateEdit'],
+            'module.users.ui.display_view'                      => ['uiView'],
+            'module.users.ui.form_edit.login_screen'            => ['uiEdit'],
+            'module.users.ui.form_edit.new_user'                => ['uiEdit'],
+            'module.users.ui.form_edit.modify_user'             => ['uiEdit'],
+            'module.users.ui.form_edit.new_registration'        => ['uiEdit'],
+            'module.users.ui.form_edit.modify_registration'     => ['uiEdit'],
+            'module.users.ui.validate_edit.login_screen'        => ['validateEdit'],
+            'module.users.ui.validate_edit.new_user'            => ['validateEdit'],
+            'module.users.ui.validate_edit.modify_user'         => ['validateEdit'],
+            'module.users.ui.validate_edit.new_registration'    => ['validateEdit'],
             'module.users.ui.validate_edit.modify_registration' => ['validateEdit'],
-            'module.users.ui.process_edit.login_screen' => ['processEdit'],
-            'module.users.ui.process_edit.new_user' => ['processEdit'],
-            'module.users.ui.process_edit.modify_user' => ['processEdit'],
-            'module.users.ui.process_edit.new_registration' => ['processEdit'],
-            'module.users.ui.process_edit.modify_registration' => ['processEdit'],
-            'user.login.veto' => ['acceptPolicies']
+            'module.users.ui.process_edit.login_screen'         => ['processEdit'],
+            'module.users.ui.process_edit.new_user'             => ['processEdit'],
+            'module.users.ui.process_edit.modify_user'          => ['processEdit'],
+            'module.users.ui.process_edit.new_registration'     => ['processEdit'],
+            'module.users.ui.process_edit.modify_registration'  => ['processEdit'],
+            'user.login.veto'                                   => ['acceptPolicies'],
         ];
     }
 
     /**
      * Cause redirect.
      *
-     * @param string  $url  Url to redirect to.
-     * @param integer $type Redirect code, 302 default.
+     * @param string $url  Url to redirect to.
+     * @param int    $type Redirect code, 302 default.
      *
      * @return RedirectResponse
      */
@@ -161,9 +161,9 @@ class UsersUiListener implements EventSubscriberInterface
                 ModUtil::load(LegalConstant::MODNAME);
                 // to enable translation domain
                 $templateVars = [
-                    'activePolicies' => $activePolicies,
+                    'activePolicies'   => $activePolicies,
                     'viewablePolicies' => $viewablePolicies,
-                    'acceptedPolicies' => $acceptedPolicies
+                    'acceptedPolicies' => $acceptedPolicies,
                 ];
                 $this->getView()->assign($templateVars);
                 $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_view.tpl');
@@ -208,11 +208,11 @@ class UsersUiListener implements EventSubscriberInterface
                             || $activePolicies['agePolicy']
                             && !$acceptedPolicies['agePolicy']) {
                             $templateVars = [
-                                'policiesUid' => $user['uid'],
-                                'activePolicies' => $activePolicies,
+                                'policiesUid'              => $user['uid'],
+                                'activePolicies'           => $activePolicies,
                                 'originalAcceptedPolicies' => $acceptedPolicies,
-                                'acceptedPolicies' => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies,
-                                'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : []
+                                'acceptedPolicies'         => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies,
+                                'fieldErrors'              => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                             ];
                             $this->getView()->assign($templateVars);
                             $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_login.tpl');
@@ -221,9 +221,9 @@ class UsersUiListener implements EventSubscriberInterface
                 } else {
                     $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->helper->getAcceptedPolicies();
                     $templateVars = [
-                        'activePolicies' => $activePolicies,
+                        'activePolicies'   => $activePolicies,
                         'acceptedPolicies' => $acceptedPolicies,
-                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : []
+                        'fieldErrors'      => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                     ];
                     $this->getView()->assign($templateVars);
                     $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit_registration.tpl');
@@ -243,12 +243,12 @@ class UsersUiListener implements EventSubscriberInterface
                 $editablePolicies = $this->helper->getEditablePolicies();
                 if (array_sum($viewablePolicies) > 0 || array_sum($editablePolicies) > 0) {
                     $templateVars = [
-                        'policiesUid' => isset($user) ? $user['uid'] : '',
-                        'activePolicies' => $activePolicies,
+                        'policiesUid'      => isset($user) ? $user['uid'] : '',
+                        'activePolicies'   => $activePolicies,
                         'viewablePolicies' => $viewablePolicies,
                         'editablePolicies' => $editablePolicies,
                         'acceptedPolicies' => $acceptedPolicies,
-                        'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : []
+                        'fieldErrors'      => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                     ];
                     $this->getView()->assign($templateVars);
                     $event->data[self::EVENT_KEY] = $this->getView()->fetch('legal_acceptpolicies_ui_edit.tpl');
@@ -262,13 +262,12 @@ class UsersUiListener implements EventSubscriberInterface
      *
      * @param GenericEvent $event The event that triggered this function call.
      *
-     * @return void
-     *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function, or to
-     *      modify the acceptance of policies on a user account other than his own.
-     *
+     * @throws AccessDeniedException                         Thrown if the user does not have the appropriate access level for the function, or to
+     *                                                       modify the acceptance of policies on a user account other than his own.
      * @throws FatalErrorException|\InvalidArgumentException Thrown if the user record retrieved from the POST is in an unexpected form or its data is
-     *      unexpected.
+     *                                                       unexpected.
+     *
+     * @return void
      */
     public function validateEdit(GenericEvent $event)
     {
@@ -279,11 +278,11 @@ class UsersUiListener implements EventSubscriberInterface
             // to enable translation domain
             // Set up the necessary objects for the validation response
             $policiesAcceptedAtRegistration = [
-                'termsOfUse' => $this->request->request->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy' => $this->request->request->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy' => $this->request->request->get('acceptedpolicies_agepolicy', false),
+                'termsOfUse'              => $this->request->request->get('acceptedpolicies_termsofuse', false),
+                'privacyPolicy'           => $this->request->request->get('acceptedpolicies_privacypolicy', false),
+                'agePolicy'               => $this->request->request->get('acceptedpolicies_agepolicy', false),
                 'cancellationRightPolicy' => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false),
-                'tradeConditions' => $this->request->request->get('acceptedpolicies_tradeconditions', false)
+                'tradeConditions'         => $this->request->request->get('acceptedpolicies_tradeconditions', false),
             ];
             $uid = $this->request->request->get('acceptedpolicies_uid', false);
             $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
@@ -310,7 +309,7 @@ class UsersUiListener implements EventSubscriberInterface
                     $goodUidUser = $goodUidUser && $user['uid'] > 2;
                     if (!$goodUidUser || !$goodUidAcceptPolicies) {
                         // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
-                        throw new \InvalidArgumentException(__("The UID is invalid.", $this->domain));
+                        throw new \InvalidArgumentException(__('The UID is invalid.', $this->domain));
                     } elseif ($user['uid'] != $uid) {
                         // Fail if the uid of the subject does not match the uid from the form. The user changed his
                         // login information, so not only should we not validate what was posted, we should not allow the user
@@ -390,11 +389,11 @@ class UsersUiListener implements EventSubscriberInterface
                 // being changed.
                 $editablePolicies = $this->helper->getEditablePolicies();
                 if (!isset($user) || empty($user)) {
-                    throw new \InvalidArgumentException(__("The &dollar;user is invalid.", $this->domain));
+                    throw new \InvalidArgumentException(__('The &dollar;user is invalid.', $this->domain));
                 }
                 $isNewUser = !isset($user['uid']) || empty($user['uid']);
                 if (!$isNewUser && !is_numeric($user['uid'])) {
-                    throw new \InvalidArgumentException(__("The UID is invalid.", $this->domain));
+                    throw new \InvalidArgumentException(__('The UID is invalid.', $this->domain));
                 }
                 if ($isNewUser || $user['uid'] > 2) {
                     if (!$isNewUser) {
@@ -404,7 +403,7 @@ class UsersUiListener implements EventSubscriberInterface
                             // on the account (is that even possible?!) or somehow the main user form and the part for Legal point
                             // to different user account. In any case, that is a bad situation that should cause a critical failure.
                             // Also fail if the $user record is bad, or if the uid used for Legal is bad.
-                            throw new FatalErrorException(__("The &dollar;user record or the UID is invalid or the UID does not match."));
+                            throw new FatalErrorException(__('The &dollar;user record or the UID is invalid or the UID does not match.'));
                         }
                     }
                     // Fail on any attempt to accept a policy that is not editable.
@@ -434,9 +433,9 @@ class UsersUiListener implements EventSubscriberInterface
      *
      * @param GenericEvent $event The event that triggered this function call.
      *
-     * @return void
-     *
      * @throws NotFoundHttpException Thrown if a user account does not exist for the uid specified by the event.
+     *
+     * @return void
      */
     public function processEdit(GenericEvent $event)
     {
@@ -603,13 +602,13 @@ class UsersUiListener implements EventSubscriberInterface
                     $event->stopPropagation();
                     $event->data['redirect_func'] = [
                         'modname' => LegalConstant::MODNAME,
-                        'type' => 'user',
-                        'func' => 'acceptPolicies',
-                        'args' => ['login' => true],
+                        'type'    => 'user',
+                        'func'    => 'acceptPolicies',
+                        'args'    => ['login' => true],
                         'session' => [
-                            'var' => 'Legal_Controller_User_acceptPolicies',
-                            'namespace' => LegalConstant::MODNAME
-                        ]
+                            'var'       => 'Legal_Controller_User_acceptPolicies',
+                            'namespace' => LegalConstant::MODNAME,
+                        ],
                     ];
                     LogUtil::registerError(__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', $domain));
                 }

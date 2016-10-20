@@ -54,7 +54,7 @@ class LegalModuleInstaller extends \Zikula_AbstractInstaller
      *
      * @param string $oldVersion The version number string from which the upgrade starting.
      *
-     * @return boolean|string True if the module is successfully upgraded to the current version; last valid version string or false if the upgrade fails.
+     * @return bool|string True if the module is successfully upgraded to the current version; last valid version string or false if the upgrade fails.
      */
     public function upgrade($oldVersion)
     {
