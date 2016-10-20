@@ -4,16 +4,26 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <parameters>
-        <parameter key="zikulalegalmodule.event_listener.class">Zikula\LegalModule\Listener\UsersUiListener</parameter>
-        <parameter key="zikulalegalmodule.eu_warning_listener.class">Zikula\LegalModule\Listener\EuCookieWarningInjectorListener</parameter>
+        <parameter key="zikula_legal_module.container.link_container.class">Zikula\LegalModule\Container\LinkContainer</parameter>
+        <parameter key="zikula_legal_module.event_listener.class">Zikula\LegalModule\Listener\UsersUiListener</parameter>
+        <parameter key="zikula_legal_module.eu_warning_listener.class">Zikula\LegalModule\Listener\EuCookieWarningInjectorListener</parameter>
         <parameter key="euwarning.stylesheet">null</parameter>
     </parameters>
     <services>
-        <service id="zikulalegalmodule.event_listener" class="%zikulalegalmodule.event_listener.class%">
+        <service id="zikula_legal_module.container.link_container" class="%zikula_legal_module.container.link_container.class%">
+            <argument type="service" id="translator.default" />
+            <argument type="service" id="jms_i18n_routing.router" />
+            <argument type="service" id="zikula_permissions_module.api.permission" />
+            <argument type="service" id="zikula_extensions_module.api.variable" />
+            <tag name="zikula.link_container" />
+        </service>
+
+        <service id="zikula_legal_module.event_listener" class="%zikula_legal_module.event_listener.class%">
             <tag name="kernel.event_subscriber" />
             <argument type="service" id="request_stack" />
         </service>
-        <service id="zikulalegalmodule.eu_warning_listener" class="%zikulalegalmodule.eu_warning_listener.class%">
+
+        <service id="zikula_legal_module.eu_warning_listener" class="%zikula_legal_module.eu_warning_listener.class%">
             <tag name="kernel.event_subscriber" />
             <argument>%euwarning.stylesheet%</argument>
         </service>

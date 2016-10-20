@@ -80,23 +80,4 @@ class AdminApi extends \Zikula_AbstractApi
 
         return true;
     }
-
-    /**
-     * Get available admin panel links.
-     *
-     * @return array Array of adminpanel links.
-     */
-    public function getLinks()
-    {
-        $links = [];
-        if (SecurityUtil::checkPermission('ZikulaUsersModule::', '::', ACCESS_ADMIN)) {
-            $links[] = [
-                'url'   => $this->get('router')->generate('zikulalegalmodule_admin_modifyconfig'),
-                'text'  => $this->__('Settings'),
-                'class' => 'z-icon-es-config',
-            ];
-        }
-
-        return $links;
-    }
 }
