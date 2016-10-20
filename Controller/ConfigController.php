@@ -22,7 +22,8 @@ use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 
 /**
- * Class ConfigController
+ * Class ConfigController.
+ *
  * @Route("/config")
  */
 class ConfigController extends AbstractController
@@ -33,12 +34,14 @@ class ConfigController extends AbstractController
      * @Template
      *
      * @param Request $request
+     *
      * @throws AccessDeniedException Thrown if the user doesn't have admin access to the module
+     *
      * @return Response
      */
     public function configAction(Request $request)
     {
-        if (!$this->hasPermission(LegalConstant::MODNAME . '::', '::', ACCESS_ADMIN)) {
+        if (!$this->hasPermission(LegalConstant::MODNAME.'::', '::', ACCESS_ADMIN)) {
             throw new AccessDeniedException();
         }
 
@@ -48,19 +51,19 @@ class ConfigController extends AbstractController
             LegalConstant::MODVAR_PRIVACY_ACTIVE,
             LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE,
             LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE,
-            LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE
+            LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE,
         ];
 
         $dataValues = $this->getVars();
         foreach ($booleanVars as $booleanVar) {
-            $dataValues[$booleanVar] = (bool)$dataValues[$booleanVar];
+            $dataValues[$booleanVar] = (bool) $dataValues[$booleanVar];
         }
 
         // build choices for user group selector
         $groupChoices = [
             $this->__('All users') => 0,
             $this->__('No groups') => -1,
-            
+
         ];
         // get all user groups
         // TODO legacy call
@@ -71,8 +74,8 @@ class ConfigController extends AbstractController
 
         $form = $this->createForm('Zikula\LegalModule\Form\Type\ConfigType',
             $dataValues, [
-                'translator' => $this->get('translator.default'),
-                'groupChoices' => $groupChoices
+                'translator'   => $this->get('translator.default'),
+                'groupChoices' => $groupChoices,
             ]
         );
 
@@ -105,7 +108,7 @@ class ConfigController extends AbstractController
         }
 
         return [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ];
     }
 }

@@ -16,7 +16,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Zikula\Core\Controller\AbstractController;
 
 /**
- * Class AdminController
+ * Class AdminController.
+ *
  * @Route("/admin")
  */
 class AdminController extends AbstractController
