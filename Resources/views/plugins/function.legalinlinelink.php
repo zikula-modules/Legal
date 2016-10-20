@@ -13,7 +13,7 @@
  * Smarty function to display a single inline user link of a specific policy for the Legal module.
  *
  * Example
- * {legalinlinelink policytype='termsofuse'}
+ * {legalinlinelink policytype='termsOfUse'}
  *
  * Tag Parameters:
  *      policyType  The unique string identifier of the policy typw whose inline link is to be returned; required.
@@ -21,13 +21,13 @@
  *      assign      The name of the template variable to which the output is assiged, if provided; optional, if not specified the output is sent to the template.
  *
  * Templates used:
- *      legal_function_legalinlinelink_notfound.tpl
- *      legal_function_legalinlinelink_legalnotice.tpl
- *      legal_function_legalinlinelink_termsofuse.tpl
- *      legal_function_legalinlinelink_privacypolicy.tpl
- *      legal_function_legalinlinelink_tradeconditions.tpl
- *      legal_function_legalinlinelink_cancellationrightpolicy.tpl
- *      legal_function_legalinlinelink_accessibilitystatement.tpl
+ *      InlineLink/accessibilityStatement.tpl
+ *      InlineLink/cancellationRightPolicy.tpl
+ *      InlineLink/legalNotice.tpl
+ *      InlineLink/notFound.tpl
+ *      InlineLink/privacyPolicy.tpl
+ *      InlineLink/termsOfUse.tpl
+ *      InlineLink/tradeConditions.tpl
  *
  * Template Parameters Exported:
  *      $target  The target for the generated link, such as "_blank" to open the policy in a new window; optional, default is blank (same effect as "_self").
@@ -41,13 +41,13 @@
 function smarty_function_legalinlinelink($params, Zikula_View &$view)
 {
     if (!isset($params['policyType'])) {
-        $template = 'InlineLink/legal_function_legalinlinelink_notfound.tpl';
+        $template = 'InlineLink/notFound.tpl';
     } else {
         $params['policyType'] = strtolower($params['policyType']);
-        $template = 'InlineLink/legal_function_legalinlinelink_'.$params['policyType'].'.tpl';
+        $template = 'InlineLink/'.$params['policyType'].'.tpl';
 
         if (!$view->template_exists($template)) {
-            $template = 'InlineLink/legal_function_legalinlinelink_notfound.tpl';
+            $template = 'InlineLink/notFound.tpl';
         }
     }
 
