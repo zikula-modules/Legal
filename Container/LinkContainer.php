@@ -58,14 +58,15 @@ class LinkContainer implements LinkContainerInterface
 
     /**
      * get Links of any type for this extension
-     * required by the interface
+     * required by the interface.
      *
      * @param string $type
+     *
      * @return array
      */
     public function getLinks($type = LinkContainerInterface::TYPE_ADMIN)
     {
-        $method = 'get' . ucfirst(strtolower($type));
+        $method = 'get'.ucfirst(strtolower($type));
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -74,7 +75,7 @@ class LinkContainer implements LinkContainerInterface
     }
 
     /**
-     * get the Admin links for this extension
+     * get the Admin links for this extension.
      *
      * @return array
      */
@@ -82,11 +83,11 @@ class LinkContainer implements LinkContainerInterface
     {
         $links = [];
 
-        if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
+        if ($this->permissionApi->hasPermission($this->getBundleName().'::', '::', ACCESS_ADMIN)) {
             $links[] = [
-                'url' => $this->router->generate('zikulalegalmodule_config_config'),
+                'url'  => $this->router->generate('zikulalegalmodule_config_config'),
                 'text' => $this->translator->__('Settings'),
-                'icon' => 'wrench'
+                'icon' => 'wrench',
             ];
         }
 
@@ -94,7 +95,7 @@ class LinkContainer implements LinkContainerInterface
     }
 
     /**
-     * get the User links for this extension
+     * get the User links for this extension.
      *
      * @return array
      */
@@ -157,11 +158,11 @@ class LinkContainer implements LinkContainerInterface
             return $customUrl;
         }
 
-        return $this->router->generate('zikulalegalmodule_user_' . $defaultRoute);
+        return $this->router->generate('zikulalegalmodule_user_'.$defaultRoute);
     }
 
     /**
-     * set the BundleName as required by the interface
+     * set the BundleName as required by the interface.
      *
      * @return string
      */
