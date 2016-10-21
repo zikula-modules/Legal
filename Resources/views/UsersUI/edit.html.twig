@@ -13,15 +13,15 @@
         {% set policyLink = '<a data-toggle="modal" data-target="#modal-terms-of-use" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         {{ modalHelper.modalWindow(policyName, policyUrl, 'terms-of-use') }}
         <div class="form-group{% if fieldErrors.termsofuse|default %} has-error{% endif %}">
-            <label class="col-sm-3 control-label">{{ policyName }}</label>
+            <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
             {% if editablePolicies.termsOfUse %}
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_termsofuse_yes" name="acceptedpolicies_termsofuse"{% if acceptedPolicies.termsOfUse %} checked="checked"{% endif %} value="1" />
+                    <input type="radio" id="acceptpolicies_termsofuse_yes" name="acceptedpolicies_termsofuse" required="required"{% if acceptedPolicies.termsOfUse %} checked="checked"{% endif %} value="1" />
                     <label for="acceptpolicies_termsofuse_yes">{{ __f('%s accepted.', { '%s': policyLink })|safeHtml }}</label>
                 </div>
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_termsofuse_no" name="acceptedpolicies_termsofuse"{% if not acceptedPolicies.termsOfUse %} checked="checked"{% endif %} value="0" />
+                    <input type="radio" id="acceptpolicies_termsofuse_no" name="acceptedpolicies_termsofuse" required="required"{% if not acceptedPolicies.termsOfUse %} checked="checked"{% endif %} value="0" />
                     <label for="acceptpolicies_termsofuse_no">{{ __('Policy not accepted.') }}</label>
                 </div>
                 <p id="acceptpolicies_termsofuse_error" class="alert alert-danger{% if not fieldErrors.termsofuse|default %} hidden{% endif %}">
@@ -42,15 +42,15 @@
         {% set policyLink = '<a data-toggle="modal" data-target="#modal-privacy-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         {{ modalHelper.modalWindow(policyName, policyUrl, 'privacy-policy') }}
         <div class="form-group{% if fieldErrors.privacypolicy|default %} has-error{% endif %}">
-            <label class="col-sm-3 control-label">{{ policyName }}</label>
+            <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
             {% if editablePolicies.privacyPolicy %}
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_privacypolicy_yes" name="acceptedpolicies_privacypolicy"{% if acceptedPolicies.privacyPolicy %} checked="checked"{% endif %} value="1" />
+                    <input type="radio" id="acceptpolicies_privacypolicy_yes" name="acceptedpolicies_privacypolicy" required="required"{% if acceptedPolicies.privacyPolicy %} checked="checked"{% endif %} value="1" />
                     <label for="acceptpolicies_privacypolicy_yes">{{ __f('%s accepted.', { '%s': policyLink })|safeHtml }}</label>
                 </div>
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_privacypolicy_no" name="acceptedpolicies_privacypolicy"{% if not acceptedPolicies.privacyPolicy %} checked="checked"{% endif %} value="0" />
+                    <input type="radio" id="acceptpolicies_privacypolicy_no" name="acceptedpolicies_privacypolicy" required="required"{% if not acceptedPolicies.privacyPolicy %} checked="checked"{% endif %} value="0" />
                     <label for="acceptpolicies_privacypolicy_no">{{ __('Policy not accepted.') }}</label>
                 </div>
                 <p id="acceptpolicies_privacypolicy_error" class="alert alert-danger{% if not fieldErrors.privacypolicy|default %} hidden{% endif %}">
@@ -64,15 +64,15 @@
     {% endif %}
     {% if activePolicies.agePolicy and viewablePolicies.agePolicy %}
         <div class="form-group{% if fieldErrors.agepolicy|default %} has-error{% endif %}">
-            <label class="col-sm-3 control-label">{{ __('Minimum age') }}</label>
+            <label class="col-sm-3 control-label required">{{ __('Minimum age') }}</label>
             <div class="col-sm-9">
             {% if editablePolicies.agePolicy %}
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_agepolicy_yes" name="acceptedpolicies_agepolicy"{% if acceptedPolicies.agePolicy %} checked="checked"{% endif %} value="1" />
+                    <input type="radio" id="acceptpolicies_agepolicy_yes" name="acceptedpolicies_agepolicy" required="required"{% if acceptedPolicies.agePolicy %} checked="checked"{% endif %} value="1" />
                     <label for="acceptpolicies_agepolicy_yes">{{ __f('Confirmed minimum age requirement (%s years of age) met.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}</label>
                 </div>
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_agepolicy_no" name="acceptedpolicies_agepolicy"{% if not acceptedPolicies.agePolicy %} checked="checked"{% endif %} value="0" />
+                    <input type="radio" id="acceptpolicies_agepolicy_no" name="acceptedpolicies_agepolicy" required="required"{% if not acceptedPolicies.agePolicy %} checked="checked"{% endif %} value="0" />
                     <label for="acceptpolicies_agepolicy_no">{{ __('Minimum age requirement not confirmed.') }}</label>
                 </div>
                 <p id="acceptpolicies_agepolicy_error" class="alert alert-danger{% if not fieldErrors.agepolicy|default %} hidden{% endif %}">
@@ -93,15 +93,15 @@
         {% set policyLink = '<a data-toggle="modal" data-target="#modal-general-terms-and-conditions-of-trade" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         {{ modalHelper.modalWindow(policyName, policyUrl, 'general-terms-and-conditions-of-trade') }}
         <div class="form-group{% if fieldErrors.tradeconditions|default %} has-error{% endif %}">
-            <label class="col-sm-3 control-label">{{ policyName }}</label>
+            <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
             {% if editablePolicies.tradeConditions %}
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_tradeconditions_yes" name="acceptedpolicies_tradeconditions"{% if acceptedPolicies.tradeConditions %} checked="checked"{% endif %} value="1" />
+                    <input type="radio" id="acceptpolicies_tradeconditions_yes" name="acceptedpolicies_tradeconditions" required="required"{% if acceptedPolicies.tradeConditions %} checked="checked"{% endif %} value="1" />
                     <label for="acceptpolicies_tradeconditions_yes">{{ __f('%s accepted.', { '%s': policyLink })|safeHtml }}</label>
                 </div>
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_tradeconditions_no" name="acceptedpolicies_tradeconditions"{% if not acceptedPolicies.tradeConditions %} checked="checked"{% endif %} value="0" />
+                    <input type="radio" id="acceptpolicies_tradeconditions_no" name="acceptedpolicies_tradeconditions" required="required"{% if not acceptedPolicies.tradeConditions %} checked="checked"{% endif %} value="0" />
                     <label for="acceptpolicies_tradeconditions_no">{{ __('Policy not accepted.') }}</label>
                 </div>
                 <p id="acceptpolicies_tradeconditions_error" class="alert alert-danger{% if not fieldErrors.tradeconditions|default %} hidden{% endif %}">
@@ -122,15 +122,15 @@
         {% set policyLink = '<a data-toggle="modal" data-target="#modal-cancellation-right-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         {{ modalHelper.modalWindow(policyName, policyUrl, 'cancellation-right-policy') }}
         <div class="form-group{% if fieldErrors.cancellationrightpolicy|default %} has-error{% endif %}">
-            <label class="col-sm-3 control-label">{{ policyName }}</label>
+            <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
             {% if editablePolicies.cancellationRightPolicy %}
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_cancellationrightpolicy_yes" name="acceptedpolicies_cancellationrightpolicy"{% if acceptedPolicies.cancellationRightPolicy %} checked="checked"{% endif %} value="1" />
+                    <input type="radio" id="acceptpolicies_cancellationrightpolicy_yes" name="acceptedpolicies_cancellationrightpolicy" required="required"{% if acceptedPolicies.cancellationRightPolicy %} checked="checked"{% endif %} value="1" />
                     <label for="acceptpolicies_cancellationrightpolicy_yes">{{ __f('%s accepted.', { '%s': policyLink })|safeHtml }}</label>
                 </div>
                 <div class="radio">
-                    <input type="radio" id="acceptpolicies_cancellationrightpolicy_no" name="acceptedpolicies_cancellationrightpolicy"{% if not acceptedPolicies.cancellationRightPolicy %} checked="checked"{% endif %} value="0" />
+                    <input type="radio" id="acceptpolicies_cancellationrightpolicy_no" name="acceptedpolicies_cancellationrightpolicy" required="required"{% if not acceptedPolicies.cancellationRightPolicy %} checked="checked"{% endif %} value="0" />
                     <label for="acceptpolicies_cancellationrightpolicy_no">{{ __('Policy not accepted.') }}</label>
                 </div>
                 <p id="acceptpolicies_cancellationrightpolicy_error" class="alert alert-danger{% if not fieldErrors.cancellationrightpolicy|default %} hidden{% endif %}">

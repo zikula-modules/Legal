@@ -8,12 +8,12 @@
     {% set policyLink = '<a data-toggle="modal" data-target="#modal-terms-of-use" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
     {{ modalHelper.modalWindow(policyName, policyUrl, 'terms-of-use') }}
     <div class="form-group{% if fieldErrors.termsOfUse|default %} has-error{% endif %}">
-        <div class="col-sm-3 control-label">
+        <div class="col-sm-3 control-label required">
             <label for="acceptpolicies_termsofuse">{{ policyName }}</label>
         </div>
         <div class="col-sm-9">
             <div class="checkbox">
-                <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptedpolicies_termsofuse"{% if acceptedPolicies.termsOfUse %} checked="checked"{% endif %} value="1" />
+                <input type="checkbox" id="acceptpolicies_termsofuse" name="acceptedpolicies_termsofuse" required="required"{% if acceptedPolicies.termsOfUse %} checked="checked"{% endif %} value="1" />
                 <em class="help-text">{{ __f('Check this box to indicate your acceptance of this site\'s %s.', { '%s': policyLink })|safeHtml }}</em>
             </div>
             <p id="acceptpolicies_termsofuse_error" class="alert alert-danger{% if not fieldErrors.termsofuse|default %} hidden{% endif %}">
@@ -31,12 +31,12 @@
     {% set policyLink = '<a data-toggle="modal" data-target="#modal-privacy-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
     {{ modalHelper.modalWindow(policyName, policyUrl, 'privacy-policy') }}
     <div class="form-group{% if fieldErrors.privacyPolicy|default %} has-error{% endif %}">
-        <div class="col-sm-3 control-label">
+        <div class="col-sm-3 control-label required">
             <label for="acceptpolicies_privacypolicy">{{ policyName }}</label>
         </div>
         <div class="col-sm-9">
             <div class="checkbox">
-                <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy"{% if acceptedPolicies.privacyPolicy %} checked="checked"{% endif %} value="1" />
+                <input type="checkbox" id="acceptpolicies_privacypolicy" name="acceptedpolicies_privacypolicy" required="required"{% if acceptedPolicies.privacyPolicy %} checked="checked"{% endif %} value="1" />
                 <em class="help-text">{{ __f('Check this box to indicate your acceptance of this site\'s %s.', { '%s': policyLink })|safeHtml }}</em>
             </div>
             <p id="acceptpolicies_privacypolicy_error" class="alert alert-danger{% if not fieldErrors.privacypolicy|default %} hidden{% endif %}">
@@ -63,12 +63,12 @@
     {{ modalHelper.modalWindow(policyName, policyUrl, 'privacy-policy-2') }}
 
     <div class="form-group{% if fieldErrors.agePolicy|default %} has-error{% endif %}">
-        <div class="col-sm-3 control-label">
+        <div class="col-sm-3 control-label required">
             <label for="acceptpolicies_agepolicy">{{ __('Minimum age') }}</label>
         </div>
         <div class="col-sm-9">
             <div class="checkbox">
-                <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy"{% if acceptedPolicies.agePolicy %} checked="checked"{% endif %} value="1" />
+                <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy" required="required"{% if acceptedPolicies.agePolicy %} checked="checked"{% endif %} value="1" />
                 <em class="help-text">{{ __f('Check this box to indicate that you are %s years of age or older, in accordance with our minimum age requirement.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}</em>
             </div>
             <div class="alert alert-info">{{ __f('Information on our minimum age policy, and on how we handle personally identifiable information can be found in our %1$s and in our %2$s.', { '%1$s': termsOfUseLink, '%2$s': privacyPolicyLink })|safeHtml }}</div>
@@ -87,12 +87,12 @@
     {% set policyLink = '<a data-toggle="modal" data-target="#modal-general-terms-and-conditions-of-trade" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
     {{ modalHelper.modalWindow(policyName, policyUrl, 'general-terms-and-conditions-of-trade') }}
     <div class="form-group{% if fieldErrors.tradeconditions|default %} has-error{% endif %}">
-        <div class="col-sm-3 control-label">
+        <div class="col-sm-3 control-label required">
             <label for="acceptpolicies_tradeconditions">{{ policyName }}</label>
         </div>
         <div class="col-sm-9">
             <div class="checkbox">
-                <input type="checkbox" id="acceptpolicies_tradeconditions" name="acceptedpolicies_tradeconditions"{% if acceptedPolicies.tradeConditions %} checked="checked"{% endif %} value="1" />
+                <input type="checkbox" id="acceptpolicies_tradeconditions" name="acceptedpolicies_tradeconditions" required="required"{% if acceptedPolicies.tradeConditions %} checked="checked"{% endif %} value="1" />
                 <em class="help-text">{{ __f('Check this box to indicate your acceptance of this site\'s %s.', { '%s': policyLink })|safeHtml }}</em>
             </div>
             <p id="acceptpolicies_tradeconditions_error" class="alert alert-danger{% if not fieldErrors.tradeconditions|default %} hidden{% endif %}">
@@ -110,12 +110,12 @@
     {% set policyLink = '<a data-toggle="modal" data-target="#modal-cancellation-right-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
     {{ modalHelper.modalWindow(policyName, policyUrl, 'cancellation-right-policy') }}
     <div class="form-group{% if fieldErrors.cancellationrightpolicy|default %} has-error{% endif %}">
-        <div class="col-sm-3 control-label">
+        <div class="col-sm-3 control-label required">
             <label for="acceptpolicies_cancellationrightpolicy">{{ policyName }}</label>
         </div>
         <div class="col-sm-9">
             <div class="checkbox">
-                <input type="checkbox" id="acceptpolicies_cancellationrightpolicy" name="acceptedpolicies_cancellationrightpolicy"{% if acceptedPolicies.cancellationRightPolicy %} checked="checked"{% endif %} value="1" />
+                <input type="checkbox" id="acceptpolicies_cancellationrightpolicy" name="acceptedpolicies_cancellationrightpolicy" required="required"{% if acceptedPolicies.cancellationRightPolicy %} checked="checked"{% endif %} value="1" />
                 <em class="help-text">{{ __f('Check this box to indicate your acceptance of this site\'s %s.', { '%s': policyLink })|safeHtml }}</em>
             </div>
             <p id="acceptpolicies_cancellationrightpolicy_error" class="alert alert-danger{% if not fieldErrors.cancellationrightpolicy|default %} hidden{% endif %}">
