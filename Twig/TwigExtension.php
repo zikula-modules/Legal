@@ -41,7 +41,7 @@ class TwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('zikulalegalmodule_inlineLink', [$this, 'inlineLink'])
+            new \Twig_SimpleFunction('zikulalegalmodule_inlineLink', [$this, 'inlineLink']),
         ];
     }
 
