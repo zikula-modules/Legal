@@ -5,7 +5,7 @@
     </div>
     <div class="col-sm-9">
         <div class="checkbox">
-            <input type="checkbox" id="acceptpolicies_policies" name="acceptedpolicies_policies" required="required"{% if acceptedPolicies.policies %} checked="checked"{% endif %} value="1" />
+            <input type="checkbox" id="acceptpolicies_policies" name="acceptedpolicies_policies" required="required"{% if acceptedPolicies %} checked="checked"{% endif %} value="1" />
             <em class="help-text">{{ __('Check this box to indicate your acceptance of this site\'s policies.') }}</em>
         </div>
         <p id="acceptpolicies_policies_info">{{ __('Please click on the following links to read the corresponding documents.') }}</p>

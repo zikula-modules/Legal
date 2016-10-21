@@ -429,6 +429,15 @@ class UsersUiListener implements EventSubscriberInterface
 
         $user = $event->getSubject();
         $uid = $user['uid'];
+
+        $policiesToCheck = [
+            'termsOfUse'              => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
+            'privacyPolicy'           => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
+            'agePolicy'               => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
+            'tradeConditions'         => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
+            'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
+        ];
+
         if (!$this->currentUserApi->isLoggedIn()) {
             if ($eventName == 'module.users.ui.process_edit.login_screen' || $eventName == 'module.users.ui.process_edit.login_block') {
                 $isRegistration = false;
@@ -442,27 +451,15 @@ class UsersUiListener implements EventSubscriberInterface
                 }
             }
             $policiesAccepted = $this->validation->getObject();
-            if ($policiesAccepted['policies']) {
+            if ($policiesAccepted) {
                 $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
                 $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
-                if ($activePolicies['termsOfUse']) {
-                    UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
-                }
-                if ($activePolicies['privacyPolicy']) {
-                    UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
-                }
-                if ($activePolicies['agePolicy']) {
-                    UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
-                }
-                if ($activePolicies['tradeConditions']) {
-                    UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
-                }
-                if ($activePolicies['cancellationRightPolicy']) {
-                    UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                foreach ($policiesToCheck as $policyName => $acceptedVar) {
+                    if ($activePolicies[$policyName]) {
+                        UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
+                    }
                 }
             }
-            // Force the reload of the user record
-            $user = UserUtil::getVars($uid, true, 'uid', $isRegistration);
         } else {
             $isRegistration = UserUtil::isRegistration($uid);
             $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
@@ -470,26 +467,19 @@ class UsersUiListener implements EventSubscriberInterface
                 throw new NotFoundHttpException($this->translator->__('A user account or registration does not exist for the specified uid.'));
             }
             $policiesAccepted = $this->validation->getObject();
-            if ($policiesAccepted['policies']) {
+            if ($policiesAccepted) {
                 $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
                 $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
                 $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
-                $policiesToCheck = [
-                    'termsOfUse'              => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
-                    'privacyPolicy'           => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
-                    'agePolicy'               => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
-                    'tradeConditions'         => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
-                    'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
-                ];
                 foreach ($policiesToCheck as $policyName => $acceptedVar) {
                     if ($activePolicies[$policyName] && $editablePolicies[$policyName]) {
                         UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
                     }
                 }
             }
-            // Force the reload of the user record
-            $user = UserUtil::getVars($uid, true, 'uid', $isRegistration);
         }
+        // Force the reload of the user record
+        $user = UserUtil::getVars($uid, true, 'uid', $isRegistration);
     }
 
     /**
