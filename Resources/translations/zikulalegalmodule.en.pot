@@ -1,0 +1,167 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2016-10-21 16:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/InlineLink/notFound.html.twig on line 1
+msgid "(POLICY NOT FOUND!)"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/InlineLink/accessibilityStatement.html.twig on line 5
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Container/LinkContainer.php on line 140
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 54
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 78
+msgid "Accessibility statement"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/accessibilityStatement.html.twig on line 1
+msgid "Accessibility statement for %s"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Controller/ConfigController.php on line 64
+msgid "All users"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/acceptPolicies.html.twig on line 23
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 117
+msgid "Cancel"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/acceptPolicies.html.twig on line 23
+msgid "Cancel and logout"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/InlineLink/cancellationRightPolicy.html.twig on line 5
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Include/acceptPolicies.html.twig on line 48
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/view.html.twig on line 59
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/edit.html.twig on line 121
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Container/LinkContainer.php on line 134
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 50
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 74
+msgid "Cancellation right policy"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/cancellationRightPolicy.html.twig on line 1
+msgid "Cancellation right policy for %s"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Include/modalHelper.html.twig on line 13
+msgid "Close"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Config/config.html.twig on line 41
+msgid "Compliance"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Config/config.html.twig on line 31
+msgid "Custom urls"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 82
+msgid "Enable cookie warning for EU compliance"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Config/config.html.twig on line 45
+msgid "Further settings"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/InlineLink/tradeConditions.html.twig on line 5
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Include/acceptPolicies.html.twig on line 39
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/view.html.twig on line 45
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/edit.html.twig on line 92
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 46
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 70
+msgid "General terms and conditions of trade"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Listener/EuCookieWarningInjectorListener.php on line 120
+msgid "I Understand"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Config/config.html.twig on line 22
+msgid "Legal document types"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/menu.html.twig on line 2
+msgid "Legal information"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/InlineLink/legalNotice.html.twig on line 5
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Container/LinkContainer.php on line 110
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 34
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 58
+msgid "Legal notice"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/legalNotice.html.twig on line 1
+msgid "Legal notice for %s"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Config/config.html.twig on line 13
+msgid "Legal settings"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/view.html.twig on line 34
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/edit.html.twig on line 67
+msgid "Minimum age"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 93
+msgid "Minimum age permitted to register"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 85
+msgid "No"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Controller/ConfigController.php on line 65
+msgid "No groups"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Include/acceptPolicies.html.twig on line 4
+msgid "Policies"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/policyNotActive.html.twig on line 1
+msgid "Policy not available"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/InlineLink/privacyPolicy.html.twig on line 5
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Include/acceptPolicies.html.twig on line 27
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/view.html.twig on line 23
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/edit.html.twig on line 41
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Container/LinkContainer.php on line 122
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 42
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 66
+msgid "Privacy policy"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/privacyPolicy.html.twig on line 1
+msgid "Privacy policy for %s"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 101
+msgid "Reset user group's acceptance of site policies"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/acceptPolicies.html.twig on line 22
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 110
+msgid "Save"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/acceptPolicies.html.twig on line 22
+msgid "Save and continue logging in"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Config/config.html.twig on line 12
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Container/LinkContainer.php on line 89
+msgid "Settings"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/view.html.twig on line 3
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/editLogin.html.twig on line 1
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/edit.html.twig on line 4
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/editRegistration.html.twig on line 2
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/acceptPolicies.html.twig on line 1
+msgid "Site policies"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/InlineLink/termsOfUse.html.twig on line 5
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/Include/acceptPolicies.html.twig on line 18
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/view.html.twig on line 9
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/UsersUI/edit.html.twig on line 12
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Container/LinkContainer.php on line 116
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 38
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 62
+msgid "Terms of use"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/termsOfUse.html.twig on line 1
+msgid "Terms of use for %s"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Container/LinkContainer.php on line 128
+msgid "Trade conditions"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Resources/views/User/tradeConditions.html.twig on line 1
+msgid "Trade conditions for %s"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Listener/EuCookieWarningInjectorListener.php on line 119
+msgid "We use cookies to track usage and preferences"
+msgstr ""
+#: /home/axel/projects/zikula/src/modules/zikula/legal-module/Form/Type/ConfigType.php on line 84
+msgid "Yes"
+msgstr ""

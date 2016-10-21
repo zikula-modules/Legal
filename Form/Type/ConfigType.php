@@ -98,13 +98,13 @@ class ConfigType extends AbstractType
                 'help'        => $translator->__('Enter a positive integer, or 0 for no age check.'),
             ])
             ->add('resetagreement', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
-                'label'             => $translator->__('Reset user group\'s acceptance of \'Terms of use\''),
+                'label'             => $translator->__('Reset user group\'s acceptance of site policies'),
                 'choices'           => $options['groupChoices'],
                 'choices_as_values' => true,
                 'required'          => false,
                 'expanded'          => false,
                 'multiple'          => false,
-                'alert'             => [$translator->__('Notice: This setting resets the acceptance of the \'Terms of use\' for all users in this group. Next time they want to log-in, they will have to acknowledge their acceptance of them again, and will not be able to log-in if they do not. This action does not affect the main administrator account. You can perform the same operation for individual users by visiting the Users manager in the site admin panel.') => 'info'],
+                'alert'             => [$translator->__('Notice: This setting resets the acceptance of the site policies for all users in this group. Next time they want to log-in, they will have to acknowledge their acceptance of them again, and will not be able to log-in if they do not. This action does not affect the main administrator account. You can perform the same operation for individual users by visiting the Users manager in the site admin panel.') => 'info'],
             ])
             ->add('save', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
                 'label' => $translator->__('Save'),
