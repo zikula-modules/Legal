@@ -145,18 +145,18 @@ class Constant
     const ATTRIBUTE_AGEPOLICY_CONFIRMED = '_Legal_agePolicyConfirmed';
 
     /**
-     * Users account record attribute key for cancellation right policy acceptance.
-     *
-     * @var string
-     */
-    const ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED = '_Legal_cancellationRightPolicyConfirmed';
-
-    /**
      * Users account record attribute key for trade conditions acceptance.
      *
      * @var string
      */
     const ATTRIBUTE_TRADECONDITIONS_ACCEPTED = '_Legal_tradeConditionsConfirmed';
+
+    /**
+     * Users account record attribute key for cancellation right policy acceptance.
+     *
+     * @var string
+     */
+    const ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED = '_Legal_cancellationRightPolicyConfirmed';
 
     /**
      * Users account record attribute key for eu cookie acceptance.

@@ -64,15 +64,27 @@ class ResetAgreementHelper
             throw new \Exception();
         }
 
-        $qb = $this->om->createQueryBuilder();
+        $attributeNames = [
+            LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
+            LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
+            LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
+            LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
+            LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
+        ];
+
+        $qb = $this->om->createQueryBuilder()
+            ->update('ZikulaUsersModule:UserAttributeEntity', 'a')
+            ->set('a.value', '\'\'')
+            ->where('a.name IN (:attributeNames)')
+            ->setParameter('attributeNames', $attributeNames);
+
+        $query = null;
 
         if ($groupId == 0) {
             //all users
-            $query = $qb->update('ZikulaUsersModule:UserEntity', 'u')
-                ->set('u.activated', 2)
-                ->where('u.uid NOT IN (1, 2)')
-                ->getQuery();
-            $query->execute();
+            $qb->andWhere('a.user NOT IN (1, 2)')
+               ->getQuery()
+               ->execute();
 
             return true;
         }
@@ -81,32 +93,30 @@ class ResetAgreementHelper
 
         // get the group incl members
         // @todo legacy call
-        $grp = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'get', ['gid' => $groupId]);
-        if ($grp == false) {
+        $group = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'get', ['gid' => $groupId]);
+        if (false === $group) {
             return false;
         }
 
         // remove anonymous from members array
-        if (array_key_exists(1, $grp['members'])) {
-            unset($grp['members'][1]);
+        if (array_key_exists(1, $group['members'])) {
+            unset($group['members'][1]);
         }
 
         // remove admin from members array
-        if (array_key_exists(2, $grp['members'])) {
-            unset($grp['members'][2]);
+        if (array_key_exists(2, $group['members'])) {
+            unset($group['members'][2]);
         }
 
         // return if group is empty
-        if (count($grp['members']) == 0) {
+        if (count($group['members']) == 0) {
             return false;
         }
 
-        $query = $qb->update('ZikulaUsersModule:UserEntity', 'u')
-            ->set('u.activated', 2)
-            ->where('u.uid IN (:members)')
-            ->setParameter('members', array_keys($grp['members']))
-            ->getQuery();
-        $query->execute();
+        $qb->andWhere('a.user IN (:members)')
+           ->setParameter('members', array_keys($group['members']))
+           ->getQuery()
+           ->execute();
 
         return true;
     }
