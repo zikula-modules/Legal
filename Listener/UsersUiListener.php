@@ -327,15 +327,10 @@ class UsersUiListener implements EventSubscriberInterface
         // So there is nothing to validate.
         if ($this->request->request->has('acceptedpolicies_uid')) {
             // Set up the necessary objects for the validation response
-            $policiesAcceptedAtRegistration = [
-                'termsOfUse'              => $this->request->request->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy'           => $this->request->request->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy'               => $this->request->request->get('acceptedpolicies_agepolicy', false),
-                'tradeConditions'         => $this->request->request->get('acceptedpolicies_tradeconditions', false),
-                'cancellationRightPolicy' => $this->request->request->get('acceptedpolicies_cancellationrightpolicy', false),
-            ];
+            $policiesAccepted = $this->request->request->get('acceptedpolicies_policies', false);
+
             $uid = $this->request->request->get('acceptedpolicies_uid', false);
-            $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAcceptedAtRegistration);
+            $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAccepted);
             $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
             // Get the user record from the event. If there is no user record, create a dummy one.
             $user = $event->getSubject();
@@ -373,65 +368,13 @@ class UsersUiListener implements EventSubscriberInterface
                 }
 
                 // Do the validation
-                if ($activePolicies['termsOfUse']
-                    && !$acceptedPolicies['termsOfUse']
-                    && (!isset($policiesAcceptedAtRegistration['termsOfUse'])
-                        || empty($policiesAcceptedAtRegistration['termsOfUse'])
-                        || !$policiesAcceptedAtRegistration['termsOfUse'])) {
+                if (!$policiesAccepted) {
                     if ($isRegistration) {
-                        $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept this site\'s terms of use.');
+                        $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept this site\'s policies.');
                     } else {
-                        $validationErrorMsg = $this->translator->__('In order to log in, you must accept this site\'s terms of use.');
+                        $validationErrorMsg = $this->translator->__('In order to log in, you must accept this site\'s policies.');
                     }
-                    $this->validation->addError('termsofuse', $validationErrorMsg);
-                }
-                if ($activePolicies['privacyPolicy']
-                    && !$acceptedPolicies['privacyPolicy']
-                    && (!isset($policiesAcceptedAtRegistration['privacyPolicy'])
-                        || empty($policiesAcceptedAtRegistration['privacyPolicy'])
-                        || !$policiesAcceptedAtRegistration['privacyPolicy'])) {
-                    if ($isRegistration) {
-                        $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept this site\'s privacy policy.');
-                    } else {
-                        $validationErrorMsg = $this->translator->__('In order to log in, you must accept this site\'s privacy policy.');
-                    }
-                    $this->validation->addError('privacypolicy', $validationErrorMsg);
-                }
-                if ($activePolicies['agePolicy']
-                    && !$acceptedPolicies['agePolicy']
-                    && (!isset($policiesAcceptedAtRegistration['agePolicy'])
-                        || empty($policiesAcceptedAtRegistration['agePolicy'])
-                        || !$policiesAcceptedAtRegistration['agePolicy'])) {
-                    if ($isRegistration) {
-                        $validationErrorMsg = $this->translator->__f('In order to register for a new account, you must confirm that you meet the requirements of this site\'s minimum age policy. If you are not %s years of age or older, and you do not have a parent\'s permission to use this site, then you should not continue registering for access to this site.', ['%s' => $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)]);
-                    } else {
-                        $validationErrorMsg = $this->translator->__f('In order to log in, you must confirm that you meet the requirements of this site\'s minimum age policy. If you are not %s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', ['%s' => $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)]);
-                    }
-                    $this->validation->addError('agepolicy', $validationErrorMsg);
-                }
-                if ($activePolicies['tradeConditions']
-                    && !$acceptedPolicies['tradeConditions']
-                    && (!isset($policiesAcceptedAtRegistration['tradeConditions'])
-                        || empty($policiesAcceptedAtRegistration['tradeConditions'])
-                        || !$policiesAcceptedAtRegistration['tradeConditions'])) {
-                    if ($isRegistration) {
-                        $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept our general terms and conditions of trade.');
-                    } else {
-                        $validationErrorMsg = $this->translator->__('In order to log in, you must accept our general terms and conditions of trade.');
-                    }
-                    $this->validation->addError('tradeconditions', $validationErrorMsg);
-                }
-                if ($activePolicies['cancellationRightPolicy']
-                    && !$acceptedPolicies['cancellationRightPolicy']
-                    && (!isset($policiesAcceptedAtRegistration['cancellationRightPolicy'])
-                        || empty($policiesAcceptedAtRegistration['cancellationRightPolicy'])
-                        || !$policiesAcceptedAtRegistration['cancellationRightPolicy'])) {
-                    if ($isRegistration) {
-                        $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept our cancellation right policy.');
-                    } else {
-                        $validationErrorMsg = $this->translator->__('In order to log in, you must accept our cancellation right policy.');
-                    }
-                    $this->validation->addError('cancellationrightpolicy', $validationErrorMsg);
+                    $this->validation->addError('policies', $validationErrorMsg);
                 }
             } else {
                 // Someone is logged in, so either user looking at own record, an admin creating a new user,
@@ -455,12 +398,6 @@ class UsersUiListener implements EventSubscriberInterface
                             // to different user account. In any case, that is a bad situation that should cause a critical failure.
                             // Also fail if the $user record is bad, or if the uid used for Legal is bad.
                             throw new FatalErrorException($this->translator->__('The user record or the UID is invalid or the UID does not match.'));
-                        }
-                    }
-                    // Fail on any attempt to accept a policy that is not editable.
-                    foreach (['termsOfUse', 'privacyPolicy', 'agePolicy', 'tradeConditions', 'cancellationRightPolicy'] as $policyName) {
-                        if (isset($policiesAcceptedAtRegistration[$policyName]) && !$editablePolicies[$policyName]) {
-                            throw new AccessDeniedException();
                         }
                     }
                 }
@@ -505,22 +442,24 @@ class UsersUiListener implements EventSubscriberInterface
                 }
             }
             $policiesAccepted = $this->validation->getObject();
-            $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
-            $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
-            if ($activePolicies['termsOfUse'] && $policiesAccepted['termsOfUse']) {
-                UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
-            }
-            if ($activePolicies['privacyPolicy'] && $policiesAccepted['privacyPolicy']) {
-                UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
-            }
-            if ($activePolicies['agePolicy'] && $policiesAccepted['agePolicy']) {
-                UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
-            }
-            if ($activePolicies['tradeConditions'] && $policiesAccepted['tradeConditions']) {
-                UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
-            }
-            if ($activePolicies['cancellationRightPolicy'] && $policiesAccepted['cancellationRightPolicy']) {
-                UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+            if ($policiesAccepted['policies']) {
+                $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
+                $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
+                if ($activePolicies['termsOfUse']) {
+                    UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowUTCStr, $uid);
+                }
+                if ($activePolicies['privacyPolicy']) {
+                    UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                }
+                if ($activePolicies['agePolicy']) {
+                    UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowUTCStr, $uid);
+                }
+                if ($activePolicies['tradeConditions']) {
+                    UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowUTCStr, $uid);
+                }
+                if ($activePolicies['cancellationRightPolicy']) {
+                    UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowUTCStr, $uid);
+                }
             }
             // Force the reload of the user record
             $user = UserUtil::getVars($uid, true, 'uid', $isRegistration);
@@ -530,23 +469,21 @@ class UsersUiListener implements EventSubscriberInterface
             if (!$user) {
                 throw new NotFoundHttpException($this->translator->__('A user account or registration does not exist for the specified uid.'));
             }
-            $policiesAcceptedAtRegistration = $this->validation->getObject();
-            $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
-            $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
-            $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
-            $policiesToCheck = [
-                'termsOfUse'              => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
-                'privacyPolicy'           => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
-                'agePolicy'               => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
-                'tradeConditions'         => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
-                'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
-            ];
-            foreach ($policiesToCheck as $policyName => $acceptedVar) {
-                if ($activePolicies[$policyName] && $editablePolicies[$policyName]) {
-                    if ($policiesAcceptedAtRegistration[$policyName]) {
+            $policiesAccepted = $this->validation->getObject();
+            if ($policiesAccepted['policies']) {
+                $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
+                $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
+                $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
+                $policiesToCheck = [
+                    'termsOfUse'              => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
+                    'privacyPolicy'           => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
+                    'agePolicy'               => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
+                    'tradeConditions'         => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
+                    'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
+                ];
+                foreach ($policiesToCheck as $policyName => $acceptedVar) {
+                    if ($activePolicies[$policyName] && $editablePolicies[$policyName]) {
                         UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
-                    } elseif ($policiesAcceptedAtRegistration[$policyName] === 0 || $policiesAcceptedAtRegistration[$policyName] === '0') {
-                        UserUtil::delVar($acceptedVar, $uid);
                     }
                 }
             }

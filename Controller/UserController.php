@@ -287,58 +287,39 @@ class UserController extends AbstractController
             }
 
             $processed = false;
-            $acceptedPolicies = [
-                'termsOfUse'              => $request->request->get('acceptedpolicies_termsofuse', false),
-                'privacyPolicy'           => $request->request->get('acceptedpolicies_privacypolicy', false),
-                'agePolicy'               => $request->request->get('acceptedpolicies_agepolicy', false),
-                'tradeConditions'         => $request->request->get('acceptedpolicies_tradeconditions', false),
-                'cancellationRightPolicy' => $request->request->get('acceptedpolicies_cancellationrightpolicy', false),
-            ];
-            $activePolicies = $acceptPoliciesHelper->getActivePolicies();
-            $originalAcceptedPolicies = $acceptPoliciesHelper->getAcceptedPolicies($policiesUid);
             $fieldErrors = [];
-            if ($activePolicies['termsOfUse'] && !$originalAcceptedPolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']) {
-                $fieldErrors['termsofuse'] = $this->__('You must accept this site\'s terms of use in order to proceed.');
-            }
-            if ($activePolicies['privacyPolicy'] && !$originalAcceptedPolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy']) {
-                $fieldErrors['privacypolicy'] = $this->__('You must accept this site\'s privacy policy in order to proceed.');
-            }
-            if ($activePolicies['agePolicy'] && !$originalAcceptedPolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
-                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s minimum age policy. If you are not %s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', ['%s' => ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)]);
-            }
-            if ($activePolicies['tradeConditions'] && !$originalAcceptedPolicies['tradeConditions'] && !$acceptedPolicies['tradeConditions']) {
-                $fieldErrors['tradeconditions'] = $this->__('You must accept our general terms and conditions of trade in order to proceed.');
-            }
-            if ($activePolicies['cancellationRightPolicy'] && !$originalAcceptedPolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy']) {
-                $fieldErrors['cancellationrightpolicy'] = $this->__('You must accept our cancellation right policy in order to proceed.');
-            }
-            if (empty($fieldErrors)) {
+
+            $acceptedPolicies = $request->request->get('acceptedpolicies_policies', false);
+            if (!$acceptedPolicies) {
+                $fieldErrors['policies'] = $this->__('You must accept this site\'s policies in order to proceed.');
+            } else {
+                $activePolicies = $acceptPoliciesHelper->getActivePolicies();
                 $now = new DateTime('now', new DateTimeZone('UTC'));
                 $nowStr = $now->format(DateTime::ISO8601);
-                if ($activePolicies['termsOfUse'] && $acceptedPolicies['termsOfUse']) {
+                if ($activePolicies['termsOfUse']) {
                     $termsOfUseProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $policiesUid);
                 } else {
-                    $termsOfUseProcessed = !$activePolicies['termsOfUse'] || $originalAcceptedPolicies['termsOfUse'];
+                    $termsOfUseProcessed = true;
                 }
-                if ($activePolicies['privacyPolicy'] && $acceptedPolicies['privacyPolicy']) {
+                if ($activePolicies['privacyPolicy']) {
                     $privacyPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $policiesUid);
                 } else {
-                    $privacyPolicyProcessed = !$activePolicies['privacyPolicy'] || $originalAcceptedPolicies['privacyPolicy'];
+                    $privacyPolicyProcessed = true;
                 }
-                if ($activePolicies['agePolicy'] && $acceptedPolicies['agePolicy']) {
+                if ($activePolicies['agePolicy']) {
                     $agePolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr, $policiesUid);
                 } else {
-                    $agePolicyProcessed = !$activePolicies['agePolicy'] || $originalAcceptedPolicies['agePolicy'];
+                    $agePolicyProcessed = true;
                 }
-                if ($activePolicies['tradeConditions'] && $acceptedPolicies['tradeConditions']) {
+                if ($activePolicies['tradeConditions']) {
                     $tradeConditionsProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr, $policiesUid);
                 } else {
-                    $tradeConditionsProcessed = !$activePolicies['tradeConditions'] || $originalAcceptedPolicies['tradeConditions'];
+                    $tradeConditionsProcessed = true;
                 }
-                if ($activePolicies['cancellationRightPolicy'] && $acceptedPolicies['cancellationRightPolicy']) {
+                if ($activePolicies['cancellationRightPolicy']) {
                     $cancellationRightPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr, $policiesUid);
                 } else {
-                    $cancellationRightPolicyProcessed = !$activePolicies['cancellationRightPolicy'] || $originalAcceptedPolicies['cancellationRightPolicy'];
+                    $cancellationRightPolicyProcessed = true;
                 }
                 $processed = $termsOfUseProcessed && $privacyPolicyProcessed && $agePolicyProcessed && $tradeConditionsProcessed && $cancellationRightPolicyProcessed;
             }
@@ -360,9 +341,9 @@ class UserController extends AbstractController
                     $response = $httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
                     return $response;
-                } else {
-                    return $this->redirect(System::getHomepageUrl());
                 }
+
+                return $this->redirect(System::getHomepageUrl());
             }
         } elseif ($request->isMethod('GET')) {
             $isLogin = $request->query->get('login', false);
@@ -404,7 +385,7 @@ class UserController extends AbstractController
             'login'                    => $isLogin,
             'policiesUid'              => $policiesUid,
             'activePolicies'           => $acceptPoliciesHelper->getActivePolicies(),
-            'acceptedPolicies'         => isset($acceptedPolicies) ? $acceptedPolicies : $acceptPoliciesHelper->getAcceptedPolicies($policiesUid),
+            'acceptedPolicies'         => /*isset($acceptedPolicies) ? $acceptedPolicies : */$acceptPoliciesHelper->getAcceptedPolicies($policiesUid),
             'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $acceptPoliciesHelper->getAcceptedPolicies($policiesUid),
             'fieldErrors'              => $fieldErrors,
             'csrfToken'                => $csrfTokenHandler->generate(),
