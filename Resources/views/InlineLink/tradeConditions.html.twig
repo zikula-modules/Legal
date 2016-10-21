@@ -1,4 +1,4 @@
-{% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL') %}
+{% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL')) %}
 {% if policyUrl == '' %}
     {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
 {% endif %}
