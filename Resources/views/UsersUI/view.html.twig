@@ -2,7 +2,10 @@
     <fieldset>
         <legend>{{ __('Site policies') }}</legend>
         {% if activePolicies.termsOfUse and viewablePolicies.termsOfUse %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL'), path('zikulalegalmodule_user_termsofuse')) %}
+            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL')) %}
+            {% if policyUrl == '' %}
+                {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
+            {% endif %}
             {% set policyName = __('Terms of use') %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
@@ -13,7 +16,10 @@
             </div>
         {% endif %}
         {% if activePolicies.privacyPolicy and viewablePolicies.privacyPolicy %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_PRIVACY_URL'), path('zikulalegalmodule_user_privacypolicy')) %}
+            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_PRIVACY_URL')) %}
+            {% if policyUrl == '' %}
+                {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
+            {% endif %}
             {% set policyName = __('Privacy policy') %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
@@ -32,7 +38,10 @@
             </div>
         {% endif %}
         {% if activePolicies.tradeConditions and viewablePolicies.tradeConditions %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL'), path('zikulalegalmodule_user_tradeconditions')) %}
+            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL')) %}
+            {% if policyUrl == '' %}
+                {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
+            {% endif %}
             {% set policyName = __('General terms and conditions of trade') %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
@@ -43,7 +52,10 @@
             </div>
         {% endif %}
         {% if activePolicies.cancellationRightPolicy and viewablePolicies.cancellationRightPolicy %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL'), path('zikulalegalmodule_user_cancellationrightpolicy')) %}
+            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL')) %}
+            {% if policyUrl == '' %}
+                {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
+            {% endif %}
             {% set policyName = __('Cancellation right policy') %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
