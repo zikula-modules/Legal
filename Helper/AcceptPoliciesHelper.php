@@ -16,7 +16,9 @@ use DateTimeZone;
 use ModUtil;
 use SecurityUtil;
 use UserUtil;
+use Zikula\ExtensionsModule\Api\VariableApi;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\PermissionsModule\Api\PermissionApi;
 
 /**
  * Helper class to process acceptance of policies.
@@ -31,25 +33,40 @@ class AcceptPoliciesHelper
     protected $name;
 
     /**
-     * Construct a new instance of the helper, setting the $name attribute to the module name.
+     * @var PermissionApi
      */
-    public function __construct()
+    private $permissionApi;
+
+    /**
+     * @var VariableApi
+     */
+    private $variableApi;
+
+    /**
+     * Construct a new instance of the helper, setting the $name attribute to the module name.
+     *
+     * @param PermissionApi  $permissionApi PermissionApi service instance
+     * @param VariableApi    $variableApi   VariableApi service instance
+     */
+    public function __construct(PermissionApi $permissionApi, VariableApi $variableApi)
     {
         $this->name = LegalConstant::MODNAME;
+        $this->permissionApi = $permissionApi;
+        $this->variableApi = $variableApi;
     }
 
     /**
      * Retrieves flags indicating which policies are active.
      *
-     * @return array An array containing flags indicating whether each policy is active or not.
+     * @return array An array containing flags indicating whether each policy is active or not
      */
     public function getActivePolicies()
     {
-        $termsOfUseActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_MINIMUM_AGE, 0) != 0;
-        $cancellationRightPolicyActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-        $tradeConditionsActive = ModUtil::getVar($this->name, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+        $termsOfUseActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_TERMS_ACTIVE, false);
+        $privacyPolicyActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
+        $agePolicyActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_MINIMUM_AGE, 0) != 0;
+        $cancellationRightPolicyActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
+        $tradeConditionsActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
 
         return [
             'termsOfUse'              => $termsOfUseActive,
@@ -63,11 +80,11 @@ class AcceptPoliciesHelper
     /**
      * Helper method to determine acceptance / confirmation states for current user.
      *
-     * @param numeric $uid            A valid uid.
-     * @param bool    $isRegistration Whether we are in registration process or not.
-     * @param string  $modVarName     Name of modvar storing desired state.
+     * @param numeric $uid            A valid user id
+     * @param bool    $isRegistration Whether we are in registration process or not
+     * @param string  $modVarName     Name of modvar storing desired state
      *
-     * @return bool Fetched acceptance / confirmation state.
+     * @return bool Fetched acceptance / confirmation state
      */
     private function determineAcceptanceState($uid, $isRegistration, $modVarName)
     {
@@ -90,9 +107,9 @@ class AcceptPoliciesHelper
     /**
      * Retrieves flags indicating which policies the user with the given uid has already accepted.
      *
-     * @param numeric $uid A valid uid.
+     * @param numeric $uid A valid user id
      *
-     * @return array An array containing flags indicating whether each policy has been accepted by the user or not.
+     * @return array An array containing flags indicating whether each policy has been accepted by the user or not
      */
     public function getAcceptedPolicies($uid = null)
     {
@@ -146,21 +163,21 @@ class AcceptPoliciesHelper
      * If the current user is the subject user, then the user can always see his status for each policy. If the current user is not the
      * same as the subject user, then the current user can only see the status if he has ACCESS_MODERATE access for the policy.
      *
-     * @param numeric $uid The uid of the subject account record (not the current user, but the subject user); optional.
+     * @param numeric $userId The user id of the subject account record (not the current user, but the subject user); optional
      *
-     * @return array An array containing flags indicating whether the current user is permitted to view the specified policy.
+     * @return array An array containing flags indicating whether the current user is permitted to view the specified policy
      */
-    public function getViewablePolicies($uid = null)
+    public function getViewablePolicies($userId = null)
     {
         $currentUid = UserUtil::getVar('uid');
-        $isCurrentUser = !is_null($uid) && $uid == $currentUid;
+        $isCurrentUser = !is_null($userId) && $userId == $currentUid;
 
         return [
-            'termsOfUse'              => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name.'::termsOfUse', '::', ACCESS_MODERATE),
-            'privacyPolicy'           => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name.'::privacyPolicy', '::', ACCESS_MODERATE),
-            'agePolicy'               => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name.'::agePolicy', '::', ACCESS_MODERATE),
-            'cancellationRightPolicy' => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name.'::cancellationRightPolicy', '::', ACCESS_MODERATE),
-            'tradeConditions'         => $isCurrentUser ? true : SecurityUtil::checkPermission($this->name.'::tradeConditions', '::', ACCESS_MODERATE),
+            'termsOfUse'              => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::termsOfUse', '::', ACCESS_MODERATE),
+            'privacyPolicy'           => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::privacyPolicy', '::', ACCESS_MODERATE),
+            'agePolicy'               => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::agePolicy', '::', ACCESS_MODERATE),
+            'cancellationRightPolicy' => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::cancellationRightPolicy', '::', ACCESS_MODERATE),
+            'tradeConditions'         => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::tradeConditions', '::', ACCESS_MODERATE),
         ];
     }
 
@@ -170,16 +187,16 @@ class AcceptPoliciesHelper
      * The current user can only edit the status if he has ACCESS_EDIT access for the policy, whether he is the subject user or not. The ability to edit
      * status for login and new registrations is handled differently, and does not count on the output of this function.
      *
-     * @return array An array containing flags indicating whether the current user is permitted to edit the specified policy.
+     * @return array An array containing flags indicating whether the current user is permitted to edit the specified policy
      */
     public function getEditablePolicies()
     {
         return [
-            'termsOfUse'              => SecurityUtil::checkPermission($this->name.'::termsOfUse', '::', ACCESS_EDIT),
-            'privacyPolicy'           => SecurityUtil::checkPermission($this->name.'::privacyPolicy', '::', ACCESS_EDIT),
-            'agePolicy'               => SecurityUtil::checkPermission($this->name.'::agePolicy', '::', ACCESS_EDIT),
-            'cancellationRightPolicy' => SecurityUtil::checkPermission($this->name.'::cancellationRightPolicy', '::', ACCESS_EDIT),
-            'tradeConditions'         => SecurityUtil::checkPermission($this->name.'::tradeConditions', '::', ACCESS_EDIT),
+            'termsOfUse'              => $this->permissionApi->hasPermission($this->name.'::termsOfUse', '::', ACCESS_EDIT),
+            'privacyPolicy'           => $this->permissionApi->hasPermission($this->name.'::privacyPolicy', '::', ACCESS_EDIT),
+            'agePolicy'               => $this->permissionApi->hasPermission($this->name.'::agePolicy', '::', ACCESS_EDIT),
+            'cancellationRightPolicy' => $this->permissionApi->hasPermission($this->name.'::cancellationRightPolicy', '::', ACCESS_EDIT),
+            'tradeConditions'         => $this->permissionApi->hasPermission($this->name.'::tradeConditions', '::', ACCESS_EDIT),
         ];
     }
 }

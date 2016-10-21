@@ -102,14 +102,15 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param KernelInterface     $kernel           KernelInterface service instance
-     * @param RequestStack        $requestStack     RequestStack service instance
-     * @param Twig_Environment    $twig             The twig templating service
-     * @param TranslatorInterface $translator       Translator service instance
-     * @param RouterInterface     $router           RouterInterface service instance
-     * @param CsrfTokenHandler    $csrfTokenHandler CsrfTokenHandler service instance
-     * @param VariableApi         $variableApi      VariableApi service instance
-     * @param CurrentUserApi      $currentUserApi   CurrentUserApi service instance
+     * @param KernelInterface      $kernel               KernelInterface service instance
+     * @param RequestStack         $requestStack         RequestStack service instance
+     * @param Twig_Environment     $twig                 The twig templating service
+     * @param TranslatorInterface  $translator           Translator service instance
+     * @param RouterInterface      $router               RouterInterface service instance
+     * @param CsrfTokenHandler     $csrfTokenHandler     CsrfTokenHandler service instance
+     * @param VariableApi          $variableApi          VariableApi service instance
+     * @param CurrentUserApi       $currentUserApi       CurrentUserApi service instance
+     * @param AcceptPoliciesHelper $acceptPoliciesHelper AcceptPoliciesHelper service instance
      */
     public function __construct(
         KernelInterface $kernel,
@@ -119,7 +120,8 @@ class UsersUiListener implements EventSubscriberInterface
         RouterInterface $router,
         CsrfTokenHandler $csrfTokenHandler,
         VariableApi $variableApi,
-        CurrentUserApi $currentUserApi)
+        CurrentUserApi $currentUserApi,
+        AcceptPoliciesHelper $acceptPoliciesHelper)
     {
         $this->kernel = $kernel;
         $this->request = $requestStack->getCurrentRequest();
@@ -129,7 +131,7 @@ class UsersUiListener implements EventSubscriberInterface
         $this->csrfTokenHandler = $csrfTokenHandler;
         $this->variableApi = $variableApi;
         $this->currentUserApi = $currentUserApi;
-        $this->acceptPoliciesHelper = new AcceptPoliciesHelper();
+        $this->acceptPoliciesHelper = $acceptPoliciesHelper;
     }
 
     /**
@@ -163,8 +165,8 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Cause redirect.
      *
-     * @param string $url  Url to redirect to.
-     * @param int    $type Redirect code, 302 default.
+     * @param string $url  Url to redirect to
+     * @param int    $type Redirect code, 302 default
      *
      * @return RedirectResponse
      */
@@ -178,7 +180,7 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Responds to ui.view hook-like event notifications.
      *
-     * @param GenericEvent $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call
      *
      * @return void
      */
@@ -213,7 +215,7 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Responds to ui.edit hook notifications.
      *
-     * @param GenericEvent $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call
      *
      * @return void
      */
@@ -306,12 +308,12 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Responds to validate.edit hook notifications.
      *
-     * @param GenericEvent $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call
      *
      * @throws AccessDeniedException                         Thrown if the user does not have the appropriate access level for the function, or to
-     *                                                       modify the acceptance of policies on a user account other than his own.
+     *                                                       modify the acceptance of policies on a user account other than his own
      * @throws FatalErrorException|\InvalidArgumentException Thrown if the user record retrieved from the POST is in an unexpected form or its data is
-     *                                                       unexpected.
+     *                                                       unexpected
      *
      * @return void
      */
@@ -470,9 +472,9 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Responds to process_edit hook-like event notifications.
      *
-     * @param GenericEvent $event The event that triggered this function call.
+     * @param GenericEvent $event The event that triggered this function call
      *
-     * @throws NotFoundHttpException Thrown if a user account does not exist for the uid specified by the event.
+     * @throws NotFoundHttpException Thrown if a user account does not exist for the uid specified by the event
      *
      * @return void
      */
@@ -560,7 +562,7 @@ class UsersUiListener implements EventSubscriberInterface
      * login attempt if the users's Legal record is flagged to force the user to accept
      * one or more legal agreements.
      *
-     * @param GenericEvent $event The event that triggered this handler.
+     * @param GenericEvent $event The event that triggered this handler
      *
      * @return void
      */

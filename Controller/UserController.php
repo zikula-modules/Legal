@@ -26,7 +26,6 @@ use System;
 use UserUtil;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
-use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use ZLanguage;
 
 /**
@@ -77,7 +76,7 @@ class UserController extends AbstractController
      *
      * Display Legal notice.
      *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return Response
      */
@@ -93,7 +92,7 @@ class UserController extends AbstractController
      *
      * Display Terms of Use
      *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return Response
      */
@@ -125,7 +124,7 @@ class UserController extends AbstractController
      *
      * Display Privacy Policy
      *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return Response
      */
@@ -141,7 +140,7 @@ class UserController extends AbstractController
      *
      * Display Accessibility statement
      *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return Response
      */
@@ -157,7 +156,7 @@ class UserController extends AbstractController
      *
      * Display Cancellation right policy
      *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return Response
      */
@@ -173,7 +172,7 @@ class UserController extends AbstractController
      *
      * Display Trade conditions
      *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return Response
      */
@@ -194,15 +193,15 @@ class UserController extends AbstractController
      * specified by $documentName. If the legal document
      *
      * @param string $documentName  The "name" of the document, as specified by the names of the user and text template
-     *                              files in the format 'documentname.html.twig'.
+     *                              files in the format 'documentname.html.twig'
      * @param string $activeFlagKey The string used to name the module variable that indicates whether this legal document is
      *                              active or not; typically this is a constant from {@link LegalConstant}, such as
-     *                              {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
+     *                              {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}
      * @param string $customUrlKey  The string used to name the module variable that contains a custom static URL for the
      *                              legal document; typically this is a constant from {@link LegalConstant}, such as
-     *                              {@link LegalConstant::MODVAR_TERMS_URL}.
+     *                              {@link LegalConstant::MODVAR_TERMS_URL}
      *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return RedirectResponse|string HTML output string
      */
@@ -247,10 +246,10 @@ class UserController extends AbstractController
      *
      * @param Request $request
      *
-     * @throws AccessDeniedException Thrown if the user is not logged in and the acceptance attempt is not a result of a login attempt.
+     * @throws AccessDeniedException Thrown if the user is not logged in and the acceptance attempt is not a result of a login attempt
      * @throws \Exception            Thrown if the user is already logged in and the acceptance attempt is a result of a login attempt;
      *                               also thrown in cases where expected data is not present or not in an expected form;
-     *                               also thrown if the call to this function is not the result of a POST operation or a GET operation.
+     *                               also thrown if the call to this function is not the result of a POST operation or a GET operation
      *
      * @return Response
      */
@@ -270,7 +269,7 @@ class UserController extends AbstractController
         $currentUserApi = $this->get('zikula_users_module.current_user');
         $csrfTokenHandler = $this->get('zikula_core.common.csrf_token_handler');
 
-        $helper = new AcceptPoliciesHelper();
+        $acceptPoliciesHelper = $this->get('zikula_legal_module.accept_policies_helper');
         if ($request->isMethod('POST')) {
             $csrfTokenHandler->validate($request->request->get('csrftoken'));
 
@@ -295,8 +294,8 @@ class UserController extends AbstractController
                 'tradeConditions'         => $request->request->get('acceptedpolicies_tradeconditions', false),
                 'cancellationRightPolicy' => $request->request->get('acceptedpolicies_cancellationrightpolicy', false),
             ];
-            $activePolicies = $helper->getActivePolicies();
-            $originalAcceptedPolicies = $helper->getAcceptedPolicies($policiesUid);
+            $activePolicies = $acceptPoliciesHelper->getActivePolicies();
+            $originalAcceptedPolicies = $acceptPoliciesHelper->getAcceptedPolicies($policiesUid);
             $fieldErrors = [];
             if ($activePolicies['termsOfUse'] && !$originalAcceptedPolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']) {
                 $fieldErrors['termsofuse'] = $this->__('You must accept this site\'s terms of use in order to proceed.');
@@ -404,9 +403,9 @@ class UserController extends AbstractController
         $templateParameters = [
             'login'                    => $isLogin,
             'policiesUid'              => $policiesUid,
-            'activePolicies'           => $helper->getActivePolicies(),
-            'acceptedPolicies'         => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
-            'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
+            'activePolicies'           => $acceptPoliciesHelper->getActivePolicies(),
+            'acceptedPolicies'         => isset($acceptedPolicies) ? $acceptedPolicies : $acceptPoliciesHelper->getAcceptedPolicies($policiesUid),
+            'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $acceptPoliciesHelper->getAcceptedPolicies($policiesUid),
             'fieldErrors'              => $fieldErrors,
             'csrfToken'                => $csrfTokenHandler->generate(),
         ];

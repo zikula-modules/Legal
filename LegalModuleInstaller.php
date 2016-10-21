@@ -55,9 +55,9 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
      * This function must consider all the released versions of the module!
      * If the upgrade fails at some point, it returns the last upgraded version.
      *
-     * @param string $oldVersion The version number string from which the upgrade starting.
+     * @param string $oldVersion The version number string from which the upgrade starting
      *
-     * @return bool|string True if the module is successfully upgraded to the current version; last valid version string or false if the upgrade fails.
+     * @return bool|string True if the module is successfully upgraded to the current version; last valid version string or false if the upgrade fails
      */
     public function upgrade($oldVersion)
     {
@@ -130,7 +130,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
     /**
      * Delete the Legal module.
      *
-     * @return bool True if successful; otherwise false.
+     * @return bool True if successful; otherwise false
      */
     public function uninstall()
     {
