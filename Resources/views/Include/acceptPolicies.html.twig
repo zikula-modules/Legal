@@ -57,7 +57,7 @@
         <div class="col-sm-9">
             <div class="checkbox">
                 <input type="checkbox" id="acceptpolicies_agepolicy" name="acceptedpolicies_agepolicy"{% if acceptedPolicies.agePolicy %} checked="checked"{% endif %} value="1" />
-                <em class="help-text">{{ __f('Check this box to indicate that you are %s years of age or older, in accordance with our minimum age requirement.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}}</em>
+                <em class="help-text">{{ __f('Check this box to indicate that you are %s years of age or older, in accordance with our minimum age requirement.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}</em>
             </div>
             <div class="alert alert-info">{{ __f('Information on our minimum age policy, and on how we handle personally identifiable information can be found in our %1$s and in our %2$s.', { '%1$s': termsOfUseLink, '%2$s': privacyPolicyLink })|safeHtml }}</div>
             <p id="acceptpolicies_agepolicy_error" class="alert alert-danger{% if not fieldErrors.agepolicy|default %} hidden{% endif %}">
