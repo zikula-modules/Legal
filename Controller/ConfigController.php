@@ -86,6 +86,10 @@ class ConfigController extends AbstractController
                     $formData[$booleanVar] = ($formData[$booleanVar] == true ? 1 : 0);
                 }
 
+                if ($formData[LegalConstant::MODVAR_MINIMUM_AGE] < 0) {
+                    $formData[LegalConstant::MODVAR_MINIMUM_AGE] = 0;
+                }
+
                 $resetAgreementGroupId = -1;
                 if (isset($formData['resetagreement'])) {
                     $resetAgreementGroupId = $formData['resetagreement'];
