@@ -13,7 +13,7 @@
             {{ pageSetVar('title', __('Legal settings')) }}
         </h3>
 
-        <p class="alert alert-danger">{{ __('<strong>Important Usage Note</strong>: The provided legal statements are samples only. They need to be adapted to your specific needs and locales. You will find the content of the statements in files in the "/Resources/views/en" directory. These templates can be overridden by theme templates, or by global templates you would create in the "config/templates/ZikulaLegalModule/" directory (in the appropriate sub-directory for the language you are writing for).') }}</p>
+        <p class="alert alert-danger">{{ __('<strong>Important Usage Note</strong>: The provided legal statements are samples only. They need to be adapted to your specific needs and locales. You will find the content of the statements in files in the "/Resources/views/en" directory. These templates can be overridden by theme templates, or by global templates you would create in the "config/templates/ZikulaLegalModule/" directory (in the appropriate sub-directory for the language you are writing for).')|raw }}</p>
 
         {{ form_start(form) }}
         {{ form_errors(form) }}

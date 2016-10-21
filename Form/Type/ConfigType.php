@@ -83,7 +83,6 @@ class ConfigType extends AbstractType
                     $translator->__('Yes') => 1,
                     $translator->__('No')  => 0,
                 ],
-                'required'          => false,
                 'choices_as_values' => true,
                 'expanded'          => true,
                 'multiple'          => false,
