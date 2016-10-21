@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use System;
 use UserUtil;
@@ -194,14 +193,14 @@ class UserController extends AbstractController
      * If no custom URL exists, then this function will render and return the appropriate template for the legal document, as
      * specified by $documentName. If the legal document
      *
-     * @param string $documentName      The "name" of the document, as specified by the names of the user and text template
-     *                                  files in the format 'documentname.html.twig'.
-     * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
-     *                                  active or not; typically this is a constant from {@link LegalConstant}, such as
-     *                                  {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
-     * @param string $customUrlKey      The string used to name the module variable that contains a custom static URL for the
-     *                                  legal document; typically this is a constant from {@link LegalConstant}, such as
-     *                                  {@link LegalConstant::MODVAR_TERMS_URL}.
+     * @param string $documentName  The "name" of the document, as specified by the names of the user and text template
+     *                              files in the format 'documentname.html.twig'.
+     * @param string $activeFlagKey The string used to name the module variable that indicates whether this legal document is
+     *                              active or not; typically this is a constant from {@link LegalConstant}, such as
+     *                              {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
+     * @param string $customUrlKey  The string used to name the module variable that contains a custom static URL for the
+     *                              legal document; typically this is a constant from {@link LegalConstant}, such as
+     *                              {@link LegalConstant::MODVAR_TERMS_URL}.
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
      *
@@ -235,7 +234,7 @@ class UserController extends AbstractController
 
         // intentionally return non-Response
         return $this->renderView("User/{$documentName}.html.twig", [
-            'languageCode' => $languageCode
+            'languageCode' => $languageCode,
         ]);
     }
 
