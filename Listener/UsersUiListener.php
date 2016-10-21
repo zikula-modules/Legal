@@ -15,8 +15,10 @@ use DateTime;
 use DateTimeZone;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -44,9 +46,14 @@ class UsersUiListener implements EventSubscriberInterface
     const EVENT_KEY = 'module.legal.users_ui_handler';
 
     /**
+     * @var KernelInterface
+     */
+    private $kernel;
+
+    /**
      * Access to the request instance.
      *
-     * @var \Symfony\Component\HttpFoundation\Request
+     * @var Request
      */
     private $request;
 
@@ -95,6 +102,7 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
+     * @param KernelInterface     $kernel           KernelInterface service instance
      * @param RequestStack        $requestStack     RequestStack service instance
      * @param Twig_Environment    $twig             The twig templating service
      * @param TranslatorInterface $translator       Translator service instance
@@ -104,6 +112,7 @@ class UsersUiListener implements EventSubscriberInterface
      * @param CurrentUserApi      $currentUserApi   CurrentUserApi service instance
      */
     public function __construct(
+        KernelInterface $kernel,
         RequestStack $requestStack,
         Twig_Environment $twig,
         TranslatorInterface $translator,
@@ -112,6 +121,7 @@ class UsersUiListener implements EventSubscriberInterface
         VariableApi $variableApi,
         CurrentUserApi $currentUserApi)
     {
+        $this->kernel = $kernel;
         $this->request = $requestStack->getCurrentRequest();
         $this->twig = $twig;
         $this->translator = $translator;
@@ -174,6 +184,10 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function uiView(GenericEvent $event)
     {
+        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
+            return;
+        }
+
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         $user = $event->getSubject();
@@ -205,6 +219,10 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function uiEdit(GenericEvent $event)
     {
+        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
+            return;
+        }
+
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         if ($activePolicyCount < 1) {
@@ -299,6 +317,10 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function validateEdit(GenericEvent $event)
     {
+        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
+            return;
+        }
+
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
         if ($this->request->request->has('acceptedpolicies_uid')) {
@@ -456,6 +478,10 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function processEdit(GenericEvent $event)
     {
+        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
+            return;
+        }
+
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         $eventName = $event->getName();
         if (!isset($this->validation) || $this->validation->hasErrors()) {
@@ -540,6 +566,10 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function acceptPolicies(GenericEvent $event)
     {
+        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
+            return;
+        }
+
         $termsOfUseActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false);
         $privacyPolicyActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
         $agePolicyActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0) > 0;

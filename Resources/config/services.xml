@@ -27,6 +27,7 @@
 
         <service id="zikula_legal_module.event_listener" class="%zikula_legal_module.event_listener.class%">
             <tag name="kernel.event_subscriber" />
+            <argument type="service" id="kernel" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="twig" />
             <argument type="service" id="translator.default" />
