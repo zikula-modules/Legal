@@ -207,7 +207,7 @@ class UsersUiListener implements EventSubscriberInterface
             'acceptedPolicies' => $acceptedPolicies,
         ];
 
-        $event->data[self::EVENT_KEY] = $this->twig->render('UsersUI/view.html.twig', $templateParameters);
+        $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/view.html.twig', $templateParameters);
     }
 
     /**
@@ -257,7 +257,7 @@ class UsersUiListener implements EventSubscriberInterface
                             'fieldErrors'              => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                             'csrfToken'                => $csrfToken,
                         ];
-                        $event->data[self::EVENT_KEY] = $this->twig->render('UsersUI/editLogin.html.twig', $templateParameters);
+                        $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/editLogin.html.twig', $templateParameters);
                     }
                 }
             } else {
@@ -269,7 +269,7 @@ class UsersUiListener implements EventSubscriberInterface
                     'fieldErrors'              => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
                     'csrfToken'                => $csrfToken,
                 ];
-                $event->data[self::EVENT_KEY] = $this->twig->render('UsersUI/editRegistration.html.twig', $templateParameters);
+                $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/editRegistration.html.twig', $templateParameters);
             }
 
             return;
@@ -300,7 +300,7 @@ class UsersUiListener implements EventSubscriberInterface
             'fieldErrors'      => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
             'csrfToken'        => $csrfToken,
         ];
-        $event->data[self::EVENT_KEY] = $this->twig->render('UsersUI/edit.html.twig', $templateParameters);
+        $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/edit.html.twig', $templateParameters);
     }
 
     /**
