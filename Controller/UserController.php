@@ -13,7 +13,6 @@ namespace Zikula\LegalModule\Controller;
 
 use DateTime;
 use DateTimeZone;
-use ModUtil;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SessionUtil;
