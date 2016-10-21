@@ -13,8 +13,6 @@ namespace Zikula\LegalModule\Helper;
 
 use DateTime;
 use DateTimeZone;
-use ModUtil;
-use SecurityUtil;
 use UserUtil;
 use Zikula\ExtensionsModule\Api\VariableApi;
 use Zikula\LegalModule\Constant as LegalConstant;
