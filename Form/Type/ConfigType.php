@@ -42,11 +42,11 @@ class ConfigType extends AbstractType
                 'required' => false,
             ])
             ->add(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
-                'label'    => $translator->__('General Terms and Conditions of Trade'),
+                'label'    => $translator->__('General terms and conditions of trade'),
                 'required' => false,
             ])
             ->add(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
-                'label'    => $translator->__('Cancellation Right Policy'),
+                'label'    => $translator->__('Cancellation right policy'),
                 'required' => false,
             ])
             ->add(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, 'Symfony\Component\Form\Extension\Core\Type\CheckboxType', [
@@ -66,11 +66,11 @@ class ConfigType extends AbstractType
                 'required' => false,
             ])
             ->add(LegalConstant::MODVAR_TRADECONDITIONS_URL, 'Symfony\Component\Form\Extension\Core\Type\UrlType', [
-                'label'    => $translator->__('General Terms and Conditions of Trade'),
+                'label'    => $translator->__('General terms and conditions of trade'),
                 'required' => false,
             ])
             ->add(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, 'Symfony\Component\Form\Extension\Core\Type\UrlType', [
-                'label'    => $translator->__('Cancellation Right Policy'),
+                'label'    => $translator->__('Cancellation right policy'),
                 'required' => false,
             ])
             ->add(LegalConstant::MODVAR_ACCESSIBILITY_URL, 'Symfony\Component\Form\Extension\Core\Type\UrlType', [
@@ -78,7 +78,7 @@ class ConfigType extends AbstractType
                 'required' => false,
             ])
             ->add(LegalConstant::MODVAR_EUCOOKIE, 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
-                'label'   => $translator->__('Enable cookie warning for EU Compliance'),
+                'label'   => $translator->__('Enable cookie warning for EU compliance'),
                 'choices' => [
                     $translator->__('Yes') => 1,
                     $translator->__('No')  => 0,

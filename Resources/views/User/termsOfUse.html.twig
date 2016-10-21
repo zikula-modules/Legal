@@ -1,0 +1,3 @@
+{% set templateTitle = __f('Terms of use for %s', { '%s': getModVar('ZConfig', 'sitename') }) %}
+{{ include('@ZikulaLegalModule/User/menu.html.twig') }}
+{{ include('@ZikulaLegalModule/' ~ languageCode ~ '/termsOfUse.html.twig') }}

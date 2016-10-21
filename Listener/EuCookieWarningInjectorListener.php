@@ -11,6 +11,7 @@
 
 namespace Zikula\LegalModule\Listener;
 
+use ModUtil;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,7 +55,8 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         }
 
         // is modvar enabled?
-        $cookieSetting = \ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_EUCOOKIE);
+        // TODO legacy call
+        $cookieSetting = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_EUCOOKIE);
         if (empty($cookieSetting)) {
             return;
         }
@@ -81,7 +83,8 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         // add javascript to bottom of body
         $pos = strripos($content, '</body>');
         if (false !== $pos) {
-            $module = \ModUtil::getModule(LegalConstant::MODNAME);
+            // TODO legacy call
+            $module = ModUtil::getModule(LegalConstant::MODNAME);
             $path = $request->getBasePath().'/'.$module->getRelativePath().'/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js';
             $javascript = '<script type="text/javascript" src="'.$path.'"></script>';
             // allow translation of content
@@ -89,7 +92,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
             $acceptText = __('I Understand', $module->getTranslationDomain());
             $javascript .= '
 <script type="text/javascript">
-jQuery(document).ready(function(){
+jQuery(document).ready(function() {
     jQuery.cookieBar({
         message: \''.$message.'\',
         acceptText: \''.$acceptText.'\'
@@ -103,7 +106,8 @@ jQuery(document).ready(function(){
         // add stylesheet to head
         $pos = strripos($content, '</head>');
         if (false !== $pos) {
-            $module = \ModUtil::getModule(LegalConstant::MODNAME);
+            // TODO legacy call
+            $module = ModUtil::getModule(LegalConstant::MODNAME);
             if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {
                 $path = $this->stylesheetOverride;
             } else {

@@ -1,0 +1,3 @@
+{% set templateTitle = __f('Accessibility statement for %s', { '%s': getModVar('ZConfig', 'sitename') }) %}
+{{ include('@ZikulaLegalModule/User/menu.html.twig') }}
+{{ include('@ZikulaLegalModule/' ~ languageCode ~ '/accessibilityStatement.html.twig') }}

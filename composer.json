@@ -19,7 +19,7 @@
     "extra": {
         "zikula": {
             "class": "Zikula\\LegalModule\\ZikulaLegalModule",
-            "core-compatibility": ">=1.4.1",
+            "core-compatibility": ">=1.4.3",
             "displayname": "Legal",
             "url": "legal",
             "capabilities": {

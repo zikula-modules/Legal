@@ -1,6 +1,6 @@
 3.0.0
 -----
-  * Migrated to 2.0 module specification
+  * Migrated to 2.0 module specification (e.g. switched to new controllers and Twig templates)
 
 2.1.0
 -----

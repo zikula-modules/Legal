@@ -1,0 +1,2 @@
+{% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL'), path('zikulalegalmodule_user_tradeconditions')) %}
+<a class="legal_inlinelink_tradeconditions" href="{{ policyUrl|e('html_attr') }}" target="{{ target|e('html_attr') }}">{{ __('General terms and conditions of trade') }}</a>

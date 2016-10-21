@@ -14,7 +14,6 @@ namespace Zikula\LegalModule\Controller;
 use DateTime;
 use DateTimeZone;
 use ModUtil;
-use SecurityUtil;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use SessionUtil;
@@ -26,6 +25,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use System;
 use UserUtil;
+use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use ZLanguage;
@@ -33,7 +33,7 @@ use ZLanguage;
 /**
  * Class UserController.
  */
-class UserController extends \Zikula_AbstractController
+class UserController extends AbstractController
 {
     /**
      * Route not needed here because method is legacy-only.
@@ -48,7 +48,7 @@ class UserController extends \Zikula_AbstractController
     {
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
-            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', [], RouterInterface::ABSOLUTE_URL);
+            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse');
         }
 
         return new RedirectResponse($url);
@@ -67,62 +67,10 @@ class UserController extends \Zikula_AbstractController
     {
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
-            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse', [], RouterInterface::ABSOLUTE_URL);
+            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse');
         }
 
         return new RedirectResponse($url);
-    }
-
-    /**
-     * Render and display the specified legal document, or redirect to the specified custom URL if it exists.
-     *
-     * If a custom URL for the legal document exists, as specified by the module variable identified by $customUrlKey, then
-     * this function will redirect the user to that URL.
-     *
-     * If no custom URL exists, then this function will render and return the appropriate template for the legal document, as
-     * specified by $documentName. If the legal document
-     *
-     * @param string $documentName      The "name" of the document, as specified by the names of the user and text template
-     *                                  files in the format 'documentname.tpl'.
-     * @param string $accessInstanceKey The string used in the instance_right part of the permission access key for this document.
-     * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
-     *                                  active or not; typically this is a constant from {@link LegalConstant}, such as
-     *                                  {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
-     * @param string $customUrlKey      The string used to name the module variable that contains a custom static URL for the
-     *                                  legal document; typically this is a constant from {@link LegalConstant}, such as
-     *                                  {@link LegalConstant::MODVAR_TERMS_URL}.
-     *
-     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
-     *
-     * @return RedirectResponse|string HTML output string
-     */
-    private function renderDocument($documentName, $accessInstanceKey, $activeFlagKey, $customUrlKey)
-    {
-        // Security check
-        if (!SecurityUtil::checkPermission($this->name.'::'.$accessInstanceKey, '::', ACCESS_OVERVIEW)) {
-            throw new AccessDeniedException();
-        }
-        if (!$this->getVar($activeFlagKey)) {
-            return $this->view->fetch('User/policyNotActive.tpl');
-        }
-
-        $customUrl = $this->getVar($customUrlKey, '');
-        if (empty($customUrl)) {
-            // work out the template path
-            $template = "User/{$documentName}.tpl";
-            // get the current users language
-            $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
-            if (!$this->view->template_exists("{$languageCode}/{$documentName}.tpl")) {
-                $languageCode = 'en';
-            }
-
-            // intentionally return non-Response
-            return $this->view
-                ->assign('languageCode', $languageCode)
-                ->fetch($template);
-        } else {
-            return new RedirectResponse($customUrl);
-        }
     }
 
     /**
@@ -136,7 +84,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function legalNoticeAction()
     {
-        $doc = $this->renderDocument('legalNotice', 'legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
+        $doc = $this->renderDocument('legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
 
         return new Response($doc);
     }
@@ -152,7 +100,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function termsofuseAction()
     {
-        $doc = $this->renderDocument('termsOfUse', 'termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
+        $doc = $this->renderDocument('termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
 
         return new Response($doc);
     }
@@ -170,7 +118,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function privacyAction()
     {
-        return new RedirectResponse($this->get('router')->generate('zikulalegalmodule_user_privacypolicy', [], RouterInterface::ABSOLUTE_URL));
+        return $this->redirectToRoute('zikulalegalmodule_user_privacypolicy'));
     }
 
     /**
@@ -184,7 +132,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function privacyPolicyAction()
     {
-        $doc = $this->renderDocument('privacyPolicy', 'privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
+        $doc = $this->renderDocument('privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
 
         return new Response($doc);
     }
@@ -200,7 +148,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function accessibilitystatementAction()
     {
-        $doc = $this->renderDocument('accessibilityStatement', 'accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
+        $doc = $this->renderDocument('accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
 
         return new Response($doc);
     }
@@ -216,7 +164,7 @@ class UserController extends \Zikula_AbstractController
      */
     public function cancellationRightPolicyAction()
     {
-        $doc = $this->renderDocument('cancellationRightPolicy', 'cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
+        $doc = $this->renderDocument('cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
 
         return new Response($doc);
     }
@@ -232,9 +180,63 @@ class UserController extends \Zikula_AbstractController
      */
     public function tradeConditionsAction()
     {
-        $doc = $this->renderDocument('tradeConditions', 'tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
+        $doc = $this->renderDocument('tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
 
         return new Response($doc);
+    }
+
+    /**
+     * Render and display the specified legal document, or redirect to the specified custom URL if it exists.
+     *
+     * If a custom URL for the legal document exists, as specified by the module variable identified by $customUrlKey, then
+     * this function will redirect the user to that URL.
+     *
+     * If no custom URL exists, then this function will render and return the appropriate template for the legal document, as
+     * specified by $documentName. If the legal document
+     *
+     * @param string $documentName      The "name" of the document, as specified by the names of the user and text template
+     *                                  files in the format 'documentname.html.twig'.
+     * @param string $activeFlagKey     The string used to name the module variable that indicates whether this legal document is
+     *                                  active or not; typically this is a constant from {@link LegalConstant}, such as
+     *                                  {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}.
+     * @param string $customUrlKey      The string used to name the module variable that contains a custom static URL for the
+     *                                  legal document; typically this is a constant from {@link LegalConstant}, such as
+     *                                  {@link LegalConstant::MODVAR_TERMS_URL}.
+     *
+     * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function.
+     *
+     * @return RedirectResponse|string HTML output string
+     */
+    private function renderDocument($documentName, $activeFlagKey, $customUrlKey)
+    {
+        // Security check
+        if (!$this->hasPermission(LegalConstant::MODNAME.'::'.$documentName, '::', ACCESS_OVERVIEW)) {
+            throw new AccessDeniedException();
+        }
+
+        if (!$this->getVar($activeFlagKey)) {
+            // intentionally return non-Response
+            return $this->renderView('User/policyNotActive.html.twig');
+        }
+
+        $customUrl = $this->getVar($customUrlKey, '');
+        if (!empty($customUrl)) {
+            return $this->redirect($customUrl);
+        }
+
+        // get the current users language
+        $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
+        try {
+            $this->renderView("{$languageCode}/{$documentName}.html.twig");
+        } catch (Exception $e) {
+            // template does not exist
+            $languageCode = 'en';
+        }
+
+        // intentionally return non-Response
+        return $this->renderView("User/{$documentName}.html.twig", [
+            'languageCode' => $languageCode
+        ]);
     }
 
     /**
@@ -261,48 +263,56 @@ class UserController extends \Zikula_AbstractController
             // @todo check on this value
             'Legal_Controller_User_acceptPolicies',
             null,
-            $this->name
+            LegalConstant::MODNAME
         );
         // @todo check this value
-        $request->getSession()->remove('Legal_Controller_User_acceptPolicies', $this->name);
-        $processed = false;
+        $request->getSession()->remove('Legal_Controller_User_acceptPolicies', LegalConstant::MODNAME);
+
+        $currentUserApi = $this->get('zikula_users_module.current_user');
+        $csrfTokenHandler = $this->get('zikula_core.common.csrf_token_handler');
+
         $helper = new AcceptPoliciesHelper();
         if ($request->isMethod('POST')) {
-            $this->checkCsrfToken();
+            $csrfTokenHandler->validate($request->request->get('csrftoken'));
+
             $isLogin = isset($sessionVars) && !empty($sessionVars);
-            if (!$isLogin && !UserUtil::isLoggedIn()) {
+            $isLoggedIn = $currentUserApi->isLoggedIn();
+            if (!$isLogin && !$isLoggedIn) {
                 throw new AccessDeniedException();
-            } elseif ($isLogin && UserUtil::isLoggedIn()) {
+            } elseif ($isLogin && $isLoggedIn) {
                 throw new \Exception();
             }
+
             $policiesUid = $request->request->get('acceptedpolicies_uid', false);
+            if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
+                throw new \Exception();
+            }
+
+            $processed = false;
             $acceptedPolicies = [
                 'termsOfUse'              => $request->request->get('acceptedpolicies_termsofuse', false),
                 'privacyPolicy'           => $request->request->get('acceptedpolicies_privacypolicy', false),
                 'agePolicy'               => $request->request->get('acceptedpolicies_agepolicy', false),
-                'cancellationRightPolicy' => $request->request->get('acceptedpolicies_cancellationrightpolicy', false),
                 'tradeConditions'         => $request->request->get('acceptedpolicies_tradeconditions', false),
+                'cancellationRightPolicy' => $request->request->get('acceptedpolicies_cancellationrightpolicy', false),
             ];
-            if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
-                throw new \Exception();
-            }
             $activePolicies = $helper->getActivePolicies();
             $originalAcceptedPolicies = $helper->getAcceptedPolicies($policiesUid);
             $fieldErrors = [];
             if ($activePolicies['termsOfUse'] && !$originalAcceptedPolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']) {
-                $fieldErrors['termsofuse'] = $this->__('You must accept this site\'s Terms of Use in order to proceed.');
+                $fieldErrors['termsofuse'] = $this->__('You must accept this site\'s terms of use in order to proceed.');
             }
             if ($activePolicies['privacyPolicy'] && !$originalAcceptedPolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy']) {
-                $fieldErrors['privacypolicy'] = $this->__('You must accept this site\'s Privacy Policy in order to proceed.');
+                $fieldErrors['privacypolicy'] = $this->__('You must accept this site\'s privacy policy in order to proceed.');
             }
             if ($activePolicies['agePolicy'] && !$originalAcceptedPolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
-                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s Minimum Age Policy. If you are not %1$s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', [ModUtil::getVar($this->name, LegalConstant::MODVAR_MINIMUM_AGE, 0)]);
-            }
-            if ($activePolicies['cancellationRightPolicy'] && !$originalAcceptedPolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy']) {
-                $fieldErrors['cancellationrightpolicy'] = $this->__('You must accept our cancellation right policy in order to proceed.');
+                $fieldErrors['agepolicy'] = $this->__f('In order to log in, you must confirm that you meet the requirements of this site\'s minimum age policy. If you are not %s years of age or older, and you do not have a parent\'s permission to use this site, then please ask your parent to contact a site administrator.', ['%s' => ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0)]);
             }
             if ($activePolicies['tradeConditions'] && !$originalAcceptedPolicies['tradeConditions'] && !$acceptedPolicies['tradeConditions']) {
                 $fieldErrors['tradeconditions'] = $this->__('You must accept our general terms and conditions of trade in order to proceed.');
+            }
+            if ($activePolicies['cancellationRightPolicy'] && !$originalAcceptedPolicies['cancellationRightPolicy'] && !$acceptedPolicies['cancellationRightPolicy']) {
+                $fieldErrors['cancellationrightpolicy'] = $this->__('You must accept our cancellation right policy in order to proceed.');
             }
             if (empty($fieldErrors)) {
                 $now = new DateTime('now', new DateTimeZone('UTC'));
@@ -322,17 +332,17 @@ class UserController extends \Zikula_AbstractController
                 } else {
                     $agePolicyProcessed = !$activePolicies['agePolicy'] || $originalAcceptedPolicies['agePolicy'];
                 }
-                if ($activePolicies['cancellationRightPolicy'] && $acceptedPolicies['cancellationRightPolicy']) {
-                    $cancellationRightPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr, $policiesUid);
-                } else {
-                    $cancellationRightPolicyProcessed = !$activePolicies['cancellationRightPolicy'] || $originalAcceptedPolicies['cancellationRightPolicy'];
-                }
                 if ($activePolicies['tradeConditions'] && $acceptedPolicies['tradeConditions']) {
                     $tradeConditionsProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr, $policiesUid);
                 } else {
                     $tradeConditionsProcessed = !$activePolicies['tradeConditions'] || $originalAcceptedPolicies['tradeConditions'];
                 }
-                $processed = $termsOfUseProcessed && $privacyPolicyProcessed && $agePolicyProcessed && $cancellationRightPolicyProcessed && $tradeConditionsProcessed;
+                if ($activePolicies['cancellationRightPolicy'] && $acceptedPolicies['cancellationRightPolicy']) {
+                    $cancellationRightPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr, $policiesUid);
+                } else {
+                    $cancellationRightPolicyProcessed = !$activePolicies['cancellationRightPolicy'] || $originalAcceptedPolicies['cancellationRightPolicy'];
+                }
+                $processed = $termsOfUseProcessed && $privacyPolicyProcessed && $agePolicyProcessed && $tradeConditionsProcessed && $cancellationRightPolicyProcessed;
             }
             if ($processed) {
                 if ($isLogin) {
@@ -349,14 +359,11 @@ class UserController extends \Zikula_AbstractController
 
                     $subRequest = $request->duplicate([], null, $path);
                     $httpKernel = $this->get('http_kernel');
-                    $response = $httpKernel->handle(
-                        $subRequest,
-                        HttpKernelInterface::SUB_REQUEST
-                    );
+                    $response = $httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
                     return $response;
                 } else {
-                    return new RedirectResponse(System::getHomepageUrl());
+                    return $this->redirect(System::getHomepageUrl());
                 }
             }
         } elseif ($request->isMethod('GET')) {
@@ -365,6 +372,7 @@ class UserController extends \Zikula_AbstractController
         } else {
             throw new AccessDeniedException();
         }
+
         // If we are coming here from the login process, then there are certain things that must have been
         // send along in the session variable. If not, then error.
         if ($isLogin && (!isset($sessionVars['user_obj'])
@@ -375,14 +383,12 @@ class UserController extends \Zikula_AbstractController
                 || !is_array($sessionVars['authentication_method']))) {
             throw new \Exception();
         }
-        if ($isLogin) {
-            $policiesUid = $sessionVars['user_obj']['uid'];
-        } else {
-            $policiesUid = UserUtil::getVar('uid');
-        }
+
+        $policiesUid = $isLogin ? $sessionVars['user_obj']['uid'] : $currentUserApi->get('uid');
         if (!$policiesUid || empty($policiesUid)) {
             throw new \Exception();
         }
+
         if ($isLogin) {
             // Pass along the session vars to updateAcceptance. We didn't want to just keep them in the session variable
             // Legal_Controller_User_acceptPolicies because if we hit an exception or got redirected, then the data
@@ -392,18 +398,21 @@ class UserController extends \Zikula_AbstractController
                 // @todo check this value
                 'Legal_Controller_User_acceptPolicies',
                 $sessionVars,
-                $this->name
+                LegalConstant::MODNAME
             );
         }
-        $templateVars = [
+
+        $templateParameters = [
             'login'                    => $isLogin,
             'policiesUid'              => $policiesUid,
             'activePolicies'           => $helper->getActivePolicies(),
             'acceptedPolicies'         => isset($acceptedPolicies) ? $acceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
             'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $helper->getAcceptedPolicies($policiesUid),
             'fieldErrors'              => $fieldErrors,
+            'csrfToken'                => $csrfTokenHandler->generate(),
         ];
 
-        return $this->view->assign($templateVars)->fetch('User/acceptPolicies.tpl');
+        // intentionally return non-Response
+        return $this->renderView('User/acceptPolicies.html.twig', $templateParameters);
     }
 }

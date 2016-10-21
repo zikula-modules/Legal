@@ -67,7 +67,7 @@ class ConfigController extends AbstractController
         ];
         // get all user groups
         // TODO legacy call
-        $groups = ModUtil::apiFunc('Groups', 'user', 'getall');
+        $groups = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'getall');
         foreach ($groups as $group) {
             $groupChoices[$group['name']] = $group['gid'];
         }
@@ -86,18 +86,18 @@ class ConfigController extends AbstractController
                     $formData[$booleanVar] = ($formData[$booleanVar] == true ? 1 : 0);
                 }
 
-                $resetAgreement = -1;
+                $resetAgreementGroupId = -1;
                 if (isset($formData['resetagreement'])) {
-                    $resetAgreement = $formData['resetagreement'];
+                    $resetAgreementGroupId = $formData['resetagreement'];
                     unset($formData['resetagreement']);
                 }
 
                 // save modvars
                 $this->setVars($formData);
 
-                if ($resetAgreement != -1) {
-                    // TODO legacy call
-                    ModUtil::apiFunc(LegalConstant::MODNAME, 'admin', 'resetagreement', ['gid' => $resetAgreement]);
+                if ($resetAgreementGroupId != -1) {
+                    $resetHelper = $this->get('zikula_legal_module.reset_agreement_helper');
+                    $resetHelper->reset($resetAgreementGroupId);
                 }
 
                 $this->addFlash('status', $this->__('Done! Module configuration updated.'));

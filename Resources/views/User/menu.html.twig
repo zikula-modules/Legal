@@ -1,0 +1,4 @@
+{% if templateTitle|default('') == '' %}
+    {% set templateTitle = __('Legal information') %}
+{% endif %}
+{{ moduleHeader(type='user', title=templateTitle, setpagetitle=true, insertflashes=true) }}

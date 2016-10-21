@@ -12,7 +12,7 @@
 namespace Zikula\LegalModule\Container;
 
 use Symfony\Component\Routing\RouterInterface;
-use Zikula\Common\Translator\Translator;
+use Symfony\Component\Translation\TranslatorInterface;
 use Zikula\Core\LinkContainer\LinkContainerInterface;
 use Zikula\ExtensionsModule\Api\VariableApi;
 use Zikula\LegalModule\Constant as LegalConstant;
@@ -21,7 +21,7 @@ use Zikula\PermissionsModule\Api\PermissionApi;
 class LinkContainer implements LinkContainerInterface
 {
     /**
-     * @var Translator
+     * @var TranslatorInterface
      */
     private $translator;
 
@@ -43,12 +43,12 @@ class LinkContainer implements LinkContainerInterface
     /**
      * LinkContainer constructor.
      *
-     * @param Translator      $translator    Translator service instance
-     * @param RouterInterface $router        RouterInterface service instance
-     * @param PermissionApi   $permissionApi PermissionApi service instance
-     * @param VariableApi     $variableApi   VariableApi service instance
+     * @param TranslatorInterface $translator    Translator service instance
+     * @param RouterInterface     $router        RouterInterface service instance
+     * @param PermissionApi       $permissionApi PermissionApi service instance
+     * @param VariableApi         $variableApi   VariableApi service instance
      */
-    public function __construct($translator, RouterInterface $router, PermissionApi $permissionApi, VariableApi $variableApi)
+    public function __construct(TranslatorInterface $translator, RouterInterface $router, PermissionApi $permissionApi, VariableApi $variableApi)
     {
         $this->translator = $translator;
         $this->router = $router;
@@ -131,7 +131,7 @@ class LinkContainer implements LinkContainerInterface
         }
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
             $links[] = [
-                'text' => $this->translator->__('Cancellation right'),
+                'text' => $this->translator->__('Cancellation right policy'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, 'cancellationrightpolicy'),
             ];
         }

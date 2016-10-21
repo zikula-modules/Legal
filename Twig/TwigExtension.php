@@ -1,0 +1,100 @@
+<?php
+
+/*
+ * This file is part of the Zikula package.
+ *
+ * Copyright Zikula Foundation - http://zikula.org/
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Zikula\LegalModule\Twig;
+
+use Twig_Environment;
+
+/**
+ * Twig extension class.
+ */
+class TwigExtension extends \Twig_Extension
+{
+    /**
+     * @var Twig_Environment
+     */
+    private $twig;
+
+    /**
+     * Constructor.
+     *
+     * @param Twig_Environment $twig The twig templating service
+     */
+    public function __construct(Twig_Environment $twig)
+    {
+        $this->twig = $twig;
+    }
+
+    /**
+     * Returns a list of custom Twig functions.
+     *
+     * @return array
+     */
+    public function getFunctions()
+    {
+        return [
+            new \Twig_SimpleFunction('zikulalegalmodule_inlineLink', [$this, 'inlineLink'])
+        ];
+    }
+
+    /**
+     * The zikulalegalmodule_inlineLink function displays a single inline user link of a
+     * specific policy for the Legal module.
+     *
+     * Example
+     *     {{ zikulalegalmodule_inlineLink(policytype='termsOfUse') }}
+     *
+     * Templates used:
+     *      InlineLink/accessibilityStatement.html.twig
+     *      InlineLink/cancellationRightPolicy.html.twig
+     *      InlineLink/legalNotice.html.twig
+     *      InlineLink/notFound.html.twig
+     *      InlineLink/privacyPolicy.html.twig
+     *      InlineLink/termsOfUse.html.twig
+     *      InlineLink/tradeConditions.html.twig
+     *
+     * @param string $policy The unique string identifier of the policy type whose inline link is to be returned; required
+     * @param string $target The target for the generated link, such as "_blank" to open the policy in a new window; optional, default is blank (same effect as "_self")
+     *
+     * @return string The rendered template output for the specified policy type
+     */
+    public function inlineLink($policy = '', $target = '')
+    {
+        $defaultTemplate = '@ZikulaLegalModule/InlineLink/notFound.html.twig';
+
+        $templateParameters = [
+            'target' => $target,
+        ];
+
+        if (!empty($policyType)) {
+            try {
+                $output = $this->twig->render('@ZikulaLegalModule/InlineLink/'.$policyType.'.html.twig', $templateParameters);
+
+                return $output;
+            } catch (Exception $e) {
+                // template does not exist
+                return $this->twig->render($defaultTemplate, $templateParameters);
+            }
+        }
+
+        return $this->twig->render($defaultTemplate, $templateParameters);
+    }
+
+    /**
+     * Returns internal name of this extension.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'zikulalegalmodule_twigextension';
+    }
+}

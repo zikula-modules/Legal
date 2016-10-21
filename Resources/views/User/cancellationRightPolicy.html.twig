@@ -1,0 +1,3 @@
+{% set templateTitle = __f('Cancellation right policy for %s', { '%s': getModVar('ZConfig', 'sitename') }) %}
+{{ include('@ZikulaLegalModule/User/menu.html.twig') }}
+{{ include('@ZikulaLegalModule/' ~ languageCode ~ '/cancellationRightPolicy.html.twig') }}
