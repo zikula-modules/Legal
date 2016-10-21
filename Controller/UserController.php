@@ -118,7 +118,7 @@ class UserController extends AbstractController
      */
     public function privacyAction()
     {
-        return $this->redirectToRoute('zikulalegalmodule_user_privacypolicy'));
+        return $this->redirectToRoute('zikulalegalmodule_user_privacypolicy');
     }
 
     /**
