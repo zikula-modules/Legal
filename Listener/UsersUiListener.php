@@ -325,85 +325,79 @@ class UsersUiListener implements EventSubscriberInterface
 
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
-        if ($this->request->request->has('acceptedpolicies_uid')) {
-            // Set up the necessary objects for the validation response
-            $policiesAccepted = $this->request->request->get('acceptedpolicies_policies', false);
-
-            $uid = $this->request->request->get('acceptedpolicies_uid', false);
-            $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAccepted);
-            $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
-            // Get the user record from the event. If there is no user record, create a dummy one.
-            $user = $event->getSubject();
-            if (!isset($user) || empty($user)) {
-                $user = ['__ATTRIBUTES__' => []];
-            }
-            $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid);
-            $goodUidUser = is_array($user) && isset($user['uid']) && is_numeric($user['uid']);
-            if (!$this->currentUserApi->isLoggedIn()) {
-                // User is not logged in, so this should be either part of a login attempt or a new user registration.
-                $eventName = $event->getName();
-                $isRegistration = $eventName != 'users.login.validate_edit';
-                if ($isRegistration) {
-                    // A registration. There will be no accepted policies stored yet (function returns the appropriate
-                    // array for a null uid),
-                    // and there is no (or at least there *should* be no) uid to set on the validation response.
-                    $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies();
-                } else {
-                    // A login attempt.
-                    $goodUidAcceptPolicies = $goodUidAcceptPolicies && $uid > 2;
-                    $goodUidUser = $goodUidUser && $user['uid'] > 2;
-                    if (!$goodUidUser || !$goodUidAcceptPolicies) {
-                        // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
-                        throw new \InvalidArgumentException($this->translator->__('The UID is invalid.'));
-                    } elseif ($user['uid'] != $uid) {
-                        // Fail if the uid of the subject does not match the uid from the form. The user changed his
-                        // login information, so not only should we not validate what was posted, we should not allow the user
-                        // to proceed with this login attempt at all.
-                        $this->request->getSession()->getFlashBag()->add('error', $this->translator->__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.'));
-                        $this->request->getSession()->remove('Zikula_Users');
-                        $this->request->getSession()->remove(LegalConstant::MODNAME);
-                        $this->redirect($this->router->generate('zikulausersmodule_access_login'));
-                    }
-                    $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($uid);
-                }
-
-                // Do the validation
-                if (!$policiesAccepted) {
-                    if ($isRegistration) {
-                        $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept this site\'s policies.');
-                    } else {
-                        $validationErrorMsg = $this->translator->__('In order to log in, you must accept this site\'s policies.');
-                    }
-                    $this->validation->addError('policies', $validationErrorMsg);
-                }
-            } else {
-                // Someone is logged in, so either user looking at own record, an admin creating a new user,
-                // an admin editing a user, or an admin editing a registration.
-                // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
-                // being changed.
-                $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
-                if (!isset($user) || empty($user)) {
-                    throw new \InvalidArgumentException($this->translator->__('The user is invalid.'));
-                }
-                $isNewUser = !isset($user['uid']) || empty($user['uid']);
-                if (!$isNewUser && !is_numeric($user['uid'])) {
-                    throw new \InvalidArgumentException($this->translator->__('The UID is invalid.'));
-                }
-                if ($isNewUser || $user['uid'] > 2) {
-                    if (!$isNewUser) {
-                        // Only check this stuff if the admin is not creating a new user. It doesn't make sense otherwise.
-                        if (!$goodUidUser || !$goodUidAcceptPolicies || $user['uid'] != $uid) {
-                            // Fail if the uid of the subject does not match the uid from the form. The user changed the uid
-                            // on the account (is that even possible?!) or somehow the main user form and the part for Legal point
-                            // to different user account. In any case, that is a bad situation that should cause a critical failure.
-                            // Also fail if the $user record is bad, or if the uid used for Legal is bad.
-                            throw new FatalErrorException($this->translator->__('The user record or the UID is invalid or the UID does not match.'));
-                        }
-                    }
-                }
-            }
-            $event->data->set(self::EVENT_KEY, $this->validation);
+        if (!$this->request->request->has('acceptedpolicies_uid')) {
+            return;
         }
+
+        // Set up the necessary objects for the validation response
+        $policiesAccepted = $this->request->request->get('acceptedpolicies_policies', false);
+
+        $uid = $this->request->request->get('acceptedpolicies_uid', false);
+        $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAccepted);
+        $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
+        // Get the user record from the event. If there is no user record, create a dummy one.
+        $user = $event->getSubject();
+        if (!isset($user) || empty($user)) {
+            $user = ['__ATTRIBUTES__' => []];
+        }
+        $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid);
+        $goodUidUser = is_array($user) && isset($user['uid']) && is_numeric($user['uid']);
+        if (!$this->currentUserApi->isLoggedIn()) {
+            // User is not logged in, so this should be either part of a login attempt or a new user registration.
+            if ($event->getName() == 'users.login.validate_edit') {
+                // A login attempt.
+                $goodUidAcceptPolicies = $goodUidAcceptPolicies && $uid > 2;
+                $goodUidUser = $goodUidUser && $user['uid'] > 2;
+                if (!$goodUidUser || !$goodUidAcceptPolicies) {
+                    // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
+                    throw new \InvalidArgumentException($this->translator->__('The UID is invalid.'));
+                } elseif ($user['uid'] != $uid) {
+                    // Fail if the uid of the subject does not match the uid from the form. The user changed his
+                    // login information, so not only should we not validate what was posted, we should not allow the user
+                    // to proceed with this login attempt at all.
+                    $this->request->getSession()->getFlashBag()->add('error', $this->translator->__('Sorry! You changed your authentication information, and one or more items displayed on the login screen may not have been applicable for your account. Please try logging in again.'));
+                    $this->request->getSession()->remove('Zikula_Users');
+                    $this->request->getSession()->remove(LegalConstant::MODNAME);
+                    $this->redirect($this->router->generate('zikulausersmodule_access_login'));
+                }
+            }
+
+            // Do the validation
+            if (!$policiesAccepted) {
+                if ($isRegistration) {
+                    $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept this site\'s policies.');
+                } else {
+                    $validationErrorMsg = $this->translator->__('In order to log in, you must accept this site\'s policies.');
+                }
+                $this->validation->addError('policies', $validationErrorMsg);
+            }
+        } else {
+            // Someone is logged in, so either user looking at own record, an admin creating a new user,
+            // an admin editing a user, or an admin editing a registration.
+            // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
+            // being changed.
+            $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
+            if (!isset($user) || empty($user)) {
+                throw new \InvalidArgumentException($this->translator->__('The user is invalid.'));
+            }
+            $isNewUser = !isset($user['uid']) || empty($user['uid']);
+            if (!$isNewUser && !is_numeric($user['uid'])) {
+                throw new \InvalidArgumentException($this->translator->__('The UID is invalid.'));
+            }
+            if ($isNewUser || $user['uid'] > 2) {
+                if (!$isNewUser) {
+                    // Only check this stuff if the admin is not creating a new user. It doesn't make sense otherwise.
+                    if (!$goodUidUser || !$goodUidAcceptPolicies || $user['uid'] != $uid) {
+                        // Fail if the uid of the subject does not match the uid from the form. The user changed the uid
+                        // on the account (is that even possible?!) or somehow the main user form and the part for Legal point
+                        // to different user account. In any case, that is a bad situation that should cause a critical failure.
+                        // Also fail if the $user record is bad, or if the uid used for Legal is bad.
+                        throw new FatalErrorException($this->translator->__('The user record or the UID is invalid or the UID does not match.'));
+                    }
+                }
+            }
+        }
+        $event->data->set(self::EVENT_KEY, $this->validation);
     }
 
     /**
@@ -438,39 +432,32 @@ class UsersUiListener implements EventSubscriberInterface
             'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
         ];
 
-        if (!$this->currentUserApi->isLoggedIn()) {
-            if ($eventName == 'module.users.ui.process_edit.login_screen' || $eventName == 'module.users.ui.process_edit.login_block') {
-                $isRegistration = false;
-                // policies accepted during login
-            } else {
-                // policies accepted during registration
-                $isRegistration = UserUtil::isRegistration($uid);
-                $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
-                if (!$user) {
-                    throw new NotFoundHttpException($this->translator->__('A user account or registration does not exist for the specified uid.'));
-                }
-            }
-            $policiesAccepted = $this->validation->getObject();
-            if ($policiesAccepted) {
-                $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
-                $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
-                foreach ($policiesToCheck as $policyName => $acceptedVar) {
-                    if ($activePolicies[$policyName]) {
-                        UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
-                    }
-                }
-            }
+        $isLoggedIn = $this->currentUserApi->isLoggedIn();
+        $policiesAccepted = $this->validation->getObject();
+
+        if (!$isLoggedIn && ($eventName == 'module.users.ui.process_edit.login_screen' || $eventName == 'module.users.ui.process_edit.login_block')) {
+            $isRegistration = false;
+            // policies accepted during login
         } else {
+            // policies accepted during registration
             $isRegistration = UserUtil::isRegistration($uid);
             $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
             if (!$user) {
                 throw new NotFoundHttpException($this->translator->__('A user account or registration does not exist for the specified uid.'));
             }
-            $policiesAccepted = $this->validation->getObject();
-            if ($policiesAccepted) {
+        }
+
+        if ($policiesAccepted) {
+            $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
+            $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
+            if (!$isLoggedIn) {
+                foreach ($policiesToCheck as $policyName => $acceptedVar) {
+                    if ($activePolicies[$policyName]) {
+                        UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
+                    }
+                }
+            } else {
                 $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
-                $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
-                $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
                 foreach ($policiesToCheck as $policyName => $acceptedVar) {
                     if ($activePolicies[$policyName] && $editablePolicies[$policyName]) {
                         UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
