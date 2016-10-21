@@ -14,6 +14,7 @@ namespace Zikula\LegalModule\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
@@ -89,11 +90,12 @@ class ConfigType extends AbstractType
                 'help'              => $translator->__('Notice: This setting controls the EU cookie warning which is injected into the view and requires user assent.'),
             ])
             ->add(LegalConstant::MODVAR_MINIMUM_AGE, 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
-                'label'      => $translator->__('Minimum age permitted to register'),
-                'empty_data' => 13,
-                'scale'      => 0,
-                'max_length' => 2,
-                'help'       => $translator->__('Enter a positive integer, or 0 for no age check.'),
+                'label'       => $translator->__('Minimum age permitted to register'),
+                'constraints' => new GreaterThanOrEqual(0),
+                'empty_data'  => 13,
+                'scale'       => 0,
+                'max_length'  => 2,
+                'help'        => $translator->__('Enter a positive integer, or 0 for no age check.'),
             ])
             ->add('resetagreement', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
                 'label'             => $translator->__('Reset user group\'s acceptance of \'Terms of use\''),
