@@ -11,13 +11,15 @@
 
 namespace Zikula\LegalModule\Listener;
 
-use ModUtil;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Translation\TranslatorInterface;
+use Zikula\ExtensionsModule\Api\VariableApi;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\ThemeModule\Engine\Asset;
 
 /**
  * EuCookieWarningInjectorListener injects a warning to the user that cookies are
@@ -30,10 +32,39 @@ use Zikula\LegalModule\Constant as LegalConstant;
  */
 class EuCookieWarningInjectorListener implements EventSubscriberInterface
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * @var VariableApi
+     */
+    private $variableApi;
+
+    /**
+     * @var Asset
+     */
+    private $assetHelper;
+
+    /**
+     * @var string
+     */
     private $stylesheetOverride;
 
-    public function __construct($stylesheetOverride = null)
+    /**
+     * Constructor.
+     *
+     * @param TranslatorInterface $translator         Translator service instance
+     * @param VariableApi         $variableApi        VariableApi service instance
+     * @param Asset               $assetHelper        Asset service instance
+     * @param string              $stylesheetOverride Custom path to css file (optional)
+     */
+    public function __construct(TranslatorInterface $translator, VariableApi $variableApi, Asset $assetHelper, $stylesheetOverride = null)
     {
+        $this->translator = $translator;
+        $this->variableApi = $variableApi;
+        $this->assetHelper = $assetHelper;
         $this->stylesheetOverride = $stylesheetOverride;
     }
 
@@ -54,9 +85,8 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
             return;
         }
 
-        // is modvar enabled?
-        // TODO legacy call
-        $cookieSetting = ModUtil::getVar(LegalConstant::MODNAME, LegalConstant::MODVAR_EUCOOKIE);
+        // is functionality enabled?
+        $cookieSetting = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_EUCOOKIE);
         if (empty($cookieSetting)) {
             return;
         }
@@ -83,13 +113,11 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         // add javascript to bottom of body
         $pos = strripos($content, '</body>');
         if (false !== $pos) {
-            // TODO legacy call
-            $module = ModUtil::getModule(LegalConstant::MODNAME);
-            $path = $request->getBasePath().'/'.$module->getRelativePath().'/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js';
+            $path = $this->assetHelper->resolve('@ZikulaLegalModule:js/jquery.cookiebar/jquery.cookiebar.js');
             $javascript = '<script type="text/javascript" src="'.$path.'"></script>';
             // allow translation of content
-            $message = __('We use cookies to track usage and preferences', $module->getTranslationDomain());
-            $acceptText = __('I Understand', $module->getTranslationDomain());
+            $message = $this->translator->__('We use cookies to track usage and preferences');
+            $acceptText = $this->translator->__('I Understand');
             $javascript .= '
 <script type="text/javascript">
 jQuery(document).ready(function() {
@@ -106,12 +134,10 @@ jQuery(document).ready(function() {
         // add stylesheet to head
         $pos = strripos($content, '</head>');
         if (false !== $pos) {
-            // TODO legacy call
-            $module = ModUtil::getModule(LegalConstant::MODNAME);
             if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {
                 $path = $this->stylesheetOverride;
             } else {
-                $path = $request->getBasePath().'/'.$module->getRelativePath().'/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css';
+                $path = $this->assetHelper->resolve('@ZikulaLegalModule:js/jquery.cookiebar/jquery.cookiebar.css');
             }
             $css = '<link rel="stylesheet" type="text/css" href="'.$path.'" />';
             $content = substr($content, 0, $pos).$css.substr($content, $pos);

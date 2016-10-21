@@ -80,7 +80,7 @@ class ResetAgreementHelper
         // single group
 
         // get the group incl members
-        // TODO legacy call
+        // @todo legacy call
         $grp = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'get', ['gid' => $groupId]);
         if ($grp == false) {
             return false;

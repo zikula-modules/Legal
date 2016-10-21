@@ -93,7 +93,7 @@ class UsersUiListener implements EventSubscriberInterface
     private $validation;
 
     /**
-     * Constructs a new instance of this class.
+     * Constructor.
      *
      * @param RequestStack        $requestStack     RequestStack service instance
      * @param Twig_Environment    $twig             The twig templating service

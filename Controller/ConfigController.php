@@ -66,7 +66,7 @@ class ConfigController extends AbstractController
 
         ];
         // get all user groups
-        // TODO legacy call
+        // @todo legacy call
         $groups = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'getall');
         foreach ($groups as $group) {
             $groupChoices[$group['name']] = $group['gid'];
