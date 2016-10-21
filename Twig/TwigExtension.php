@@ -41,7 +41,7 @@ class TwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('zikulalegalmodule_inlineLink', [$this, 'inlineLink']),
+            new \Twig_SimpleFunction('zikulalegalmodule_inlineLink', [$this, 'inlineLink'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -74,9 +74,9 @@ class TwigExtension extends \Twig_Extension
             'target' => $target,
         ];
 
-        if (!empty($policyType)) {
+        if (!empty($policy)) {
             try {
-                $output = $this->twig->render('@ZikulaLegalModule/InlineLink/'.$policyType.'.html.twig', $templateParameters);
+                $output = $this->twig->render('@ZikulaLegalModule/InlineLink/'.$policy.'.html.twig', $templateParameters);
 
                 return $output;
             } catch (Exception $e) {

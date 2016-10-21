@@ -215,7 +215,7 @@ class UserController extends AbstractController
 
         if (!$this->getVar($activeFlagKey)) {
             // intentionally return non-Response
-            return $this->renderView('User/policyNotActive.html.twig');
+            return $this->renderView('@'.LegalConstant::MODNAME.'/User/policyNotActive.html.twig');
         }
 
         $customUrl = $this->getVar($customUrlKey, '');
@@ -226,14 +226,14 @@ class UserController extends AbstractController
         // get the current users language
         $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
         try {
-            $this->renderView("{$languageCode}/{$documentName}.html.twig");
+            $this->renderView('@'.LegalConstant::MODNAME."/{$languageCode}/{$documentName}.html.twig");
         } catch (Exception $e) {
             // template does not exist
             $languageCode = 'en';
         }
 
         // intentionally return non-Response
-        return $this->renderView("User/{$documentName}.html.twig", [
+        return $this->renderView('@'.LegalConstant::MODNAME."/User/{$documentName}.html.twig", [
             'languageCode' => $languageCode,
         ]);
     }
@@ -412,6 +412,6 @@ class UserController extends AbstractController
         ];
 
         // intentionally return non-Response
-        return $this->renderView('User/acceptPolicies.html.twig', $templateParameters);
+        return $this->renderView('@'.LegalConstant::MODNAME.'/User/acceptPolicies.html.twig', $templateParameters);
     }
 }

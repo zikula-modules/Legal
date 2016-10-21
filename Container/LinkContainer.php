@@ -138,7 +138,7 @@ class LinkContainer implements LinkContainerInterface
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
             $links[] = [
                 'text' => $this->translator->__('Accessibility statement'),
-                'url'  => $this->determineUrl(LegalConstant::MODVAR_PRIVACY_URL, 'accessibilitystatement'),
+                'url'  => $this->determineUrl(LegalConstant::MODVAR_ACCESSIBILITY_URL, 'accessibilitystatement'),
             ];
         }
 
