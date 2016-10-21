@@ -340,15 +340,15 @@ class UsersUiListener implements EventSubscriberInterface
         if (!isset($user) || empty($user)) {
             $user = ['__ATTRIBUTES__' => []];
         }
-        $goodUidAcceptPolicies = isset($uid) && !empty($uid) && is_numeric($uid);
-        $goodUidUser = is_array($user) && isset($user['uid']) && is_numeric($user['uid']);
+        $goodUid = isset($uid) && !empty($uid) && is_numeric($uid);
+        $goodUidUser = (is_array($user) || is_object($user)) && isset($user['uid']) && is_numeric($user['uid']);
         if (!$this->currentUserApi->isLoggedIn()) {
             // User is not logged in, so this should be either part of a login attempt or a new user registration.
             if ($event->getName() == 'users.login.validate_edit') {
                 // A login attempt.
-                $goodUidAcceptPolicies = $goodUidAcceptPolicies && $uid > 2;
+                $goodUid = $goodUid && $uid > 2;
                 $goodUidUser = $goodUidUser && $user['uid'] > 2;
-                if (!$goodUidUser || !$goodUidAcceptPolicies) {
+                if (!$goodUid || !$goodUidUser) {
                     // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
                     throw new \InvalidArgumentException($this->translator->__('The UID is invalid.'));
                 } elseif ($user['uid'] != $uid) {
@@ -376,7 +376,6 @@ class UsersUiListener implements EventSubscriberInterface
             // an admin editing a user, or an admin editing a registration.
             // In this instance, we are only checking to see if the user has edit permission for the policy acceptance status
             // being changed.
-            $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
             if (!isset($user) || empty($user)) {
                 throw new \InvalidArgumentException($this->translator->__('The user is invalid.'));
             }
@@ -384,16 +383,14 @@ class UsersUiListener implements EventSubscriberInterface
             if (!$isNewUser && !is_numeric($user['uid'])) {
                 throw new \InvalidArgumentException($this->translator->__('The UID is invalid.'));
             }
-            if ($isNewUser || $user['uid'] > 2) {
-                if (!$isNewUser) {
-                    // Only check this stuff if the admin is not creating a new user. It doesn't make sense otherwise.
-                    if (!$goodUidUser || !$goodUidAcceptPolicies || $user['uid'] != $uid) {
-                        // Fail if the uid of the subject does not match the uid from the form. The user changed the uid
-                        // on the account (is that even possible?!) or somehow the main user form and the part for Legal point
-                        // to different user account. In any case, that is a bad situation that should cause a critical failure.
-                        // Also fail if the $user record is bad, or if the uid used for Legal is bad.
-                        throw new FatalErrorException($this->translator->__('The user record or the UID is invalid or the UID does not match.'));
-                    }
+            if (!$isNewUser && $user['uid'] > 2) {
+                // Only check this stuff if the admin is not creating a new user. It doesn't make sense otherwise.
+                if (!$goodUid || !$goodUidUser || $user['uid'] != $uid) {
+                    // Fail if the uid of the subject does not match the uid from the form. The user changed the uid
+                    // on the account (is that even possible?!) or somehow the main user form and the part for Legal point
+                    // to different user account. In any case, that is a bad situation that should cause a critical failure.
+                    // Also fail if the $user record is bad, or if the uid used for Legal is bad.
+                    throw new FatalErrorException($this->translator->__('The user record or the UID is invalid or the UID does not match.'));
                 }
             }
         }
