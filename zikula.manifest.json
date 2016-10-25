@@ -21,8 +21,8 @@
         "version": "",
         "docs": "",
         "demo": "",
-        "download": "",
-        "issues": ""
+        "download": "https://github.com/zikula-modules/Legal/releases",
+        "issues": "https://github.com/zikula-modules/Legal/issues"
     },
     "dependencies": [
     ]
