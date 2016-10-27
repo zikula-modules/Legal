@@ -22,6 +22,7 @@
             "core-compatibility": ">=1.4.3",
             "displayname": "Legal",
             "url": "legal",
+            "oldnames": ["Legal"],
             "capabilities": {
                 "admin": {"route": "zikulalegalmodule_config_config"},
                 "user": {"route": "zikulalegalmodule_user_termsofuse"}
