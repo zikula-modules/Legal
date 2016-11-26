@@ -493,7 +493,7 @@ class UsersUiListener implements EventSubscriberInterface
         }
 
         $userObj = $event->getSubject();
-        if (!isset($userObj) || $userObj['uid'] <= 2) {
+        if (!isset($userObj) || $userObj->getUid() <= 2) {
             return;
         }
 
@@ -532,16 +532,8 @@ class UsersUiListener implements EventSubscriberInterface
         }
 
         $event->stopPropagation();
-        $event->data['redirect_func'] = [
-            'modname' => LegalConstant::MODNAME,
-            'type'    => 'user',
-            'func'    => 'acceptPolicies',
-            'args'    => ['login' => true],
-            'session' => [
-                'var'       => 'Legal_Controller_User_acceptPolicies',
-                'namespace' => LegalConstant::MODNAME,
-            ],
-        ];
+        $event->setArgument('returnUrl', $this->router->generate('zikulalegalmodule_user_acceptpolicies', ['login' => true]));
+        $this->request->getSession()->set(LegalConstant::SESSION_ACCEPT_POLICIES_VAR, $userObj->getUid());
         $this->request->getSession()->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.'));
     }
 }

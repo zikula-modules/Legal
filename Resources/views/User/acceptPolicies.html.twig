@@ -1,7 +1,7 @@
 {% set templateTitle = __('Site policies') %}
 {{ pageSetVar('title', templateTitle) }}
 <h2>{{ templateTitle }}</h2>
-{{ showflashes }}
+{{ showflashes() }}
 
 {% if login %}
     <div class="alert alert-danger">

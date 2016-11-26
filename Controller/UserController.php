@@ -25,6 +25,7 @@ use System;
 use UserUtil;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\UsersModule\Entity\UserEntity;
 use ZLanguage;
 
 /**
@@ -225,7 +226,7 @@ class UserController extends AbstractController
         $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
         try {
             $this->renderView('@'.LegalConstant::MODNAME."/{$languageCode}/{$documentName}.html.twig");
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // template does not exist
             $languageCode = 'en';
         }
@@ -256,23 +257,18 @@ class UserController extends AbstractController
     {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
-        $sessionVars = $request->getSession()->get(
-            // @todo check on this value
-            'Legal_Controller_User_acceptPolicies',
-            null,
-            LegalConstant::MODNAME
-        );
-        // @todo check this value
-        $request->getSession()->remove('Legal_Controller_User_acceptPolicies', LegalConstant::MODNAME);
+        $userIdAttemptingToLogin = $request->getSession()->get(LegalConstant::SESSION_ACCEPT_POLICIES_VAR, null);
+        $request->getSession()->remove(LegalConstant::SESSION_ACCEPT_POLICIES_VAR);
 
         $currentUserApi = $this->get('zikula_users_module.current_user');
         $csrfTokenHandler = $this->get('zikula_core.common.csrf_token_handler');
+        $sessionVars = $request->getSession()->all();
 
         $acceptPoliciesHelper = $this->get('zikula_legal_module.accept_policies_helper');
         if ($request->isMethod('POST')) {
             $csrfTokenHandler->validate($request->request->get('csrftoken'));
 
-            $isLogin = isset($sessionVars) && !empty($sessionVars);
+            $isLogin = isset($userIdAttemptingToLogin) && !empty($userIdAttemptingToLogin);
             $isLoggedIn = $currentUserApi->isLoggedIn();
             if (!$isLogin && !$isLoggedIn) {
                 throw new AccessDeniedException();
@@ -285,10 +281,11 @@ class UserController extends AbstractController
                 throw new \Exception();
             }
 
-            $processed = false;
             $fieldErrors = [];
 
             $acceptedPolicies = $request->request->get('acceptedpolicies_policies', false);
+            /** @var UserEntity $user */
+            $user = $this->get('zikula_users_module.user_repository')->find($policiesUid);
             if (!$acceptedPolicies) {
                 $fieldErrors['policies'] = $this->__('You must accept this site\'s policies in order to proceed.');
             } else {
@@ -296,54 +293,27 @@ class UserController extends AbstractController
                 $now = new DateTime('now', new DateTimeZone('UTC'));
                 $nowStr = $now->format(DateTime::ISO8601);
                 if ($activePolicies['termsOfUse']) {
-                    $termsOfUseProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr, $policiesUid);
-                } else {
-                    $termsOfUseProcessed = true;
+                    $user->setAttribute(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr);
                 }
                 if ($activePolicies['privacyPolicy']) {
-                    $privacyPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr, $policiesUid);
-                } else {
-                    $privacyPolicyProcessed = true;
+                    $user->setAttribute(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr);
                 }
                 if ($activePolicies['agePolicy']) {
-                    $agePolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr, $policiesUid);
-                } else {
-                    $agePolicyProcessed = true;
+                    $user->setAttribute(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr);
                 }
                 if ($activePolicies['tradeConditions']) {
-                    $tradeConditionsProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr, $policiesUid);
-                } else {
-                    $tradeConditionsProcessed = true;
+                    $user->setAttribute(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr);
                 }
                 if ($activePolicies['cancellationRightPolicy']) {
-                    $cancellationRightPolicyProcessed = UserUtil::setVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr, $policiesUid);
-                } else {
-                    $cancellationRightPolicyProcessed = true;
+                    $user->setAttribute(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr);
                 }
-                $processed = $termsOfUseProcessed && $privacyPolicyProcessed && $agePolicyProcessed && $tradeConditionsProcessed && $cancellationRightPolicyProcessed;
+                $this->get('doctrine')->getManager()->flush();
             }
-            if ($processed) {
-                if ($isLogin) {
-                    $path = $request->getSession()->get(
-                        // @todo check on this value
-                        'Users_Controller_User_login',
-                        [],
-                        'ZikulaUsersModule'
-                    );
-                    $path['authentication_method'] = $sessionVars['authentication_method'];
-                    $path['authentication_info'] = $sessionVars['authentication_info'];
-                    $path['rememberme'] = $sessionVars['rememberme'];
-                    $path['_controller'] = 'zikulausersmodule_user_login';
-
-                    $subRequest = $request->duplicate([], null, $path);
-                    $httpKernel = $this->get('http_kernel');
-                    $response = $httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
-
-                    return $response;
-                }
-
-                return $this->redirect(System::getHomepageUrl());
+            if ($isLogin) {
+                $this->get('zikula_users_module.helper.access_helper')->login($user, isset($sessionVars['rememberme']) ? $sessionVars['rememberme'] : false);
             }
+
+            return $this->redirectToRoute('home');
         } elseif ($request->isMethod('GET')) {
             $isLogin = $request->query->get('login', false);
             $fieldErrors = [];
@@ -353,16 +323,11 @@ class UserController extends AbstractController
 
         // If we are coming here from the login process, then there are certain things that must have been
         // send along in the session variable. If not, then error.
-        if ($isLogin && (!isset($sessionVars['user_obj'])
-                || !is_array($sessionVars['user_obj'])
-                || !isset($sessionVars['authentication_info'])
-                || !is_array($sessionVars['authentication_info'])
-                || !isset($sessionVars['authentication_method'])
-                || !is_array($sessionVars['authentication_method']))) {
+        if ($isLogin && !isset($sessionVars['authenticationMethod'])) {
             throw new \Exception();
         }
 
-        $policiesUid = $isLogin ? $sessionVars['user_obj']['uid'] : $currentUserApi->get('uid');
+        $policiesUid = $isLogin ? $userIdAttemptingToLogin : $currentUserApi->get('uid');
         if (!$policiesUid || empty($policiesUid)) {
             throw new \Exception();
         }
@@ -372,12 +337,7 @@ class UserController extends AbstractController
             // Legal_Controller_User_acceptPolicies because if we hit an exception or got redirected, then the data
             // would have been orphaned, and it contains some sensitive information.
             SessionUtil::requireSession();
-            $request->getSession()->set(
-                // @todo check this value
-                'Legal_Controller_User_acceptPolicies',
-                $sessionVars,
-                LegalConstant::MODNAME
-            );
+            $request->getSession()->set(LegalConstant::SESSION_ACCEPT_POLICIES_VAR, $userIdAttemptingToLogin);
         }
 
         $templateParameters = [
@@ -390,7 +350,6 @@ class UserController extends AbstractController
             'csrfToken'                => $csrfTokenHandler->generate(),
         ];
 
-        // intentionally return non-Response
-        return $this->renderView('@'.LegalConstant::MODNAME.'/User/acceptPolicies.html.twig', $templateParameters);
+        return $this->render('@'.LegalConstant::MODNAME.'/User/acceptPolicies.html.twig', $templateParameters);
     }
 }

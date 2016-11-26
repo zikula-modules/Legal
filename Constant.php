@@ -164,4 +164,11 @@ class Constant
      * @var string
      */
     const ATTRIBUTE_EUCOOKIE_ACCEPTED = '_Legal_euCookieConfirmed';
+
+    /**
+     * Session variable name to force policy acceptance.
+     *
+     * @var string
+     */
+    const SESSION_ACCEPT_POLICIES_VAR = 'Legal_Controller_User_acceptPolicies';
 }
