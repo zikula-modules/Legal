@@ -79,7 +79,7 @@ class TwigExtension extends \Twig_Extension
                 $output = $this->twig->render('@ZikulaLegalModule/InlineLink/'.$policy.'.html.twig', $templateParameters);
 
                 return $output;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 // template does not exist
                 return $this->twig->render($defaultTemplate, $templateParameters);
             }
