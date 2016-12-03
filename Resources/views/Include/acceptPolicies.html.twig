@@ -10,7 +10,7 @@
         </div>
         <p id="acceptpolicies_policies_info">{{ __('Please click on the following links to read the corresponding documents.') }}</p>
         <ul>
-{% if activePolicies.termsOfUse and not originalAcceptedPolicies.termsOfUse %}
+{% if activePolicies.termsOfUse|default and not originalAcceptedPolicies.termsOfUse|default %}
     {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL')) %}
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
@@ -19,7 +19,7 @@
     <li><a data-toggle="modal" data-target="#modal-terms-of-use" href="{{ policyUrl }}">{{ policyName }}</a></li>
     {{ modalHelper.modalWindow(policyName, policyUrl, 'terms-of-use') }}
 {% endif %}
-{% if activePolicies.privacyPolicy and not originalAcceptedPolicies.privacyPolicy %}
+{% if activePolicies.privacyPolicy|default and not originalAcceptedPolicies.privacyPolicy|default %}
     {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_PRIVACY_URL')) %}
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
@@ -28,10 +28,10 @@
     <li><a data-toggle="modal" data-target="#modal-privacy-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
     {{ modalHelper.modalWindow(policyName, policyUrl, 'privacy-policy') }}
 {% endif %}
-{% if activePolicies.agePolicy and not originalAcceptedPolicies.agePolicy %}
+{% if activePolicies.agePolicy|default and not originalAcceptedPolicies.agePolicy|default %}
     <li>{{ __f('You need to be %s years of age or older, in accordance with our minimum age requirement.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}</li>
 {% endif %}
-{% if activePolicies.tradeConditions and not originalAcceptedPolicies.tradeConditions %}
+{% if activePolicies.tradeConditions|default and not originalAcceptedPolicies.tradeConditions|default %}
     {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL')) %}
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
@@ -40,7 +40,7 @@
     <li><a data-toggle="modal" data-target="#modal-general-terms-and-conditions-of-trade" href="{{ policyUrl }}">{{ policyName }}</a></li>
     {{ modalHelper.modalWindow(policyName, policyUrl, 'general-terms-and-conditions-of-trade') }}
 {% endif %}
-{% if activePolicies.cancellationRightPolicy and not originalAcceptedPolicies.cancellationRightPolicy %}
+{% if activePolicies.cancellationRightPolicy|default and not originalAcceptedPolicies.cancellationRightPolicy|default %}
     {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL')) %}
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
