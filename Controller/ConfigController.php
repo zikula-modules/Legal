@@ -63,8 +63,8 @@ class ConfigController extends AbstractController
         $groupChoices = [
             $this->__('All users') => 0,
             $this->__('No groups') => -1,
-
         ];
+
         // get all user groups
         // @todo legacy call
         $groups = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'getall');
