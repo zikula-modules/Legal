@@ -87,14 +87,4 @@ class TwigExtension extends \Twig_Extension
 
         return $this->twig->render($defaultTemplate, $templateParameters);
     }
-
-    /**
-     * Returns internal name of this extension.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'zikulalegalmodule_twigextension';
-    }
 }
