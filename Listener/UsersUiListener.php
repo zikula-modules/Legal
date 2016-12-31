@@ -498,35 +498,35 @@ class UsersUiListener implements EventSubscriberInterface
         }
 
         if ($termsOfUseActive) {
-            $termsOfUseAcceptedDateTimeStr = $this->currentUserApi->get(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $userObj['uid'], false);
+            $termsOfUseAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $userObj['uid'], false);
             $termsOfUseAccepted = isset($termsOfUseAcceptedDateTimeStr) && !empty($termsOfUseAcceptedDateTimeStr);
         } else {
             $termsOfUseAccepted = true;
         }
         if ($privacyPolicyActive) {
-            $privacyPolicyAcceptedDateTimeStr = $this->currentUserApi->get(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $userObj['uid'], false);
+            $privacyPolicyAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $userObj['uid'], false);
             $privacyPolicyAccepted = isset($privacyPolicyAcceptedDateTimeStr) && !empty($privacyPolicyAcceptedDateTimeStr);
         } else {
             $privacyPolicyAccepted = true;
         }
         if ($agePolicyActive) {
-            $agePolicyAcceptedDateTimeStr = $this->currentUserApi->get(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $userObj['uid'], false);
+            $agePolicyAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $userObj['uid'], false);
             $agePolicyAccepted = isset($agePolicyAcceptedDateTimeStr) && !empty($agePolicyAcceptedDateTimeStr);
         } else {
             $agePolicyAccepted = true;
         }
-        if ($tradeConditionsActive) {
-            $tradeConditionsAcceptedDateTimeStr = $this->currentUserApi->get(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $userObj['uid'], false);
+        /*if ($tradeConditionsActive) {
+            $tradeConditionsAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $userObj['uid'], false);
             $tradeConditionsAccepted = isset($tradeConditionsAcceptedDateTimeStr) && !empty($tradeConditionsAcceptedDateTimeStr);
-        } else {
+        } else {*/
             $tradeConditionsAccepted = true;
-        }
+        /*}
         if ($cancellationRightPolicyActive) {
-            $cancellationRightPolicyAcceptedDateTimeStr = $this->currentUserApi->get(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $userObj['uid'], false);
+            $cancellationRightPolicyAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $userObj['uid'], false);
             $cancellationRightPolicyAccepted = isset($cancellationRightPolicyAcceptedDateTimeStr) && !empty($cancellationRightPolicyAcceptedDateTimeStr);
-        } else {
+        } else {*/
             $cancellationRightPolicyAccepted = true;
-        }
+        //}
         if ($termsOfUseAccepted && $privacyPolicyAccepted && $agePolicyAccepted && $tradeConditionsAccepted && $cancellationRightPolicyAccepted) {
             return;
         }
