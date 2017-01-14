@@ -23,7 +23,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\UsersModule\Entity\UserEntity;
-use ZLanguage;
 
 /**
  * Class UserController.
