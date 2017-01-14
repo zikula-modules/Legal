@@ -77,9 +77,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function legalNoticeAction()
+    public function legalNoticeAction(Request $request)
     {
-        $doc = $this->renderDocument('legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
+        $doc = $this->renderDocument('legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL, $request->getLocale());
 
         return new Response($doc);
     }
@@ -93,9 +93,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function termsofuseAction()
+    public function termsofuseAction(Request $request)
     {
-        $doc = $this->renderDocument('termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
+        $doc = $this->renderDocument('termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL, $request->getLocale());
 
         return new Response($doc);
     }
@@ -125,9 +125,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function privacyPolicyAction()
+    public function privacyPolicyAction(Request $request)
     {
-        $doc = $this->renderDocument('privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
+        $doc = $this->renderDocument('privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL, $request->getLocale());
 
         return new Response($doc);
     }
@@ -141,9 +141,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function accessibilitystatementAction()
+    public function accessibilitystatementAction(Request $request)
     {
-        $doc = $this->renderDocument('accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
+        $doc = $this->renderDocument('accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL, $request->getLocale());
 
         return new Response($doc);
     }
@@ -157,9 +157,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function cancellationRightPolicyAction()
+    public function cancellationRightPolicyAction(Request $request)
     {
-        $doc = $this->renderDocument('cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
+        $doc = $this->renderDocument('cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, $request->getLocale());
 
         return new Response($doc);
     }
@@ -173,9 +173,9 @@ class UserController extends AbstractController
      *
      * @return Response
      */
-    public function tradeConditionsAction()
+    public function tradeConditionsAction(Request $request)
     {
-        $doc = $this->renderDocument('tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
+        $doc = $this->renderDocument('tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL, $request->getLocale());
 
         return new Response($doc);
     }
@@ -202,7 +202,7 @@ class UserController extends AbstractController
      *
      * @return RedirectResponse|string HTML output string
      */
-    private function renderDocument($documentName, $activeFlagKey, $customUrlKey)
+    private function renderDocument($documentName, $activeFlagKey, $customUrlKey, $locale = "en")
     {
         // Security check
         if (!$this->hasPermission(LegalConstant::MODNAME.'::'.$documentName, '::', ACCESS_OVERVIEW)) {
@@ -219,19 +219,17 @@ class UserController extends AbstractController
             return $this->redirect($customUrl);
         }
 
-        // get the current users language
-        $languageCode = ZLanguage::transformFS(ZLanguage::getLanguageCode());
         try {
-            $this->renderView('@'.LegalConstant::MODNAME."/{$languageCode}/{$documentName}.html.twig");
+            $view = $this->renderView('@'.LegalConstant::MODNAME."/{$locale}/{$documentName}.html.twig");
         } catch (\Exception $e) {
             // template does not exist
-            $languageCode = 'en';
+            $view = $this->renderView('@'.LegalConstant::MODNAME."/User/{$documentName}.html.twig", [
+                'languageCode' => 'en',
+            ]);
         }
 
         // intentionally return non-Response
-        return $this->renderView('@'.LegalConstant::MODNAME."/User/{$documentName}.html.twig", [
-            'languageCode' => $languageCode,
-        ]);
+        return $view;
     }
 
     /**
