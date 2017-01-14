@@ -18,11 +18,11 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Twig_Environment;
 use UserUtil;
+use Zikula\Bundle\CoreBundle\HttpKernel\ZikulaHttpKernelInterface;
 use Zikula\Bundle\HookBundle\Hook\ValidationResponse;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Event\GenericEvent;
@@ -46,7 +46,7 @@ class UsersUiListener implements EventSubscriberInterface
     const EVENT_KEY = 'module.legal.users_ui_handler';
 
     /**
-     * @var KernelInterface
+     * @var ZikulaHttpKernelInterface
      */
     private $kernel;
 
@@ -102,7 +102,7 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param KernelInterface      $kernel               KernelInterface service instance
+     * @param ZikulaHttpKernelInterface      $kernel               KernelInterface service instance
      * @param RequestStack         $requestStack         RequestStack service instance
      * @param Twig_Environment     $twig                 The twig templating service
      * @param TranslatorInterface  $translator           Translator service instance
@@ -113,7 +113,7 @@ class UsersUiListener implements EventSubscriberInterface
      * @param AcceptPoliciesHelper $acceptPoliciesHelper AcceptPoliciesHelper service instance
      */
     public function __construct(
-        KernelInterface $kernel,
+        ZikulaHttpKernelInterface $kernel,
         RequestStack $requestStack,
         Twig_Environment $twig,
         TranslatorInterface $translator,
