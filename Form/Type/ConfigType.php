@@ -94,7 +94,9 @@ class ConfigType extends AbstractType
                 'constraints' => new GreaterThanOrEqual(0),
                 'empty_data'  => 13,
                 'scale'       => 0,
-                'attr'        => ['max_length' => 2],
+                'attr'        => [
+                    'maxlength' => 2
+                ],
                 'help'        => $translator->__('Enter a positive integer, or 0 for no age check.'),
             ])
             ->add('resetagreement', 'Symfony\Component\Form\Extension\Core\Type\ChoiceType', [
