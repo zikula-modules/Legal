@@ -1,21 +1,21 @@
 {% import '@ZikulaLegalModule/Include/modalHelper.html.twig' as modalHelper %}
 <div class="form-group{% if fieldErrors.policies|default %} has-error{% endif %}">
     <div class="col-sm-3 control-label required">
-        <label for="acceptpolicies_termsofuse">{{ __('Policies') }}</label>
+        <label for="acceptpolicies_termsofuse">{{ __('Policies', 'zikulalegalmodule') }}</label>
     </div>
     <div class="col-sm-9">
         <div class="checkbox">
             <input type="checkbox" id="acceptpolicies_policies" name="acceptedpolicies_policies" required="required"{% if acceptedPolicies %} checked="checked"{% endif %} value="1" />
-            <em class="help-text">{{ __('Check this box to indicate your acceptance of this site\'s policies.') }}</em>
+            <em class="help-text">{{ __('Check this box to indicate your acceptance of this site\'s policies.', 'zikulalegalmodule') }}</em>
         </div>
-        <p id="acceptpolicies_policies_info">{{ __('Please click on the following links to read the corresponding documents.') }}</p>
+        <p id="acceptpolicies_policies_info">{{ __('Please click on the following links to read the corresponding documents.', 'zikulalegalmodule') }}</p>
         <ul>
 {% if activePolicies.termsOfUse|default and not originalAcceptedPolicies.termsOfUse|default %}
     {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL')) %}
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
     {% endif %}
-    {% set policyName = __('Terms of use') %}
+    {% set policyName = __('Terms of use', 'zikulalegalmodule') %}
     <li><a data-toggle="modal" data-target="#modal-terms-of-use" href="{{ policyUrl }}">{{ policyName }}</a></li>
     {{ modalHelper.modalWindow(policyName, policyUrl, 'terms-of-use') }}
 {% endif %}
@@ -24,19 +24,19 @@
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
     {% endif %}
-    {% set policyName = __('Privacy policy') %}
+    {% set policyName = __('Privacy policy', 'zikulalegalmodule') %}
     <li><a data-toggle="modal" data-target="#modal-privacy-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
     {{ modalHelper.modalWindow(policyName, policyUrl, 'privacy-policy') }}
 {% endif %}
 {% if activePolicies.agePolicy|default and not originalAcceptedPolicies.agePolicy|default %}
-    <li>{{ __f('You need to be %s years of age or older, in accordance with our minimum age requirement.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}</li>
+    <li>{{ __f('You need to be %s years of age or older, in accordance with our minimum age requirement.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }, 'zikulalegalmodule') }}</li>
 {% endif %}
 {% if activePolicies.tradeConditions|default and not originalAcceptedPolicies.tradeConditions|default %}
     {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL')) %}
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
     {% endif %}
-    {% set policyName = __('General terms and conditions of trade') %}
+    {% set policyName = __('General terms and conditions of trade', 'zikulalegalmodule') %}
     <li><a data-toggle="modal" data-target="#modal-general-terms-and-conditions-of-trade" href="{{ policyUrl }}">{{ policyName }}</a></li>
     {{ modalHelper.modalWindow(policyName, policyUrl, 'general-terms-and-conditions-of-trade') }}
 {% endif %}
@@ -45,7 +45,7 @@
     {% if policyUrl == '' %}
         {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
     {% endif %}
-    {% set policyName = __('Cancellation right policy') %}
+    {% set policyName = __('Cancellation right policy', 'zikulalegalmodule') %}
     <li><a data-toggle="modal" data-target="#modal-cancellation-right-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
     {{ modalHelper.modalWindow(policyName, policyUrl, 'cancellation-right-policy') }}
 {% endif %}
