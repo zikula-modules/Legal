@@ -1,9 +1,9 @@
-{% set templateTitle = __('Site policies') %}
+{% set templateTitle = __('Site policies', 'zikulalegalmodule') %}
 {{ pageSetVar('title', templateTitle) }}
 <fieldset>
     <legend>{{ templateTitle }}</legend>
     <div class="alert alert-danger">
-        {{ __('In order to log in you must accept this site\'s policies. If you have accepted the site\'s policies in the past, then they have been updated and we ask that you review the changes.') }}
+        {{ __('In order to log in you must accept this site\'s policies. If you have accepted the site\'s policies in the past, then they have been updated and we ask that you review the changes.', 'zikulalegalmodule') }}
     </div>
     <input type="hidden" id="acceptpolicies_csrftoken" name="acceptpolicies_csrftoken" value="{{ csrfToken }}" />
     <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="{{ policiesUid }}" />
