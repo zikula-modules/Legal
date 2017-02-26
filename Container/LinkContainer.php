@@ -86,7 +86,7 @@ class LinkContainer implements LinkContainerInterface
         if ($this->permissionApi->hasPermission($this->getBundleName().'::', '::', ACCESS_ADMIN)) {
             $links[] = [
                 'url'  => $this->router->generate('zikulalegalmodule_config_config'),
-                'text' => $this->translator->__('Settings'),
+                'text' => $this->translator->__('Settings', 'zikulalegalmodule'),
                 'icon' => 'wrench',
             ];
         }
@@ -107,37 +107,37 @@ class LinkContainer implements LinkContainerInterface
 
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
             $links[] = [
-                'text' => $this->translator->__('Legal notice'),
+                'text' => $this->translator->__('Legal notice', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_LEGALNOTICE_URL, 'legalnotice'),
             ];
         }
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false)) {
             $links[] = [
-                'text' => $this->translator->__('Terms of use'),
+                'text' => $this->translator->__('Terms of use', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_TERMS_URL, 'termsofuse'),
             ];
         }
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false)) {
             $links[] = [
-                'text' => $this->translator->__('Privacy policy'),
+                'text' => $this->translator->__('Privacy policy', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_PRIVACY_URL, 'privacypolicy'),
             ];
         }
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
             $links[] = [
-                'text' => $this->translator->__('Trade conditions'),
+                'text' => $this->translator->__('Trade conditions', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_TRADECONDITIONS_URL, 'tradeconditions'),
             ];
         }
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
             $links[] = [
-                'text' => $this->translator->__('Cancellation right policy'),
+                'text' => $this->translator->__('Cancellation right policy', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, 'cancellationrightpolicy'),
             ];
         }
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
             $links[] = [
-                'text' => $this->translator->__('Accessibility statement'),
+                'text' => $this->translator->__('Accessibility statement', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_ACCESSIBILITY_URL, 'accessibilitystatement'),
             ];
         }
