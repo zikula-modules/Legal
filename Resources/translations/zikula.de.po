@@ -1,0 +1,149 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"X-Generator: Poedit 1.8.11\n"
+"Last-Translator: Ralf Köster <ralf@familie-koester.de>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de\n"
+
+msgid "A user account or registration does not exist for the specified uid."
+msgstr ""
+"Ein Benutzerkonto oder eine Registrierung existiert nicht für die angegebene "
+"uid."
+
+msgid "Accessibility statement"
+msgstr "Barrierefreiheit"
+
+msgid "All users"
+msgstr "Alle Benutzer"
+
+msgid "Cancel"
+msgstr "Abbrechen"
+
+msgid "Cancellation right policy"
+msgstr "Widerrufsbestimmung"
+
+msgid "Done! Module configuration updated."
+msgstr "Erledigt! Modul Konfiguration aktualisiert."
+
+msgid "Enable cookie warning for EU compliance"
+msgstr "Aktiviert Cookie Warnung für die EU-Compliance"
+
+msgid "Enter a positive integer, or 0 for no age check."
+msgstr ""
+"Geben Sie eine positive ganze Zahl oder 0 für keine Alterskontrolle ein."
+
+msgid "General terms and conditions of trade"
+msgstr "Allgemeine Geschäftsbedingungen"
+
+msgid "I Understand"
+msgstr "Ich bin einverstanden"
+
+msgid "In order to log in, you must accept this site's policies."
+msgstr "Um sich anzumelden, müssen Sie diese Website Richtlinien akzeptieren."
+
+msgid ""
+"In order to register for a new account, you must accept this site's policies."
+msgstr ""
+"Um ein neues Konto zu registrieren, müssen Sie diese Website Richtlinien "
+"akzeptieren."
+
+msgid "Legal notice"
+msgstr "Rechtlicher Hinweis"
+
+msgid "Minimum age permitted to register"
+msgstr "Das Mindestalter, um sich zu registrieren"
+
+msgid "No"
+msgstr "Nein"
+
+msgid "No groups"
+msgstr "Keine Gruppen"
+
+msgid ""
+"Notice: This setting controls the EU cookie warning which is injected into "
+"the view and requires user assent."
+msgstr ""
+"Hinweis: Diese Einstellung steuert die EU-Cookie-Warnung , die automatisch "
+"angezeigt wird und die Benutzerzustimmung erfordert."
+
+msgid ""
+"Notice: This setting resets the acceptance of the site policies for all "
+"users in this group. Next time they want to log-in, they will have to "
+"acknowledge their acceptance of them again, and will not be able to log-in "
+"if they do not. This action does not affect the main administrator account. "
+"You can perform the same operation for individual users by visiting the "
+"Users manager in the site admin panel."
+msgstr ""
+"Hinweis: Diese Einstellung setzt die Zustimmung der Benutzer dieser Gruppe "
+"zu den Seitenbestimmungen zurück. Bei dem nächsten Anmeldeversuch müssen sie "
+"den Seitenbestimmungen erneut zustimmen oder sie werden sich nicht einloggen "
+"können. Diese Einstellung betrifft nicht den Hauptadministrator. Die gleiche "
+"Anforderung kann für individuelle Benutzer in der Benutzerverwaltung "
+"vorgenommen werden."
+
+msgid "Operation cancelled."
+msgstr "Vorgang abgebrochen"
+
+msgid "Privacy policy"
+msgstr "Datenschutzbestimmungen"
+
+msgid "Reset user group's acceptance of site policies"
+msgstr "Rücksetzen der Zustimmung zu den Seitenbestimmungen der Gruppe"
+
+msgid "Save"
+msgstr "Speichern"
+
+msgid "Settings"
+msgstr "Konfiguration"
+
+msgid ""
+"Sorry! You changed your authentication information, and one or more items "
+"displayed on the login screen may not have been applicable for your account. "
+"Please try logging in again."
+msgstr ""
+"Sorry! You changed your authentication information, and one or more items "
+"displayed on the login screen may not have been applicable for your account. "
+"Please try logging in again."
+
+msgid "Terms of use"
+msgstr "Nutzungsbedingungen"
+
+msgid "The UID is invalid."
+msgstr "Diese UID ist ungültig."
+
+msgid "The user is invalid."
+msgstr "Der Benutzer ist ungültig"
+
+msgid "The user record or the UID is invalid or the UID does not match."
+msgstr ""
+"Der Benutzerdatensatz oder die UID ist ungültig oder die UID stimmt nicht "
+"überein."
+
+msgid "Trade conditions"
+msgstr "Handelsbedingungen"
+
+msgid "We use cookies to track usage and preferences"
+msgstr ""
+"Wir verwenden Cookies, um Ihre Nutzung unserer Website und deren Features zu "
+"verfolgen."
+
+msgid "Yes"
+msgstr "Ja"
+
+msgid "You must accept this site's policies in order to proceed."
+msgstr "Sie müssen diese Seitenbestimmungen akzeptieren, um fortzufahren."
+
+msgid ""
+"Your log-in request was not completed. You must review and confirm your "
+"acceptance of one or more site policies prior to logging in."
+msgstr ""
+"Ihre Login-Anfrage wurde nicht abgeschlossen. Sie müssen Ihre Annahme einer "
+"oder mehrerer Webseitenrichtlinien vor der Anmeldung überprüfen und "
+"bestätigen."
