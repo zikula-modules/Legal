@@ -11,11 +11,9 @@
 
 namespace Zikula\LegalModule\Controller;
 
-use ModUtil;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
@@ -37,7 +35,7 @@ class ConfigController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user doesn't have admin access to the module
      *
-     * @return Response
+     * @return array
      */
     public function configAction(Request $request)
     {
@@ -62,14 +60,12 @@ class ConfigController extends AbstractController
         // build choices for user group selector
         $groupChoices = [
             $this->__('All users') => 0,
-            $this->__('No groups') => -1,
         ];
 
         // get all user groups
-        // @todo legacy call
-        $groups = ModUtil::apiFunc('ZikulaGroupsModule', 'user', 'getall');
+        $groups = $this->get('zikula_groups_module.group_repository')->findAll();
         foreach ($groups as $group) {
-            $groupChoices[$group['name']] = $group['gid'];
+            $groupChoices[$group->getName()] = $group->getGid();
         }
 
         $form = $this->createForm('Zikula\LegalModule\Form\Type\ConfigType',
