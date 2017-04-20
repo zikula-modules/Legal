@@ -88,7 +88,7 @@ class ResetAgreementHelper
             if (empty($group)) {
                 return false;
             }
-            $members = $group->getUsers();
+            $members = $group->getUsers()->toArray();
             if (count($members) == 0) {
                 return false;
             }
