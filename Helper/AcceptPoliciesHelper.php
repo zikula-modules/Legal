@@ -14,9 +14,9 @@ namespace Zikula\LegalModule\Helper;
 use DateTime;
 use DateTimeZone;
 use UserUtil;
-use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
-use Zikula\PermissionsModule\Api\PermissionApi;
+use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 
 /**
  * Helper class to process acceptance of policies.
@@ -31,22 +31,22 @@ class AcceptPoliciesHelper
     protected $name;
 
     /**
-     * @var PermissionApi
+     * @var PermissionApiInterface
      */
     private $permissionApi;
 
     /**
-     * @var VariableApi
+     * @var VariableApiInterface
      */
     private $variableApi;
 
     /**
      * Construct a new instance of the helper, setting the $name attribute to the module name.
      *
-     * @param PermissionApi  $permissionApi PermissionApi service instance
-     * @param VariableApi    $variableApi   VariableApi service instance
+     * @param PermissionApiInterface $permissionApi PermissionApi service instance
+     * @param VariableApiInterface $variableApi   VariableApi service instance
      */
-    public function __construct(PermissionApi $permissionApi, VariableApi $variableApi)
+    public function __construct(PermissionApiInterface $permissionApi, VariableApiInterface $variableApi)
     {
         $this->name = LegalConstant::MODNAME;
         $this->permissionApi = $permissionApi;

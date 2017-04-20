@@ -28,10 +28,10 @@ use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Event\GenericEvent;
 use Zikula\Core\Exception\FatalErrorException;
 use Zikula\Core\Token\CsrfTokenHandler;
-use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
-use Zikula\UsersModule\Api\CurrentUserApi;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -78,12 +78,12 @@ class UsersUiListener implements EventSubscriberInterface
     private $csrfTokenHandler;
 
     /**
-     * @var VariableApi
+     * @var VariableApiInterface
      */
     private $variableApi;
 
     /**
-     * @var CurrentUserApi
+     * @var CurrentUserApiInterface
      */
     private $currentUserApi;
 
@@ -108,8 +108,8 @@ class UsersUiListener implements EventSubscriberInterface
      * @param TranslatorInterface  $translator           Translator service instance
      * @param RouterInterface      $router               RouterInterface service instance
      * @param CsrfTokenHandler     $csrfTokenHandler     CsrfTokenHandler service instance
-     * @param VariableApi          $variableApi          VariableApi service instance
-     * @param CurrentUserApi       $currentUserApi       CurrentUserApi service instance
+     * @param VariableApiInterface $variableApi          VariableApi service instance
+     * @param CurrentUserApiInterface $currentUserApi       CurrentUserApi service instance
      * @param AcceptPoliciesHelper $acceptPoliciesHelper AcceptPoliciesHelper service instance
      */
     public function __construct(
@@ -119,8 +119,8 @@ class UsersUiListener implements EventSubscriberInterface
         TranslatorInterface $translator,
         RouterInterface $router,
         CsrfTokenHandler $csrfTokenHandler,
-        VariableApi $variableApi,
-        CurrentUserApi $currentUserApi,
+        VariableApiInterface $variableApi,
+        CurrentUserApiInterface $currentUserApi,
         AcceptPoliciesHelper $acceptPoliciesHelper)
     {
         $this->kernel = $kernel;

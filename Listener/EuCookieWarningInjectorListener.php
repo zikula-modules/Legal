@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Zikula\Common\Translator\TranslatorInterface;
-use Zikula\ExtensionsModule\Api\VariableApi;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\ThemeModule\Engine\Asset;
 
@@ -38,7 +38,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     private $translator;
 
     /**
-     * @var VariableApi
+     * @var VariableApiInterface
      */
     private $variableApi;
 
@@ -56,11 +56,11 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
      * Constructor.
      *
      * @param TranslatorInterface $translator         Translator service instance
-     * @param VariableApi         $variableApi        VariableApi service instance
+     * @param VariableApiInterface $variableApi        VariableApi service instance
      * @param Asset               $assetHelper        Asset service instance
      * @param string              $stylesheetOverride Custom path to css file (optional)
      */
-    public function __construct(TranslatorInterface $translator, VariableApi $variableApi, Asset $assetHelper, $stylesheetOverride = null)
+    public function __construct(TranslatorInterface $translator, VariableApiInterface $variableApi, Asset $assetHelper, $stylesheetOverride = null)
     {
         $this->translator = $translator;
         $this->variableApi = $variableApi;
