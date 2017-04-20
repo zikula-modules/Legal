@@ -106,6 +106,7 @@ class ConfigType extends AbstractType
                 'required'          => false,
                 'expanded'          => false,
                 'multiple'          => false,
+                'help'              => $translator->__('Leave blank to leave users unaffected.'),
                 'alert'             => [$translator->__('Notice: This setting resets the acceptance of the site policies for all users in this group. Next time they want to log-in, they will have to acknowledge their acceptance of them again, and will not be able to log-in if they do not. This action does not affect the main administrator account. You can perform the same operation for individual users by visiting the Users manager in the site admin panel.') => 'info'],
             ])
             ->add('save', 'Symfony\Component\Form\Extension\Core\Type\SubmitType', [
