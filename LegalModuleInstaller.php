@@ -11,7 +11,6 @@
 
 namespace Zikula\LegalModule;
 
-use EventUtil;
 use Zikula\Core\AbstractExtensionInstaller;
 use Zikula\LegalModule\Constant as LegalConstant;
 

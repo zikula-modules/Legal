@@ -13,15 +13,12 @@ namespace Zikula\LegalModule\Controller;
 
 use DateTime;
 use DateTimeZone;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use SessionUtil;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
-use Zikula\Core\Response\PlainResponse;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\UsersModule\Entity\UserEntity;
 
