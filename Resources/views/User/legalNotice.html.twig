@@ -1,3 +1,2 @@
-{% set templateTitle = __f('Legal notice for %s', { '%s': getModVar('ZConfig', 'sitename') }) %}
-{{ include('@ZikulaLegalModule/User/menu.html.twig') }}
-{{ include('@ZikulaLegalModule/' ~ languageCode ~ '/legalNotice.html.twig') }}
+{{ moduleHeader('user', __f('Legal notice for %s', { '%s': pagevars.title }), '', true, true) }}
+{{ include('@ZikulaLegalModule/' ~ app.request.locale ~ '/legalNotice.html.twig') }}

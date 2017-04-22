@@ -50,7 +50,7 @@ class TwigExtension extends \Twig_Extension
      * specific policy for the Legal module.
      *
      * Example
-     *     {{ zikulalegalmodule_inlineLink(policytype='termsOfUse') }}
+     *     {{ zikulalegalmodule_inlineLink('termsOfUse') }}
      *
      * Templates used:
      *      InlineLink/accessibilityStatement.html.twig

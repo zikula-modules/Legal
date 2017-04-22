@@ -143,6 +143,18 @@ class LinkContainer implements LinkContainerInterface
         return $links;
     }
 
+    private function getAccount()
+    {
+        $links = [];
+        $links[] = [
+            'url'  => $this->router->generate('zikulalegalmodule_user_index'),
+            'text' => $this->translator->__('Legal Docs', 'zikulalegalmodule'),
+            'icon' => 'gavel',
+        ];
+
+        return $links;
+    }
+
     /**
      * Determine the URL for a certain user link.
      *

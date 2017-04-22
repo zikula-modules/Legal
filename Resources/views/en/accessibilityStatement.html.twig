@@ -1,4 +1,4 @@
-<p>This page is the site accessibility statement for {{ getModVar('ZConfig', 'sitename') }}. If you have any questions or comments, please feel free to <a href="mailto:{{ getModVar('ZConfig', 'adminmail')|e('html_attr')|protectMail() }}" title="Send mail to the site administrator">contact the site administrator</a>.</p>
+<p>This page is the site accessibility statement for {{ pagevars.title }}. If you have any questions or comments, please feel free to <a href="mailto:{{ getModVar('ZConfig', 'adminmail')|e('html_attr')|protectMail() }}" title="Send mail to the site administrator">contact the site administrator</a>.</p>
 <h2>Access keys</h2>
 <p>Most browsers support jumping to specific links by typing keys defined on the site. Under the Microsoft Windows operating system, you can press the 'Alt' key plus an access key; on an Apple Macintosh operating system, you can press the 'Control' key plus an access key.</p>
 <p>The following access keys are defined for all pages on this site:</p>
@@ -20,9 +20,7 @@
 <h2>Navigation aids</h2>
 <ol>
     <li>All pages have <tt>rel=previous, next, up,</tt> and <tt>home</tt> links to aid navigation in text-only browsers. Mozilla users can also take advantage of this feature by opening the 'View' menu, and selecting 'Show/Hide', 'Site Navigation Bar', 'Show Only As Needed' (or 'Show Always').</li>
-    {% if modAvailable('ZikulaSearchModule') %}
-        <li>All pages include a search box (access key 4). Advanced search options are available on the <a href="{{ path('zikulasearchmodule_user_form') }}">site search page</a>.</li>
-    {% endif %}
+    <li>All pages include a search box (access key 4). Advanced search options are available on the <a href="{{ path('zikulasearchmodule_search_execute') }}">site search page</a>.</li>
 {#
     <li>include any other navigation aids here</li>
 #}
