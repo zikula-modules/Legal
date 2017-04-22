@@ -11,8 +11,7 @@
 
 namespace Zikula\LegalModule\Listener;
 
-use DateTime;
-use DateTimeZone;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,17 +20,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Twig_Environment;
-use UserUtil;
 use Zikula\Bundle\CoreBundle\HttpKernel\ZikulaHttpKernelInterface;
 use Zikula\Bundle\HookBundle\Hook\ValidationResponse;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Event\GenericEvent;
 use Zikula\Core\Exception\FatalErrorException;
 use Zikula\Core\Token\CsrfTokenHandler;
-use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+use Zikula\UsersModule\Constant as UsersConstant;
+use Zikula\UsersModule\Entity\UserEntity;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -44,11 +43,6 @@ class UsersUiListener implements EventSubscriberInterface
      * @var string
      */
     const EVENT_KEY = 'module.legal.users_ui_handler';
-
-    /**
-     * @var ZikulaHttpKernelInterface
-     */
-    private $kernel;
 
     /**
      * Access to the request instance.
@@ -78,11 +72,6 @@ class UsersUiListener implements EventSubscriberInterface
     private $csrfTokenHandler;
 
     /**
-     * @var VariableApiInterface
-     */
-    private $variableApi;
-
-    /**
      * @var CurrentUserApiInterface
      */
     private $currentUserApi;
@@ -95,43 +84,53 @@ class UsersUiListener implements EventSubscriberInterface
     private $acceptPoliciesHelper;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
+    /**
      * @var ValidationResponse
      */
     private $validation;
 
     /**
+     * @var array
+     */
+    private $moduleVars;
+
+    /**
      * Constructor.
      *
-     * @param ZikulaHttpKernelInterface      $kernel               KernelInterface service instance
-     * @param RequestStack         $requestStack         RequestStack service instance
-     * @param Twig_Environment     $twig                 The twig templating service
-     * @param TranslatorInterface  $translator           Translator service instance
-     * @param RouterInterface      $router               RouterInterface service instance
-     * @param CsrfTokenHandler     $csrfTokenHandler     CsrfTokenHandler service instance
-     * @param VariableApiInterface $variableApi          VariableApi service instance
-     * @param CurrentUserApiInterface $currentUserApi       CurrentUserApi service instance
-     * @param AcceptPoliciesHelper $acceptPoliciesHelper AcceptPoliciesHelper service instance
+     * @param RequestStack $requestStack
+     * @param Twig_Environment $twig
+     * @param TranslatorInterface $translator
+     * @param RouterInterface $router
+     * @param CsrfTokenHandler $csrfTokenHandler
+     * @param CurrentUserApiInterface $currentUserApi
+     * @param AcceptPoliciesHelper $acceptPoliciesHelper
+     * @param EntityManagerInterface $entityManager
+     * @param array $moduleVars
      */
     public function __construct(
-        ZikulaHttpKernelInterface $kernel,
         RequestStack $requestStack,
         Twig_Environment $twig,
         TranslatorInterface $translator,
         RouterInterface $router,
         CsrfTokenHandler $csrfTokenHandler,
-        VariableApiInterface $variableApi,
         CurrentUserApiInterface $currentUserApi,
-        AcceptPoliciesHelper $acceptPoliciesHelper)
-    {
-        $this->kernel = $kernel;
+        AcceptPoliciesHelper $acceptPoliciesHelper,
+        EntityManagerInterface $entityManager,
+        $moduleVars
+    ) {
         $this->request = $requestStack->getCurrentRequest();
         $this->twig = $twig;
         $this->translator = $translator;
         $this->router = $router;
         $this->csrfTokenHandler = $csrfTokenHandler;
-        $this->variableApi = $variableApi;
         $this->currentUserApi = $currentUserApi;
         $this->acceptPoliciesHelper = $acceptPoliciesHelper;
+        $this->entityManager = $entityManager;
+        $this->moduleVars = $moduleVars;
     }
 
     /**
@@ -172,7 +171,7 @@ class UsersUiListener implements EventSubscriberInterface
      */
     protected function redirect($url, $type = 302)
     {
-        $response = new RedirectResponse(\System::normalizeUrl($url), $type);
+        $response = new RedirectResponse($url, $type);
         $response->send();
         exit;
     }
@@ -186,10 +185,6 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function uiView(GenericEvent $event)
     {
-        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
-            return;
-        }
-
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         $user = $event->getSubject();
@@ -216,22 +211,17 @@ class UsersUiListener implements EventSubscriberInterface
      * Responds to ui.edit hook notifications.
      *
      * @param GenericEvent $event The event that triggered this function call
-     *
+     * @param string $eventName
      * @return void
      */
-    public function uiEdit(GenericEvent $event)
+    public function uiEdit(GenericEvent $event, $eventName)
     {
-        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
-            return;
-        }
-
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
         if ($activePolicyCount < 1) {
             return;
         }
 
-        $eventName = $event->getName();
         $csrfToken = $this->csrfTokenHandler->generate();
         // Determine if the hook should be displayed, and also set up certain variables, based on the type of event
         // being handled, the state of the subject user account, and who is currently logged in.
@@ -241,11 +231,11 @@ class UsersUiListener implements EventSubscriberInterface
             // the user is looking at the new user registration form.
             $user = $event->getSubject();
             if (!isset($user) || empty($user)) {
-                $user = ['__ATTRIBUTES__' => []];
+                $user = new UserEntity();
             }
-            if ($eventName == 'module.users.ui.form_edit.login_screen') {
+            if (false !== strpos($eventName, 'login_screen')) {
                 // It is not shown unless we have a user record (meaning that the first log-in attempt was vetoed.
-                if (isset($user) && !empty($user) && isset($user['uid']) && !empty($user['uid'])) {
+                if (null !== $user->getUid()) {
                     $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($user['uid']);
                     // We only show the policies if one or more active policies have not been accepted by the user.
                     if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']
@@ -309,6 +299,7 @@ class UsersUiListener implements EventSubscriberInterface
      * Responds to validate.edit hook notifications.
      *
      * @param GenericEvent $event The event that triggered this function call
+     * @param string $eventName
      *
      * @throws AccessDeniedException                         Thrown if the user does not have the appropriate access level for the function, or to
      *                                                       modify the acceptance of policies on a user account other than his own
@@ -317,12 +308,8 @@ class UsersUiListener implements EventSubscriberInterface
      *
      * @return void
      */
-    public function validateEdit(GenericEvent $event)
+    public function validateEdit(GenericEvent $event, $eventName)
     {
-        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
-            return;
-        }
-
         // If there is no 'acceptedpolicies_uid' in the POST, then there is no attempt to update the acceptance of policies,
         // So there is nothing to validate.
         if (!$this->request->request->has('acceptedpolicies_uid')) {
@@ -334,20 +321,19 @@ class UsersUiListener implements EventSubscriberInterface
 
         $uid = $this->request->request->get('acceptedpolicies_uid', false);
         $this->validation = new ValidationResponse($uid ? $uid : '', $policiesAccepted);
-        $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
-        // Get the user record from the event. If there is no user record, create a dummy one.
+        // Get the user record from the event. If there is no user record, create a dummy.
         $user = $event->getSubject();
         if (!isset($user) || empty($user)) {
-            $user = ['__ATTRIBUTES__' => []];
+            $user = new UserEntity();
         }
         $goodUid = isset($uid) && !empty($uid) && is_numeric($uid);
         $goodUidUser = (is_array($user) || is_object($user)) && isset($user['uid']) && is_numeric($user['uid']);
         if (!$this->currentUserApi->isLoggedIn()) {
             // User is not logged in, so this should be either part of a login attempt or a new user registration.
-            if ($event->getName() == 'users.login.validate_edit') {
+            if (false !== strpos($eventName, 'login_screen')) {
                 // A login attempt.
-                $goodUid = $goodUid && $uid > 2;
-                $goodUidUser = $goodUidUser && $user['uid'] > 2;
+                $goodUid = $goodUid && $uid > UsersConstant::USER_ID_ADMIN;
+                $goodUidUser = $goodUidUser && $user['uid'] > UsersConstant::USER_ID_ADMIN;
                 if (!$goodUid || !$goodUidUser) {
                     // Critical fail if the $user record is bad, or if the uid used for Legal is bad.
                     throw new \InvalidArgumentException($this->translator->__('The UID is invalid.'));
@@ -364,7 +350,7 @@ class UsersUiListener implements EventSubscriberInterface
 
             // Do the validation
             if (!$policiesAccepted) {
-                if ($isRegistration) {
+                if (false !== strpos($eventName, 'login_screen')) {
                     $validationErrorMsg = $this->translator->__('In order to register for a new account, you must accept this site\'s policies.');
                 } else {
                     $validationErrorMsg = $this->translator->__('In order to log in, you must accept this site\'s policies.');
@@ -401,23 +387,16 @@ class UsersUiListener implements EventSubscriberInterface
      * Responds to process_edit hook-like event notifications.
      *
      * @param GenericEvent $event The event that triggered this function call
-     *
-     * @throws NotFoundHttpException Thrown if a user account does not exist for the uid specified by the event
-     *
-     * @return void
+     * @param string $eventName
      */
-    public function processEdit(GenericEvent $event)
+    public function processEdit(GenericEvent $event, $eventName)
     {
-        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
-            return;
-        }
-
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
-        $eventName = $event->getName();
         if (!isset($this->validation) || $this->validation->hasErrors()) {
             return;
         }
 
+        /** @var UserEntity $user */
         $user = $event->getSubject();
         $uid = $user['uid'];
 
@@ -432,38 +411,36 @@ class UsersUiListener implements EventSubscriberInterface
         $isLoggedIn = $this->currentUserApi->isLoggedIn();
         $policiesAccepted = $this->validation->getObject();
 
-        if (!$isLoggedIn && ($eventName == 'module.users.ui.process_edit.login_screen' || $eventName == 'module.users.ui.process_edit.login_block')) {
-            $isRegistration = false;
+        if (!$isLoggedIn && false !== strpos($eventName, 'login_screen')) {
             // policies accepted during login
+            $isRegistration = false;
         } else {
             // policies accepted during registration
-            $isRegistration = UserUtil::isRegistration($uid);
-            $user = UserUtil::getVars($uid, false, 'uid', $isRegistration);
-            if (!$user) {
+            $uid = $this->currentUserApi->get('uid');
+            if (empty($uid)) {
                 throw new NotFoundHttpException($this->translator->__('A user account or registration does not exist for the specified uid.'));
             }
         }
 
         if ($policiesAccepted) {
-            $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
-            $nowUTCStr = $nowUTC->format(DateTime::ISO8601);
+            $nowUTC = new \DateTime('now', new \DateTimeZone('UTC'));
+            $nowUTCStr = $nowUTC->format(\DateTime::ISO8601);
             if (!$isLoggedIn) {
                 foreach ($policiesToCheck as $policyName => $acceptedVar) {
                     if ($activePolicies[$policyName]) {
-                        UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
+                        $user->setAttribute($acceptedVar, $nowUTCStr);
                     }
                 }
             } else {
                 $editablePolicies = $this->acceptPoliciesHelper->getEditablePolicies();
                 foreach ($policiesToCheck as $policyName => $acceptedVar) {
                     if ($activePolicies[$policyName] && $editablePolicies[$policyName]) {
-                        UserUtil::setVar($acceptedVar, $nowUTCStr, $uid);
+                        $user->setAttribute($acceptedVar, $nowUTCStr);
                     }
                 }
             }
         }
-        // Force the reload of the user record
-        $user = UserUtil::getVars($uid, true, 'uid', $isRegistration);
+        $this->entityManager->flush();
     }
 
     /**
@@ -479,54 +456,37 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function acceptPolicies(GenericEvent $event)
     {
-        if (null === $this->kernel->getModule(LegalConstant::MODNAME)) {
-            return;
-        }
+        $termsOfUseActive = isset($this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] : false;
+        $privacyPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] : false;
+        $agePolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE]) ? $this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE] != 0 : 0;
+        $cancellationRightPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE] : false;
+        $tradeConditionsActive = isset($this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE] : false;
 
-        $termsOfUseActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_MINIMUM_AGE, 0) > 0;
-        $tradeConditionsActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
-        $cancellationRightPolicyActive = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
         if (!$termsOfUseActive && !$privacyPolicyActive && !$agePolicyActive && !$tradeConditionsActive && !$cancellationRightPolicyActive) {
             return;
         }
 
+        /** @var UserEntity $userObj */
         $userObj = $event->getSubject();
         if (!isset($userObj) || $userObj->getUid() <= 2) {
             return;
         }
 
-        if ($termsOfUseActive) {
-            $termsOfUseAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $userObj['uid'], false);
-            $termsOfUseAccepted = isset($termsOfUseAcceptedDateTimeStr) && !empty($termsOfUseAcceptedDateTimeStr);
-        } else {
-            $termsOfUseAccepted = true;
-        }
-        if ($privacyPolicyActive) {
-            $privacyPolicyAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $userObj['uid'], false);
-            $privacyPolicyAccepted = isset($privacyPolicyAcceptedDateTimeStr) && !empty($privacyPolicyAcceptedDateTimeStr);
-        } else {
-            $privacyPolicyAccepted = true;
-        }
-        if ($agePolicyActive) {
-            $agePolicyAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $userObj['uid'], false);
-            $agePolicyAccepted = isset($agePolicyAcceptedDateTimeStr) && !empty($agePolicyAcceptedDateTimeStr);
-        } else {
-            $agePolicyAccepted = true;
-        }
-        /*if ($tradeConditionsActive) {
-            $tradeConditionsAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $userObj['uid'], false);
-            $tradeConditionsAccepted = isset($tradeConditionsAcceptedDateTimeStr) && !empty($tradeConditionsAcceptedDateTimeStr);
-        } else {*/
-            $tradeConditionsAccepted = true;
-        /*}
-        if ($cancellationRightPolicyActive) {
-            $cancellationRightPolicyAcceptedDateTimeStr = \UserUtil::getVar(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $userObj['uid'], false);
-            $cancellationRightPolicyAccepted = isset($cancellationRightPolicyAcceptedDateTimeStr) && !empty($cancellationRightPolicyAcceptedDateTimeStr);
-        } else {*/
-            $cancellationRightPolicyAccepted = true;
-        //}
+        $attributeIsEmpty = function ($name) use ($userObj) {
+            if ($userObj->hasAttribute($name)) {
+                $v = $userObj->getAttributeValue($name);
+
+                return empty($v);
+            }
+
+            return true;
+        };
+        $termsOfUseAccepted = $termsOfUseActive ? !$attributeIsEmpty(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED) : true;
+        $privacyPolicyAccepted = $privacyPolicyActive ? !$attributeIsEmpty(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED) : true;
+        $agePolicyAccepted = $agePolicyActive ? !$attributeIsEmpty(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED) : true;
+        $tradeConditionsAccepted = true; //$tradeConditionsActive ? !$attributeIsEmpty(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED) : true;
+        $cancellationRightPolicyAccepted = true; //$cancellationRightPolicyActive ? !$attributeIsEmpty(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED) : true;
+
         if ($termsOfUseAccepted && $privacyPolicyAccepted && $agePolicyAccepted && $tradeConditionsAccepted && $cancellationRightPolicyAccepted) {
             return;
         }

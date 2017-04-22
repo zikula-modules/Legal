@@ -13,6 +13,7 @@ namespace Zikula\LegalModule\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
@@ -35,7 +36,7 @@ class ConfigController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user doesn't have admin access to the module
      *
-     * @return array
+     * @return array|RedirectResponse
      */
     public function configAction(Request $request)
     {
@@ -101,6 +102,8 @@ class ConfigController extends AbstractController
             if ($form->get('cancel')->isClicked()) {
                 $this->addFlash('status', $this->__('Operation cancelled.'));
             }
+
+            return $this->redirectToRoute('zikulalegalmodule_config_config'); // redirecting prevents values from being repeated in the form
         }
 
         return [

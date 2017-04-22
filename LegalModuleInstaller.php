@@ -85,8 +85,6 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                 // Set the new module variable -- but if Users set it for us during its upgrade, then don't overwrite it
                 $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, $this->getVar(LegalConstant::MODVAR_MINIMUM_AGE, 0));
                 // Set up the new persistent event handler, and any other event-related features.
-                EventUtil::registerPersistentModuleHandler($this->name, 'user.login.veto', ['Legal_Listener_UsersLoginVeto', 'acceptPoliciesListener']);
-                EventUtil::registerPersistentEventHandlerClass($this->name, 'Legal_Listener_UsersUiHandler');
             case '2.0.0':
                 // Upgrade 2.0.0 -> 2.0.1
                 // add vars for new document types and optional custom urls
@@ -105,7 +103,6 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                 // Nothing to do.
             case '2.0.2':
                 // Upgrade 2.0.2 -> 2.1.0
-                EventUtil::unregisterPersistentModuleHandlers('Legal'); // using old name on purpose here
                 // attributes migrated by Users mod
                 // @todo write upgrade for permissions?
                 $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
@@ -116,6 +113,8 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
             case '2.1.2':
                 // nothing
             case '3.0.0':
+                // nothing
+            case '3.0.1':
                 // future upgrades
 
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.

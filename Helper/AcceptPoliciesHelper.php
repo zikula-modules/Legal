@@ -11,12 +11,12 @@
 
 namespace Zikula\LegalModule\Helper;
 
-use DateTime;
-use DateTimeZone;
-use UserUtil;
-use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+use Zikula\UsersModule\Constant as UsersConstant;
+use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
+use Zikula\UsersModule\Entity\UserEntity;
 
 /**
  * Helper class to process acceptance of policies.
@@ -24,33 +24,43 @@ use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 class AcceptPoliciesHelper
 {
     /**
-     * The module name.
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
      * @var PermissionApiInterface
      */
     private $permissionApi;
 
     /**
-     * @var VariableApiInterface
+     * @var CurrentUserApiInterface
      */
-    private $variableApi;
+    private $currentUserApi;
+
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    /**
+     * @var array
+     */
+    private $moduleVars;
 
     /**
      * Construct a new instance of the helper, setting the $name attribute to the module name.
      *
-     * @param PermissionApiInterface $permissionApi PermissionApi service instance
-     * @param VariableApiInterface $variableApi   VariableApi service instance
+     * @param PermissionApiInterface $permissionApi
+     * @param CurrentUserApiInterface $currentUserApi
+     * @param UserRepositoryInterface $userRepository
+     * @param array $moduleVars
      */
-    public function __construct(PermissionApiInterface $permissionApi, VariableApiInterface $variableApi)
-    {
-        $this->name = LegalConstant::MODNAME;
+    public function __construct(
+        PermissionApiInterface $permissionApi,
+        CurrentUserApiInterface $currentUserApi,
+        UserRepositoryInterface $userRepository,
+        $moduleVars // cannot typehint to array or fails on cache warmup
+    ) {
         $this->permissionApi = $permissionApi;
-        $this->variableApi = $variableApi;
+        $this->currentUserApi = $currentUserApi;
+        $this->userRepository = $userRepository;
+        $this->moduleVars = $moduleVars;
     }
 
     /**
@@ -60,11 +70,11 @@ class AcceptPoliciesHelper
      */
     public function getActivePolicies()
     {
-        $termsOfUseActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_TERMS_ACTIVE, false);
-        $privacyPolicyActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_PRIVACY_ACTIVE, false);
-        $agePolicyActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_MINIMUM_AGE, 0) != 0;
-        $cancellationRightPolicyActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false);
-        $tradeConditionsActive = $this->variableApi->get($this->name, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false);
+        $termsOfUseActive = isset($this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] : false;
+        $privacyPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] : false;
+        $agePolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE]) ? $this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE] != 0 : 0;
+        $cancellationRightPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE] : false;
+        $tradeConditionsActive = isset($this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE] : false;
 
         return [
             'termsOfUse'              => $termsOfUseActive,
@@ -78,7 +88,7 @@ class AcceptPoliciesHelper
     /**
      * Helper method to determine acceptance / confirmation states for current user.
      *
-     * @param numeric $uid            A valid user id
+     * @param string  $uid            A valid numeric user id
      * @param bool    $isRegistration Whether we are in registration process or not
      * @param string  $modVarName     Name of modvar storing desired state
      *
@@ -90,11 +100,13 @@ class AcceptPoliciesHelper
 
         if (!is_null($uid) && !empty($uid) && is_numeric($uid) && $uid > 0) {
             if ($uid > 2) {
-                $acceptanceState = UserUtil::getVar($modVarName, $uid, false, $isRegistration);
+                /** @var UserEntity $user */
+                $user = $this->userRepository->find($uid);
+                $acceptanceState = $user->getAttributes()->containsKey($modVarName) ? $user->getAttributeValue($modVarName) : false;
             } else {
-                // The special users (uid == 2 for admin, and uid == 1 for guest) have always accepted all policies.
-                $now = new DateTime('now', new DateTimeZone('UTC'));
-                $nowStr = $now->format(DateTime::ISO8601);
+                // The special users (uid == UsersConstant::USER_ID_ADMIN or UsersConstant::USER_ID_ANONYMOUS) have always accepted all policies.
+                $now = new \DateTime('now', new \DateTimeZone('UTC'));
+                $nowStr = $now->format(\DateTime::ISO8601);
                 $acceptanceState = $nowStr;
             }
         }
@@ -105,14 +117,15 @@ class AcceptPoliciesHelper
     /**
      * Retrieves flags indicating which policies the user with the given uid has already accepted.
      *
-     * @param numeric $uid A valid user id
+     * @param string $uid A valid numeric user id
      *
      * @return array An array containing flags indicating whether each policy has been accepted by the user or not
      */
     public function getAcceptedPolicies($uid = null)
     {
         if (!is_null($uid)) {
-            $isRegistration = UserUtil::isRegistration($uid);
+            $user = $this->userRepository->find($uid);
+            $isRegistration = $user->getActivated() == UsersConstant::ACTIVATED_PENDING_REG;
         } else {
             $isRegistration = false;
         }
@@ -133,13 +146,13 @@ class AcceptPoliciesHelper
             LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
         );
 
-        $termsOfUseAcceptedDate = $termsOfUseAcceptedDateStr ? new DateTime($termsOfUseAcceptedDateStr) : false;
-        $privacyPolicyAcceptedDate = $privacyPolicyAcceptedDateStr ? new DateTime($privacyPolicyAcceptedDateStr) : false;
-        $agePolicyConfirmedDate = $agePolicyConfirmedDateStr ? new DateTime($agePolicyConfirmedDateStr) : false;
-        $cancellationRightPolicyAcceptedDate = $cancellationRightPolicyAcceptedDateStr ? new DateTime($cancellationRightPolicyAcceptedDateStr) : false;
-        $tradeConditionsAcceptedDate = $tradeConditionsAcceptedDateStr ? new DateTime($tradeConditionsAcceptedDateStr) : false;
+        $termsOfUseAcceptedDate = $termsOfUseAcceptedDateStr ? new \DateTime($termsOfUseAcceptedDateStr) : false;
+        $privacyPolicyAcceptedDate = $privacyPolicyAcceptedDateStr ? new \DateTime($privacyPolicyAcceptedDateStr) : false;
+        $agePolicyConfirmedDate = $agePolicyConfirmedDateStr ? new \DateTime($agePolicyConfirmedDateStr) : false;
+        $cancellationRightPolicyAcceptedDate = $cancellationRightPolicyAcceptedDateStr ? new \DateTime($cancellationRightPolicyAcceptedDateStr) : false;
+        $tradeConditionsAcceptedDate = $tradeConditionsAcceptedDateStr ? new \DateTime($tradeConditionsAcceptedDateStr) : false;
 
-        $now = new DateTime();
+        $now = new \DateTime();
         $termsOfUseAccepted = $termsOfUseAcceptedDate ? $termsOfUseAcceptedDate <= $now : false;
         $privacyPolicyAccepted = $privacyPolicyAcceptedDate ? $privacyPolicyAcceptedDate <= $now : false;
         $agePolicyConfirmed = $agePolicyConfirmedDate ? $agePolicyConfirmedDate <= $now : false;
@@ -161,21 +174,21 @@ class AcceptPoliciesHelper
      * If the current user is the subject user, then the user can always see his status for each policy. If the current user is not the
      * same as the subject user, then the current user can only see the status if he has ACCESS_MODERATE access for the policy.
      *
-     * @param numeric $userId The user id of the subject account record (not the current user, but the subject user); optional
+     * @param string $userId The numeric user id of the subject account record (not the current user, but the subject user); optional
      *
      * @return array An array containing flags indicating whether the current user is permitted to view the specified policy
      */
     public function getViewablePolicies($userId = null)
     {
-        $currentUid = UserUtil::getVar('uid');
+        $currentUid = $this->currentUserApi->get('uid');
         $isCurrentUser = !is_null($userId) && $userId == $currentUid;
 
         return [
-            'termsOfUse'              => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::termsOfUse', '::', ACCESS_MODERATE),
-            'privacyPolicy'           => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::privacyPolicy', '::', ACCESS_MODERATE),
-            'agePolicy'               => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::agePolicy', '::', ACCESS_MODERATE),
-            'cancellationRightPolicy' => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::cancellationRightPolicy', '::', ACCESS_MODERATE),
-            'tradeConditions'         => $isCurrentUser ? true : $this->permissionApi->hasPermission($this->name.'::tradeConditions', '::', ACCESS_MODERATE),
+            'termsOfUse'              => $isCurrentUser ? true : $this->permissionApi->hasPermission('ZikulaLegalModule'.'::termsOfUse', '::', ACCESS_MODERATE),
+            'privacyPolicy'           => $isCurrentUser ? true : $this->permissionApi->hasPermission('ZikulaLegalModule'.'::privacyPolicy', '::', ACCESS_MODERATE),
+            'agePolicy'               => $isCurrentUser ? true : $this->permissionApi->hasPermission('ZikulaLegalModule'.'::agePolicy', '::', ACCESS_MODERATE),
+            'cancellationRightPolicy' => $isCurrentUser ? true : $this->permissionApi->hasPermission('ZikulaLegalModule'.'::cancellationRightPolicy', '::', ACCESS_MODERATE),
+            'tradeConditions'         => $isCurrentUser ? true : $this->permissionApi->hasPermission('ZikulaLegalModule'.'::tradeConditions', '::', ACCESS_MODERATE),
         ];
     }
 
@@ -190,11 +203,11 @@ class AcceptPoliciesHelper
     public function getEditablePolicies()
     {
         return [
-            'termsOfUse'              => $this->permissionApi->hasPermission($this->name.'::termsOfUse', '::', ACCESS_EDIT),
-            'privacyPolicy'           => $this->permissionApi->hasPermission($this->name.'::privacyPolicy', '::', ACCESS_EDIT),
-            'agePolicy'               => $this->permissionApi->hasPermission($this->name.'::agePolicy', '::', ACCESS_EDIT),
-            'cancellationRightPolicy' => $this->permissionApi->hasPermission($this->name.'::cancellationRightPolicy', '::', ACCESS_EDIT),
-            'tradeConditions'         => $this->permissionApi->hasPermission($this->name.'::tradeConditions', '::', ACCESS_EDIT),
+            'termsOfUse'              => $this->permissionApi->hasPermission('ZikulaLegalModule'.'::termsOfUse', '::', ACCESS_EDIT),
+            'privacyPolicy'           => $this->permissionApi->hasPermission('ZikulaLegalModule'.'::privacyPolicy', '::', ACCESS_EDIT),
+            'agePolicy'               => $this->permissionApi->hasPermission('ZikulaLegalModule'.'::agePolicy', '::', ACCESS_EDIT),
+            'cancellationRightPolicy' => $this->permissionApi->hasPermission('ZikulaLegalModule'.'::cancellationRightPolicy', '::', ACCESS_EDIT),
+            'tradeConditions'         => $this->permissionApi->hasPermission('ZikulaLegalModule'.'::tradeConditions', '::', ACCESS_EDIT),
         ];
     }
 }

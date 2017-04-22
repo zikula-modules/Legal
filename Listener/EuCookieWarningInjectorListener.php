@@ -17,7 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Zikula\Common\Translator\TranslatorInterface;
-use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\ThemeModule\Engine\Asset;
 
@@ -38,11 +37,6 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     private $translator;
 
     /**
-     * @var VariableApiInterface
-     */
-    private $variableApi;
-
-    /**
      * @var Asset
      */
     private $assetHelper;
@@ -53,41 +47,46 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     private $stylesheetOverride;
 
     /**
+     * @var bool
+     */
+    private $enabled;
+
+    /**
      * Constructor.
      *
-     * @param TranslatorInterface $translator         Translator service instance
-     * @param VariableApiInterface $variableApi        VariableApi service instance
-     * @param Asset               $assetHelper        Asset service instance
-     * @param string              $stylesheetOverride Custom path to css file (optional)
+     * @param TranslatorInterface $translator
+     * @param Asset $assetHelper
+     * @param string $stylesheetOverride Custom path to css file (optional)
+     * @param bool $enabled
      */
-    public function __construct(TranslatorInterface $translator, VariableApiInterface $variableApi, Asset $assetHelper, $stylesheetOverride = null)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        Asset $assetHelper,
+        $stylesheetOverride = null,
+        $enabled
+    ) {
         $this->translator = $translator;
-        $this->variableApi = $variableApi;
         $this->assetHelper = $assetHelper;
         $this->stylesheetOverride = $stylesheetOverride;
+        $this->enabled = (bool) $enabled;
     }
 
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        $response = $event->getResponse();
-        $request = $event->getRequest();
-
+        if (!$this->enabled) {
+            return;
+        }
         if (!$event->isMasterRequest()) {
             return;
         }
+        $response = $event->getResponse();
+        $request = $event->getRequest();
 
         // do not capture redirects or modify XML HTTP Requests or routing or toolbar requests
         if ($request->isXmlHttpRequest()
             || $response->isRedirect()
             || $request->getPathInfo() == '/js/routing'
             || strpos($request->getPathInfo(), '/_wdt')) {
-            return;
-        }
-
-        // is functionality enabled?
-        $cookieSetting = $this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_EUCOOKIE);
-        if (empty($cookieSetting)) {
             return;
         }
 
@@ -131,7 +130,7 @@ jQuery.cookieBar({
 });
 });
 </script>';
-        $content = substr($content, 0, $posA).$javascript.substr($content, $posA);
+        $content = substr($content, 0, $posA) . $javascript . substr($content, $posA);
 
         // add stylesheet to head
         if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {

@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
+use Zikula\Core\Response\PlainResponse;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\UsersModule\Entity\UserEntity;
 
@@ -330,7 +331,6 @@ class UserController extends AbstractController
             // Pass along the session vars to updateAcceptance. We didn't want to just keep them in the session variable
             // Legal_Controller_User_acceptPolicies because if we hit an exception or got redirected, then the data
             // would have been orphaned, and it contains some sensitive information.
-            SessionUtil::requireSession();
             $request->getSession()->set(LegalConstant::SESSION_ACCEPT_POLICIES_VAR, $userIdAttemptingToLogin);
         }
 

@@ -103,8 +103,6 @@ class LinkContainer implements LinkContainerInterface
     {
         $links = [];
 
-        $moduleVars = $this->variableApi->getAll(LegalConstant::MODNAME);
-
         if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
             $links[] = [
                 'text' => $this->translator->__('Legal notice', 'zikulalegalmodule'),
@@ -148,8 +146,9 @@ class LinkContainer implements LinkContainerInterface
     /**
      * Determine the URL for a certain user link.
      *
-     * @param string urlVar       Name of module var storing a possible custom url
-     * @param string defaultRoute Suffix for route for default url
+     * @param string $urlVar       Name of module var storing a possible custom url
+     * @param string $defaultRoute Suffix for route for default url
+     * @return string
      */
     private function determineUrl($urlVar, $defaultRoute)
     {
