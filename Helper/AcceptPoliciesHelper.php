@@ -123,11 +123,11 @@ class AcceptPoliciesHelper
      */
     public function getAcceptedPolicies($uid = null)
     {
-        $termsOfUseAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED);
-        $privacyPolicyAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED);
-        $agePolicyConfirmedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED);
-        $cancellationRightPolicyAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED);
-        $tradeConditionsAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED);
+        $termsOfUseAcceptedDateStr = $this->determineAcceptanceState($uid, LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED);
+        $privacyPolicyAcceptedDateStr = $this->determineAcceptanceState($uid, LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED);
+        $agePolicyConfirmedDateStr = $this->determineAcceptanceState($uid, LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED);
+        $cancellationRightPolicyAcceptedDateStr = $this->determineAcceptanceState($uid, LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED);
+        $tradeConditionsAcceptedDateStr = $this->determineAcceptanceState($uid, LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED);
 
         $termsOfUseAcceptedDate = $termsOfUseAcceptedDateStr ? new \DateTime($termsOfUseAcceptedDateStr) : false;
         $privacyPolicyAcceptedDate = $privacyPolicyAcceptedDateStr ? new \DateTime($privacyPolicyAcceptedDateStr) : false;
