@@ -57,14 +57,14 @@ class ResetAgreementHelper
     /**
      * Reset the agreement to the terms of use for a specific group of users, or all users.
      *
-     * @param int $groupId The group id; -1 = none, 0 = all groups
+     * @param int $groupId The group id; 0 = all groups
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      * @throws \Exception            Thrown in cases where expected data is not present or not in an expected form
      *
      * @return bool True if successfully reset, otherwise false
      */
-    public function reset($groupId = -1)
+    public function reset($groupId)
     {
         if (!$this->permissionApi->hasPermission(LegalConstant::MODNAME . '::', '::', ACCESS_ADMIN)) {
             throw new AccessDeniedException();

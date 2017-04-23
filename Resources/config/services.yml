@@ -37,9 +37,10 @@ services:
     zikula_legal_module.eu_warning_listener:
         class: Zikula\LegalModule\Listener\EuCookieWarningInjectorListener
         arguments:
-          - "@translator.default"
+          - "@router"
           - "@zikula_core.common.theme.asset_helper"
           - "%euwarning.stylesheet%"
+          - "@zikula_theme_module.api.page_asset"
           - "@=service('zikula_extensions_module.api.variable').get('ZikulaLegalModule', 'eucookie', 0)"
         tags:
             - { name: kernel.event_subscriber }

@@ -252,7 +252,7 @@ class UsersUiListener implements EventSubscriberInterface
                     }
                 }
             } else {
-                $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->acceptPoliciesHelper->getAcceptedPolicies();
+                $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->acceptPoliciesHelper->getAcceptedPolicies($user['uid']);
                 $templateParameters = [
                     'activePolicies'           => $activePolicies,
                     'originalAcceptedPolicies' => [],

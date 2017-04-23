@@ -15,6 +15,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Zikula\Common\Translator\IdentityTranslator;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
@@ -91,7 +93,7 @@ class ConfigType extends AbstractType
             ])
             ->add(LegalConstant::MODVAR_MINIMUM_AGE, 'Symfony\Component\Form\Extension\Core\Type\IntegerType', [
                 'label'       => $translator->__('Minimum age permitted to register'),
-                'constraints' => new GreaterThanOrEqual(0),
+                'constraints' => [new GreaterThanOrEqual(0), new LessThanOrEqual(99)],
                 'empty_data'  => 13,
                 'scale'       => 0,
                 'attr'        => [
@@ -139,7 +141,7 @@ class ConfigType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'translator'   => null,
+            'translator'   => new IdentityTranslator(),
             'groupChoices' => [],
         ]);
     }

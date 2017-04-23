@@ -1,0 +1,10 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+
+msgid "I Understand"
+msgstr "I Understand"
+msgid "We use cookies to track usage and preferences."
+msgstr "We use cookies to track usage and preferences."

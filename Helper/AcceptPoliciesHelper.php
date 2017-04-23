@@ -15,6 +15,7 @@ use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Constant as UsersConstant;
+use Zikula\UsersModule\Constant;
 use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
 use Zikula\UsersModule\Entity\UserEntity;
 
@@ -89,17 +90,16 @@ class AcceptPoliciesHelper
      * Helper method to determine acceptance / confirmation states for current user.
      *
      * @param string  $uid            A valid numeric user id
-     * @param bool    $isRegistration Whether we are in registration process or not
      * @param string  $modVarName     Name of modvar storing desired state
      *
      * @return bool Fetched acceptance / confirmation state
      */
-    private function determineAcceptanceState($uid, $isRegistration, $modVarName)
+    private function determineAcceptanceState($uid, $modVarName)
     {
         $acceptanceState = false;
 
         if (!is_null($uid) && !empty($uid) && is_numeric($uid) && $uid > 0) {
-            if ($uid > 2) {
+            if ($uid > Constant::USER_ID_ADMIN) {
                 /** @var UserEntity $user */
                 $user = $this->userRepository->find($uid);
                 $acceptanceState = $user->getAttributes()->containsKey($modVarName) ? $user->getAttributeValue($modVarName) : false;
@@ -123,28 +123,11 @@ class AcceptPoliciesHelper
      */
     public function getAcceptedPolicies($uid = null)
     {
-        if (!is_null($uid)) {
-            $user = $this->userRepository->find($uid);
-            $isRegistration = $user->getActivated() == UsersConstant::ACTIVATED_PENDING_REG;
-        } else {
-            $isRegistration = false;
-        }
-
-        $termsOfUseAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
-            LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED
-        );
-        $privacyPolicyAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
-            LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED
-        );
-        $agePolicyConfirmedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
-            LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED
-        );
-        $cancellationRightPolicyAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
-            LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED
-        );
-        $tradeConditionsAcceptedDateStr = $this->determineAcceptanceState($uid, $isRegistration,
-            LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
-        );
+        $termsOfUseAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED);
+        $privacyPolicyAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED);
+        $agePolicyConfirmedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED);
+        $cancellationRightPolicyAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED);
+        $tradeConditionsAcceptedDateStr = $this->determineAcceptanceState($uid,LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED);
 
         $termsOfUseAcceptedDate = $termsOfUseAcceptedDateStr ? new \DateTime($termsOfUseAcceptedDateStr) : false;
         $privacyPolicyAcceptedDate = $privacyPolicyAcceptedDateStr ? new \DateTime($privacyPolicyAcceptedDateStr) : false;

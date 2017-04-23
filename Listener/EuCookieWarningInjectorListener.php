@@ -16,8 +16,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Zikula\Common\Translator\TranslatorInterface;
+use Symfony\Component\Routing\RouterInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\ThemeModule\Api\PageAssetApi;
 use Zikula\ThemeModule\Engine\Asset;
 
 /**
@@ -32,9 +33,9 @@ use Zikula\ThemeModule\Engine\Asset;
 class EuCookieWarningInjectorListener implements EventSubscriberInterface
 {
     /**
-     * @var TranslatorInterface
+     * @var RouterInterface
      */
-    private $translator;
+    private $router;
 
     /**
      * @var Asset
@@ -47,6 +48,11 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     private $stylesheetOverride;
 
     /**
+     * @var PageAssetApi
+     */
+    private $pageAssetApi;
+
+    /**
      * @var bool
      */
     private $enabled;
@@ -54,20 +60,23 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param TranslatorInterface $translator
+     * @param RouterInterface $router
      * @param Asset $assetHelper
      * @param string $stylesheetOverride Custom path to css file (optional)
+     * @param PageAssetApi $pageAssetApi
      * @param bool $enabled
      */
     public function __construct(
-        TranslatorInterface $translator,
+        RouterInterface $router,
         Asset $assetHelper,
         $stylesheetOverride = null,
+        PageAssetApi $pageAssetApi,
         $enabled
     ) {
-        $this->translator = $translator;
+        $this->router = $router;
         $this->assetHelper = $assetHelper;
         $this->stylesheetOverride = $stylesheetOverride;
+        $this->pageAssetApi = $pageAssetApi;
         $this->enabled = (bool) $enabled;
     }
 
@@ -81,12 +90,14 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         }
         $response = $event->getResponse();
         $request = $event->getRequest();
+        $routeInfo = $this->router->match($request->getPathInfo());
+        $containsProhibitedRoute = in_array($routeInfo['_route'], ['_wdt', 'bazinga_jstranslation_js', 'fos_js_routing_js', 'zikulasearchmodule_search_opensearch']);
+        $containsProhibitedRoute = $containsProhibitedRoute || (strpos($routeInfo['_route'], '_profiler') !== false);
 
         // do not capture redirects or modify XML HTTP Requests or routing or toolbar requests
         if ($request->isXmlHttpRequest()
             || $response->isRedirect()
-            || $request->getPathInfo() == '/js/routing'
-            || strpos($request->getPathInfo(), '/_wdt')) {
+            || $containsProhibitedRoute) {
             return;
         }
 
@@ -106,48 +117,24 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
      */
     protected function injectWarning(Request $request, Response $response)
     {
-        $content = $response->getContent();
-
-        $posA = strripos($content, '</body>');
-        $posB = strripos($content, '</head>');
-
-        if (false === $posA || false == $posB) {
-            return;
-        }
-
         // add javascript to bottom of body - jquery is assumed to be present
         $path = $this->assetHelper->resolve('@' . LegalConstant::MODNAME . ':js/jquery.cookiebar/jquery.cookiebar.js');
-        $javascript = '<script type="text/javascript" src="'.$path.'"></script>';
-
-        $message = $this->translator->__('We use cookies to track usage and preferences');
-        $acceptText = $this->translator->__('I Understand');
-        $javascript .= '
-<script type="text/javascript">
-jQuery(document).ready(function() {
-jQuery.cookieBar({
-    message: \''.$message.'\',
-    acceptText: \''.$acceptText.'\'
-});
-});
-</script>';
-        $content = substr($content, 0, $posA) . $javascript . substr($content, $posA);
-
+        $this->pageAssetApi->add('javascript', $path, 100);
+        $path = $this->assetHelper->resolve('@' . LegalConstant::MODNAME . ':js/ZikulaLegalModule.Listener.EUCookieConfig.js');
+        $this->pageAssetApi->add('javascript', $path, 101);
         // add stylesheet to head
         if (!empty($this->stylesheetOverride) && file_exists($this->stylesheetOverride)) {
             $path = $this->stylesheetOverride;
         } else {
             $path = $this->assetHelper->resolve('@' . LegalConstant::MODNAME . ':js/jquery.cookiebar/jquery.cookiebar.css');
         }
-        $css = '<link rel="stylesheet" type="text/css" href="'.$path.'" />';
-        $content = substr($content, 0, $posB).$css.substr($content, $posB);
-
-        $response->setContent($content);
+        $this->pageAssetApi->add('stylesheet', $path);
     }
 
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::RESPONSE => ['onKernelResponse', -4],
+            KernelEvents::RESPONSE => ['onKernelResponse'],
         ];
     }
 }

@@ -143,6 +143,11 @@ class LinkContainer implements LinkContainerInterface
         return $links;
     }
 
+    /**
+     * get the Account links for this extension.
+     *
+     * @return array
+     */
     private function getAccount()
     {
         $links = [];

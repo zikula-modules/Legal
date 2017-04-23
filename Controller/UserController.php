@@ -28,6 +28,7 @@ use Zikula\UsersModule\Entity\UserEntity;
 class UserController extends AbstractController
 {
     /**
+     * @deprecated
      * Route not needed here because method is legacy-only.
      *
      * Legal Module main user function.
@@ -95,22 +96,6 @@ class UserController extends AbstractController
         $doc = $this->renderDocument('termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
 
         return new Response($doc);
-    }
-
-    /**
-     * @Route("/privacy")
-     *
-     * Display Privacy Policy.
-     *
-     * Redirects to {@link privacyPolicy()}.
-     *
-     * @deprecated Since 1.6.1
-     *
-     * @return RedirectResponse
-     */
-    public function privacyAction()
-    {
-        return $this->redirectToRoute('zikulalegalmodule_user_privacypolicy');
     }
 
     /**
