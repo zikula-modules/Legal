@@ -31,6 +31,8 @@ use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
+use Zikula\UsersModule\RegistrationEvents;
+use Zikula\UsersModule\UserEvents;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -141,23 +143,23 @@ class UsersUiListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'module.users.ui.display_view'                      => ['uiView'],
-            'module.users.ui.form_edit.login_screen'            => ['uiEdit'],
-            'module.users.ui.form_edit.new_user'                => ['uiEdit'],
-            'module.users.ui.form_edit.modify_user'             => ['uiEdit'],
-            'module.users.ui.form_edit.new_registration'        => ['uiEdit'],
-            'module.users.ui.form_edit.modify_registration'     => ['uiEdit'],
-            'module.users.ui.validate_edit.login_screen'        => ['validateEdit'],
-            'module.users.ui.validate_edit.new_user'            => ['validateEdit'],
-            'module.users.ui.validate_edit.modify_user'         => ['validateEdit'],
-            'module.users.ui.validate_edit.new_registration'    => ['validateEdit'],
-            'module.users.ui.validate_edit.modify_registration' => ['validateEdit'],
-            'module.users.ui.process_edit.login_screen'         => ['processEdit'],
-            'module.users.ui.process_edit.new_user'             => ['processEdit'],
-            'module.users.ui.process_edit.modify_user'          => ['processEdit'],
-            'module.users.ui.process_edit.new_registration'     => ['processEdit'],
-            'module.users.ui.process_edit.modify_registration'  => ['processEdit'],
-            AccessEvents::LOGIN_VETO                            => ['acceptPolicies'],
+            UserEvents::DISPLAY_VIEW            => ['uiView'],
+            AccessEvents::LOGIN_FORM            => ['uiEdit'],
+            UserEvents::NEW_FORM                => ['uiEdit'],
+            UserEvents::MODIFY_FORM             => ['uiEdit'],
+            RegistrationEvents::NEW_FORM        => ['uiEdit'],
+            RegistrationEvents::MODIFY_FORM     => ['uiEdit'],
+            AccessEvents::LOGIN_VALIDATE        => ['validateEdit'],
+            UserEvents::NEW_VALIDATE            => ['validateEdit'],
+            UserEvents::MODIFY_VALIDATE         => ['validateEdit'],
+            RegistrationEvents::NEW_VALIDATE    => ['validateEdit'],
+            RegistrationEvents::MODIFY_VALIDATE => ['validateEdit'],
+            AccessEvents::LOGIN_PROCESS         => ['processEdit'],
+            UserEvents::NEW_PROCESS             => ['processEdit'],
+            UserEvents::MODIFY_PROCESS          => ['processEdit'],
+            RegistrationEvents::NEW_PROCESS     => ['processEdit'],
+            RegistrationEvents::MODIFY_PROCESS  => ['processEdit'],
+            AccessEvents::LOGIN_VETO            => ['acceptPolicies'],
         ];
     }
 
