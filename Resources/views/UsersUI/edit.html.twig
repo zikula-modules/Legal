@@ -1,4 +1,3 @@
-{% import '@ZikulaLegalModule/Include/modalHelper.html.twig' as modalHelper %}
 {% if policiesUid == '' or policiesUid > 2 %}
 <fieldset>
     <legend>{{ __('Site policies') }}</legend>
@@ -10,8 +9,7 @@
             {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
         {% endif %}
         {% set policyName = __('Terms of use') %}
-        {% set policyLink = '<a data-toggle="modal" data-target="#modal-terms-of-use" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
-        {{ modalHelper.modalWindow(policyName, policyUrl, 'terms-of-use') }}
+        {% set policyLink = '<a class="policy-link" data-toggle="modal" data-target="#modal-terms-of-use" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         <div class="form-group{% if fieldErrors.termsofuse|default %} has-error{% endif %}">
             <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
@@ -39,8 +37,7 @@
             {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
         {% endif %}
         {% set policyName = __('Privacy policy') %}
-        {% set policyLink = '<a data-toggle="modal" data-target="#modal-privacy-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
-        {{ modalHelper.modalWindow(policyName, policyUrl, 'privacy-policy') }}
+        {% set policyLink = '<a class="policy-link" data-toggle="modal" data-target="#modal-privacy-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         <div class="form-group{% if fieldErrors.privacypolicy|default %} has-error{% endif %}">
             <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
@@ -90,8 +87,7 @@
             {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
         {% endif %}
         {% set policyName = __('General terms and conditions of trade') %}
-        {% set policyLink = '<a data-toggle="modal" data-target="#modal-general-terms-and-conditions-of-trade" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
-        {{ modalHelper.modalWindow(policyName, policyUrl, 'general-terms-and-conditions-of-trade') }}
+        {% set policyLink = '<a class="policy-link" data-toggle="modal" data-target="#modal-general-terms-and-conditions-of-trade" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         <div class="form-group{% if fieldErrors.tradeconditions|default %} has-error{% endif %}">
             <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
@@ -119,8 +115,7 @@
             {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
         {% endif %}
         {% set policyName = __('Cancellation right policy') %}
-        {% set policyLink = '<a data-toggle="modal" data-target="#modal-cancellation-right-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
-        {{ modalHelper.modalWindow(policyName, policyUrl, 'cancellation-right-policy') }}
+        {% set policyLink = '<a class="policy-link" data-toggle="modal" data-target="#modal-cancellation-right-policy" href="' ~ policyUrl ~ '">' ~ policyName ~ '</a>' %}
         <div class="form-group{% if fieldErrors.cancellationrightpolicy|default %} has-error{% endif %}">
             <label class="col-sm-3 control-label required">{{ policyName }}</label>
             <div class="col-sm-9">
@@ -144,3 +139,18 @@
     {% endif %}
 </fieldset>
 {% endif %}
+<div class="modal fade" id="modal-policy" tabindex="-1" role="dialog" aria-labelledby="modal-title-policy" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="modal-policy-title"></h4>
+            </div>
+            <div class="modal-body" id="modal-policy-body"><i class="fa fa-spin fa-cog fa-2x"></i></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{{ pageAddAsset('javascript', zasset('@ZikulaLegalModule:js/ZikulaLegalModule.User.AcceptPolicies.js')) }}
