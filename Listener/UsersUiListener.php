@@ -27,6 +27,7 @@ use Zikula\Core\Exception\FatalErrorException;
 use Zikula\Core\Token\CsrfTokenHandler;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
+use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
@@ -156,7 +157,7 @@ class UsersUiListener implements EventSubscriberInterface
             'module.users.ui.process_edit.modify_user'          => ['processEdit'],
             'module.users.ui.process_edit.new_registration'     => ['processEdit'],
             'module.users.ui.process_edit.modify_registration'  => ['processEdit'],
-            'user.login.veto'                                   => ['acceptPolicies'],
+            AccessEvents::LOGIN_VETO                            => ['acceptPolicies'],
         ];
     }
 
