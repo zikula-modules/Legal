@@ -25,6 +25,8 @@ class Constant
      */
     const MODNAME = 'ZikulaLegalModule';
 
+    const FORM_BLOCK_PREFIX = 'zikulalegalmodule_policy';
+
     /**
      * The module variable name indicating that the legal notice is active.
      *

@@ -31,6 +31,7 @@ services:
           - "@zikula_legal_module.accept_policies_helper"
           - "@doctrine.orm.default_entity_manager"
           - "@=service('zikula_extensions_module.api.variable').getAll('ZikulaLegalModule')"
+          - "@form.factory"
         tags:
             - { name: kernel.event_subscriber }
 

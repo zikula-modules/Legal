@@ -13,6 +13,8 @@ namespace Zikula\LegalModule\Listener;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -26,12 +28,18 @@ use Zikula\Core\Event\GenericEvent;
 use Zikula\Core\Exception\FatalErrorException;
 use Zikula\Core\Token\CsrfTokenHandler;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\LegalModule\Constant;
+use Zikula\LegalModule\Form\Type\PolicyType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
+use Zikula\ProfileModule\ProfileConstant;
 use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
+use Zikula\UsersModule\Event\UserFormAwareEvent;
+use Zikula\UsersModule\Event\UserFormDataEvent;
 use Zikula\UsersModule\RegistrationEvents;
+use Zikula\UsersModule\Constant as UserConstant;
 use Zikula\UsersModule\UserEvents;
 
 /**
@@ -101,6 +109,11 @@ class UsersUiListener implements EventSubscriberInterface
     private $moduleVars;
 
     /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    /**
      * Constructor.
      *
      * @param RequestStack $requestStack
@@ -122,7 +135,8 @@ class UsersUiListener implements EventSubscriberInterface
         CurrentUserApiInterface $currentUserApi,
         AcceptPoliciesHelper $acceptPoliciesHelper,
         EntityManagerInterface $entityManager,
-        $moduleVars
+        $moduleVars,
+        FormFactoryInterface $formFactory
     ) {
         $this->request = $requestStack->getCurrentRequest();
         $this->twig = $twig;
@@ -133,6 +147,7 @@ class UsersUiListener implements EventSubscriberInterface
         $this->acceptPoliciesHelper = $acceptPoliciesHelper;
         $this->entityManager = $entityManager;
         $this->moduleVars = $moduleVars;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -143,31 +158,33 @@ class UsersUiListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            UserEvents::DISPLAY_VIEW            => ['uiView'],
-            AccessEvents::LOGIN_FORM            => ['uiEdit'],
-            UserEvents::NEW_FORM                => ['uiEdit'],
-            UserEvents::MODIFY_FORM             => ['uiEdit'],
-            RegistrationEvents::NEW_FORM        => ['uiEdit'],
-            RegistrationEvents::MODIFY_FORM     => ['uiEdit'],
-            AccessEvents::LOGIN_VALIDATE        => ['validateEdit'],
-            UserEvents::NEW_VALIDATE            => ['validateEdit'],
-            UserEvents::MODIFY_VALIDATE         => ['validateEdit'],
-            RegistrationEvents::NEW_VALIDATE    => ['validateEdit'],
+            UserEvents::DISPLAY_VIEW => ['uiView'],
+            AccessEvents::LOGIN_FORM => ['uiEdit'],
+            UserEvents::NEW_FORM => ['uiEdit'],
+            UserEvents::MODIFY_FORM => ['uiEdit'],
+            RegistrationEvents::NEW_FORM => ['uiEdit'],
+            RegistrationEvents::MODIFY_FORM => ['uiEdit'],
+            AccessEvents::LOGIN_VALIDATE => ['validateEdit'],
+            UserEvents::NEW_VALIDATE => ['validateEdit'],
+            UserEvents::MODIFY_VALIDATE => ['validateEdit'],
+            RegistrationEvents::NEW_VALIDATE => ['validateEdit'],
             RegistrationEvents::MODIFY_VALIDATE => ['validateEdit'],
-            AccessEvents::LOGIN_PROCESS         => ['processEdit'],
-            UserEvents::NEW_PROCESS             => ['processEdit'],
-            UserEvents::MODIFY_PROCESS          => ['processEdit'],
-            RegistrationEvents::NEW_PROCESS     => ['processEdit'],
-            RegistrationEvents::MODIFY_PROCESS  => ['processEdit'],
-            AccessEvents::LOGIN_VETO            => ['acceptPolicies'],
+            AccessEvents::LOGIN_PROCESS => ['processEdit'],
+            UserEvents::NEW_PROCESS => ['processEdit'],
+            UserEvents::MODIFY_PROCESS => ['processEdit'],
+            RegistrationEvents::NEW_PROCESS => ['processEdit'],
+            RegistrationEvents::MODIFY_PROCESS => ['processEdit'],
+            AccessEvents::LOGIN_VETO => ['acceptPolicies'],
+            UserEvents::EDIT_FORM => ['amendForm', -256],
+            UserEvents::EDIT_FORM_HANDLE => ['editFormHandler'],
         ];
     }
 
     /**
      * Cause redirect.
      *
-     * @param string $url  Url to redirect to
-     * @param int    $type Redirect code, 302 default
+     * @param string $url Url to redirect to
+     * @param int $type Redirect code, 302 default
      *
      * @return RedirectResponse
      */
@@ -201,12 +218,12 @@ class UsersUiListener implements EventSubscriberInterface
         }
 
         $templateParameters = [
-            'activePolicies'   => $activePolicies,
+            'activePolicies' => $activePolicies,
             'viewablePolicies' => $viewablePolicies,
             'acceptedPolicies' => $acceptedPolicies,
         ];
 
-        $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/view.html.twig', $templateParameters);
+        $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/view.html.twig', $templateParameters);
     }
 
     /**
@@ -242,28 +259,29 @@ class UsersUiListener implements EventSubscriberInterface
                     // We only show the policies if one or more active policies have not been accepted by the user.
                     if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']
                         || $activePolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy']
-                        || $activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy']) {
+                        || $activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy']
+                    ) {
                         $templateParameters = [
-                            'policiesUid'              => $user['uid'],
-                            'activePolicies'           => $activePolicies,
+                            'policiesUid' => $user['uid'],
+                            'activePolicies' => $activePolicies,
                             'originalAcceptedPolicies' => $acceptedPolicies,
-                            'acceptedPolicies'         => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies,
-                            'fieldErrors'              => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
-                            'csrfToken'                => $csrfToken,
+                            'acceptedPolicies' => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies,
+                            'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
+                            'csrfToken' => $csrfToken,
                         ];
-                        $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/editLogin.html.twig', $templateParameters);
+                        $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/editLogin.html.twig', $templateParameters);
                     }
                 }
             } else {
                 $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->acceptPoliciesHelper->getAcceptedPolicies($user['uid']);
                 $templateParameters = [
-                    'activePolicies'           => $activePolicies,
+                    'activePolicies' => $activePolicies,
                     'originalAcceptedPolicies' => [],
-                    'acceptedPolicies'         => $acceptedPolicies,
-                    'fieldErrors'              => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
-                    'csrfToken'                => $csrfToken,
+                    'acceptedPolicies' => $acceptedPolicies,
+                    'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
+                    'csrfToken' => $csrfToken,
                 ];
-                $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/editRegistration.html.twig', $templateParameters);
+                $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/editRegistration.html.twig', $templateParameters);
             }
 
             return;
@@ -286,15 +304,15 @@ class UsersUiListener implements EventSubscriberInterface
         }
 
         $templateParameters = [
-            'policiesUid'      => isset($user) ? $user['uid'] : '',
-            'activePolicies'   => $activePolicies,
+            'policiesUid' => isset($user) ? $user['uid'] : '',
+            'activePolicies' => $activePolicies,
             'viewablePolicies' => $viewablePolicies,
             'editablePolicies' => $editablePolicies,
             'acceptedPolicies' => $acceptedPolicies,
-            'fieldErrors'      => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
-            'csrfToken'        => $csrfToken,
+            'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
+            'csrfToken' => $csrfToken,
         ];
-        $event->data[self::EVENT_KEY] = $this->twig->render('@'.LegalConstant::MODNAME.'/UsersUI/edit.html.twig', $templateParameters);
+        $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/edit.html.twig', $templateParameters);
     }
 
     /**
@@ -403,10 +421,10 @@ class UsersUiListener implements EventSubscriberInterface
         $uid = $user['uid'];
 
         $policiesToCheck = [
-            'termsOfUse'              => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
-            'privacyPolicy'           => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
-            'agePolicy'               => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
-            'tradeConditions'         => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
+            'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
+            'privacyPolicy' => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
+            'agePolicy' => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
+            'tradeConditions' => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
             'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
         ];
 
@@ -497,5 +515,49 @@ class UsersUiListener implements EventSubscriberInterface
         $event->setArgument('returnUrl', $this->router->generate('zikulalegalmodule_user_acceptpolicies', ['login' => true]));
         $this->request->getSession()->set(LegalConstant::SESSION_ACCEPT_POLICIES_VAR, $userObj->getUid());
         $this->request->getSession()->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.'));
+    }
+
+    /**
+     * @param UserFormAwareEvent $event
+     */
+    public function amendForm(UserFormAwareEvent $event)
+    {
+        $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
+        if (array_sum($activePolicies) < 1) {
+            return;
+        }
+        $user = $event->getFormData();
+        $uid = !empty($user['uid']) ? $user['uid'] : null;
+//        $userEntity = $this->userRepository->find($uid);
+        $policyForm = $this->formFactory->create(PolicyType::class, [], [
+            'error_bubbling' => true,
+            'auto_initialize' => false,
+        ]);
+        $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($uid);
+        $event
+            ->formAdd($policyForm)
+            ->addTemplate('@ZikulaLegalModule/UsersUI/editRegistration2.html.twig', [
+//                'policiesUid' => $uid,
+                'activePolicies' => $this->acceptPoliciesHelper->getActivePolicies(),
+                'acceptedPolicies' => $acceptedPolicies,
+            ])
+        ;
+    }
+
+    /**
+     * @param UserFormDataEvent $event
+     */
+    public function editFormHandler(UserFormDataEvent $event)
+    {
+//        $userEntity = $event->getUserEntity();
+//        $formData = $event->getFormData(ProfileConstant::FORM_BLOCK_PREFIX);
+//        foreach ($formData as $key => $value) {
+//            if (!empty($value)) {
+//                $userEntity->setAttribute($key, $value);
+//            } else {
+//                $userEntity->delAttribute($key);
+//            }
+//        }
+//        $this->doctrine->getManager()->flush();
     }
 }
