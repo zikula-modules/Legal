@@ -11,7 +11,7 @@
 
 namespace Zikula\LegalModule\Listener;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -28,18 +28,14 @@ use Zikula\Core\Event\GenericEvent;
 use Zikula\Core\Exception\FatalErrorException;
 use Zikula\Core\Token\CsrfTokenHandler;
 use Zikula\LegalModule\Constant as LegalConstant;
-use Zikula\LegalModule\Constant;
 use Zikula\LegalModule\Form\Type\PolicyType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
-use Zikula\ProfileModule\ProfileConstant;
 use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
 use Zikula\UsersModule\Event\UserFormAwareEvent;
 use Zikula\UsersModule\Event\UserFormDataEvent;
-use Zikula\UsersModule\RegistrationEvents;
-use Zikula\UsersModule\Constant as UserConstant;
 use Zikula\UsersModule\UserEvents;
 
 /**
@@ -94,11 +90,6 @@ class UsersUiListener implements EventSubscriberInterface
     private $acceptPoliciesHelper;
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * @var ValidationResponse
      */
     private $validation;
@@ -114,6 +105,11 @@ class UsersUiListener implements EventSubscriberInterface
     private $formFactory;
 
     /**
+     * @var RegistryInterface
+     */
+    protected $doctrine;
+
+    /**
      * Constructor.
      *
      * @param RequestStack $requestStack
@@ -123,8 +119,9 @@ class UsersUiListener implements EventSubscriberInterface
      * @param CsrfTokenHandler $csrfTokenHandler
      * @param CurrentUserApiInterface $currentUserApi
      * @param AcceptPoliciesHelper $acceptPoliciesHelper
-     * @param EntityManagerInterface $entityManager
      * @param array $moduleVars
+     * @param FormFactoryInterface $formFactory
+     * @param RegistryInterface $registry
      */
     public function __construct(
         RequestStack $requestStack,
@@ -134,9 +131,9 @@ class UsersUiListener implements EventSubscriberInterface
         CsrfTokenHandler $csrfTokenHandler,
         CurrentUserApiInterface $currentUserApi,
         AcceptPoliciesHelper $acceptPoliciesHelper,
-        EntityManagerInterface $entityManager,
         $moduleVars,
-        FormFactoryInterface $formFactory
+        FormFactoryInterface $formFactory,
+        RegistryInterface $registry
     ) {
         $this->request = $requestStack->getCurrentRequest();
         $this->twig = $twig;
@@ -145,9 +142,9 @@ class UsersUiListener implements EventSubscriberInterface
         $this->csrfTokenHandler = $csrfTokenHandler;
         $this->currentUserApi = $currentUserApi;
         $this->acceptPoliciesHelper = $acceptPoliciesHelper;
-        $this->entityManager = $entityManager;
         $this->moduleVars = $moduleVars;
         $this->formFactory = $formFactory;
+        $this->doctrine = $registry;
     }
 
     /**
@@ -162,18 +159,12 @@ class UsersUiListener implements EventSubscriberInterface
             AccessEvents::LOGIN_FORM => ['uiEdit'],
             UserEvents::NEW_FORM => ['uiEdit'],
             UserEvents::MODIFY_FORM => ['uiEdit'],
-            RegistrationEvents::NEW_FORM => ['uiEdit'],
-            RegistrationEvents::MODIFY_FORM => ['uiEdit'],
             AccessEvents::LOGIN_VALIDATE => ['validateEdit'],
             UserEvents::NEW_VALIDATE => ['validateEdit'],
             UserEvents::MODIFY_VALIDATE => ['validateEdit'],
-            RegistrationEvents::NEW_VALIDATE => ['validateEdit'],
-            RegistrationEvents::MODIFY_VALIDATE => ['validateEdit'],
             AccessEvents::LOGIN_PROCESS => ['processEdit'],
             UserEvents::NEW_PROCESS => ['processEdit'],
             UserEvents::MODIFY_PROCESS => ['processEdit'],
-            RegistrationEvents::NEW_PROCESS => ['processEdit'],
-            RegistrationEvents::MODIFY_PROCESS => ['processEdit'],
             AccessEvents::LOGIN_VETO => ['acceptPolicies'],
             UserEvents::EDIT_FORM => ['amendForm', -256],
             UserEvents::EDIT_FORM_HANDLE => ['editFormHandler'],
@@ -460,7 +451,7 @@ class UsersUiListener implements EventSubscriberInterface
                 }
             }
         }
-        $this->entityManager->flush();
+        $this->doctrine->getManager()->flush();
     }
 
     /**
@@ -532,6 +523,7 @@ class UsersUiListener implements EventSubscriberInterface
         $policyForm = $this->formFactory->create(PolicyType::class, [], [
             'error_bubbling' => true,
             'auto_initialize' => false,
+            'mapped' => false
         ]);
         $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($uid);
         $event
@@ -549,15 +541,25 @@ class UsersUiListener implements EventSubscriberInterface
      */
     public function editFormHandler(UserFormDataEvent $event)
     {
-//        $userEntity = $event->getUserEntity();
-//        $formData = $event->getFormData(ProfileConstant::FORM_BLOCK_PREFIX);
-//        foreach ($formData as $key => $value) {
-//            if (!empty($value)) {
-//                $userEntity->setAttribute($key, $value);
-//            } else {
-//                $userEntity->delAttribute($key);
-//            }
-//        }
-//        $this->doctrine->getManager()->flush();
+        $userEntity = $event->getUserEntity();
+        $formData = $event->getFormData(LegalConstant::FORM_BLOCK_PREFIX);
+        if ($formData['acceptedpolicies_policies']) { // technically, true is the only valid value here, so maybe no check?
+            $policiesToCheck = [
+                'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
+                'privacyPolicy' => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
+                'agePolicy' => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
+                'tradeConditions' => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
+                'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
+            ];
+            $nowUTC = new \DateTime('now', new \DateTimeZone('UTC'));
+            $nowUTCStr = $nowUTC->format(\DateTime::ISO8601);
+            $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
+            foreach ($policiesToCheck as $policyName => $acceptedVar) {
+                if ($activePolicies[$policyName]) {
+                    $userEntity->setAttribute($acceptedVar, $nowUTCStr);
+                }
+            }
+            $this->doctrine->getManager()->flush();
+        }
     }
 }
