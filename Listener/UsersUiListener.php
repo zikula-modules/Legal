@@ -156,13 +156,10 @@ class UsersUiListener implements EventSubscriberInterface
     {
         return [
             UserEvents::DISPLAY_VIEW => ['uiView'],
-            AccessEvents::LOGIN_FORM => ['uiEdit'],
             UserEvents::NEW_FORM => ['uiEdit'],
             UserEvents::MODIFY_FORM => ['uiEdit'],
-            AccessEvents::LOGIN_VALIDATE => ['validateEdit'],
             UserEvents::NEW_VALIDATE => ['validateEdit'],
             UserEvents::MODIFY_VALIDATE => ['validateEdit'],
-            AccessEvents::LOGIN_PROCESS => ['processEdit'],
             UserEvents::NEW_PROCESS => ['processEdit'],
             UserEvents::MODIFY_PROCESS => ['processEdit'],
             AccessEvents::LOGIN_VETO => ['acceptPolicies'],
@@ -243,37 +240,15 @@ class UsersUiListener implements EventSubscriberInterface
             if (!isset($user) || empty($user)) {
                 $user = new UserEntity();
             }
-            if (false !== strpos($eventName, 'login_screen')) {
-                // It is not shown unless we have a user record (meaning that the first log-in attempt was vetoed.
-                if (null !== $user->getUid()) {
-                    $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($user['uid']);
-                    // We only show the policies if one or more active policies have not been accepted by the user.
-                    if ($activePolicies['termsOfUse'] && !$acceptedPolicies['termsOfUse']
-                        || $activePolicies['privacyPolicy'] && !$acceptedPolicies['privacyPolicy']
-                        || $activePolicies['agePolicy'] && !$acceptedPolicies['agePolicy']
-                    ) {
-                        $templateParameters = [
-                            'policiesUid' => $user['uid'],
-                            'activePolicies' => $activePolicies,
-                            'originalAcceptedPolicies' => $acceptedPolicies,
-                            'acceptedPolicies' => isset($this->validation) ? $this->validation->getObject() : $acceptedPolicies,
-                            'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
-                            'csrfToken' => $csrfToken,
-                        ];
-                        $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/editLogin.html.twig', $templateParameters);
-                    }
-                }
-            } else {
-                $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->acceptPoliciesHelper->getAcceptedPolicies($user['uid']);
-                $templateParameters = [
-                    'activePolicies' => $activePolicies,
-                    'originalAcceptedPolicies' => [],
-                    'acceptedPolicies' => $acceptedPolicies,
-                    'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
-                    'csrfToken' => $csrfToken,
-                ];
-                $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/editRegistration.html.twig', $templateParameters);
-            }
+            $acceptedPolicies = isset($this->validation) ? $this->validation->getObject() : $this->acceptPoliciesHelper->getAcceptedPolicies($user['uid']);
+            $templateParameters = [
+                'activePolicies' => $activePolicies,
+                'originalAcceptedPolicies' => [],
+                'acceptedPolicies' => $acceptedPolicies,
+                'fieldErrors' => isset($this->validation) && $this->validation->hasErrors() ? $this->validation->getErrors() : [],
+                'csrfToken' => $csrfToken,
+            ];
+            $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/editRegistration.html.twig', $templateParameters);
 
             return;
         }
@@ -543,7 +518,7 @@ class UsersUiListener implements EventSubscriberInterface
     {
         $userEntity = $event->getUserEntity();
         $formData = $event->getFormData(LegalConstant::FORM_BLOCK_PREFIX);
-        if ($formData['acceptedpolicies_policies']) { // technically, true is the only valid value here, so maybe no check?
+        if (isset($formData) && $formData['acceptedpolicies_policies']) { // technically, true is the only valid value here, so maybe no check?
             $policiesToCheck = [
                 'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
                 'privacyPolicy' => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
