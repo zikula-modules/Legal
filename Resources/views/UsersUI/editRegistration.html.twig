@@ -1,6 +1,5 @@
 <fieldset>
     <legend>{{ __('Site policies', 'zikulalegalmodule') }}</legend>
-    <input type="hidden" id="acceptpolicies_csrftoken" name="acceptpolicies_csrftoken" value="{{ csrfToken }}" />
-    <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="" />
+    {{ form_row(form.zikulalegalmodule_policy.acceptedpolicies_policies) }}
     {{ include('@ZikulaLegalModule/Include/acceptPolicies.html.twig') }}
 </fieldset>

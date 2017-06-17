@@ -13,13 +13,15 @@ namespace Zikula\LegalModule\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Zikula\Common\Translator\IdentityTranslator;
 use Zikula\LegalModule\Constant;
 
-class PolicyType extends AbstractType
+class AcceptPoliciesType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -27,18 +29,23 @@ class PolicyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $translator = $options['translator'];
-        $constraints = !$options['userEditAccess']
-            ? [new IsTrue(['message' => $translator->__('you must accept this site\'s policies')])]
-            : [];
+        $login = $builder->getData()['login'];
 
         $builder
+            ->add('uid', HiddenType::class)
+            ->add('login', HiddenType::class)
             ->add('acceptedpolicies_policies', CheckboxType::class, [
                 'data' => true,
                 'help' => $translator->__('Check this box to indicate your acceptance of this site\'s policies.'),
                 'label' => $translator->__('Policies'),
-                'constraints' => $constraints,
-                'required' => !$options['userEditAccess']
-            ]);
+                'constraints' => [new IsTrue(['message' => $translator->__('you must accept this site\'s policies')])],
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => $login ? $translator->__('Save and continue logging in') : $translator->__('Save'),
+                'icon' => 'fa-check',
+                'attr' => ['class' => 'btn-success']
+            ])
+        ;
     }
 
     /**
@@ -56,7 +63,6 @@ class PolicyType extends AbstractType
     {
         $resolver->setDefaults([
             'translator' => new IdentityTranslator(),
-            'userEditAccess' => false
         ]);
     }
 }

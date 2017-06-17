@@ -14,12 +14,17 @@ namespace Zikula\LegalModule\Controller;
 use DateTime;
 use DateTimeZone;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
+use Zikula\Core\Exception\FatalErrorException;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\LegalModule\Form\Type\AcceptPoliciesType;
+use Zikula\LegalModule\Form\Type\PolicyType;
 use Zikula\UsersModule\Entity\UserEntity;
 
 /**
@@ -209,116 +214,65 @@ class UserController extends AbstractController
 
     /**
      * @Route("/acceptpolicies")
-     *
-     * Allow the user to accept active terms of use and/or privacy policy.
-     *
-     * This function is currently used by the Legal module's handler for the users.login.veto event.
-     *
+     * @Template
      * @param Request $request
-     *
-     * @throws AccessDeniedException Thrown if the user is not logged in and the acceptance attempt is not a result of a login attempt
-     * @throws \Exception            Thrown if the user is already logged in and the acceptance attempt is a result of a login attempt;
-     *                               also thrown in cases where expected data is not present or not in an expected form;
-     *                               also thrown if the call to this function is not the result of a POST operation or a GET operation
-     *
-     * @return Response
+     * @return Response|array
      */
     public function acceptPoliciesAction(Request $request)
     {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
-        $userIdAttemptingToLogin = $request->getSession()->get(LegalConstant::SESSION_ACCEPT_POLICIES_VAR, null);
-        $request->getSession()->remove(LegalConstant::SESSION_ACCEPT_POLICIES_VAR);
-
+        $uid = $request->getSession()->get(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, null);
+        $request->getSession()->remove(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY);
         $currentUserApi = $this->get('zikula_users_module.current_user');
-        $csrfTokenHandler = $this->get('zikula_core.common.csrf_token_handler');
-        $sessionVars = $request->getSession()->all();
+
+        if (isset($uid)) {
+            $login = true;
+        } else {
+            $login = false;
+            $uid = $currentUserApi->get('uid');
+        }
 
         $acceptPoliciesHelper = $this->get('zikula_legal_module.accept_policies_helper');
-        if ($request->isMethod('POST')) {
-            $csrfTokenHandler->validate($request->request->get('csrftoken'));
-
-            $isLogin = isset($userIdAttemptingToLogin) && !empty($userIdAttemptingToLogin);
-            $isLoggedIn = $currentUserApi->isLoggedIn();
-            if (!$isLogin && !$isLoggedIn) {
-                throw new AccessDeniedException();
-            } elseif ($isLogin && $isLoggedIn) {
-                throw new \Exception();
+        $form = $this->createForm(AcceptPoliciesType::class, [
+            'uid' => $uid,
+            'login' => $login
+        ]);
+        if ($form->handleRequest($request)->isValid()) {
+            $data = $form->getData();
+            $userEntity = $this->get('zikula_users_module.user_repository')->find($data['uid']);
+            $policiesToCheck = [
+                'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
+                'privacyPolicy' => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
+                'agePolicy' => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
+                'tradeConditions' => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
+                'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
+            ];
+            $nowUTC = new \DateTime('now', new \DateTimeZone('UTC'));
+            $nowUTCStr = $nowUTC->format(\DateTime::ISO8601);
+            $activePolicies = $acceptPoliciesHelper->getActivePolicies();
+            foreach ($policiesToCheck as $policyName => $acceptedVar) {
+                if ($data['acceptedpolicies_policies'] && $activePolicies[$policyName]) {
+                    $userEntity->setAttribute($acceptedVar, $nowUTCStr);
+                } else {
+                    $userEntity->delAttribute($acceptedVar);
+                }
             }
+            $this->get('doctrine')->getManager()->flush();
+            if ($data['acceptedpolicies_policies'] && $data['login']) {
+                $this->get('zikula_users_module.helper.access_helper')->login($userEntity);
 
-            $policiesUid = $request->request->get('acceptedpolicies_uid', false);
-            if (!isset($policiesUid) || empty($policiesUid) || !is_numeric($policiesUid)) {
-                throw new \Exception();
-            }
-
-            $fieldErrors = [];
-
-            $acceptedPolicies = $request->request->get('acceptedpolicies_policies', false);
-            /** @var UserEntity $user */
-            $user = $this->get('zikula_users_module.user_repository')->find($policiesUid);
-            if (!$acceptedPolicies) {
-                $fieldErrors['policies'] = $this->__('You must accept this site\'s policies in order to proceed.');
+                return $this->redirectToRoute('zikulausersmodule_account_menu');
             } else {
-                $activePolicies = $acceptPoliciesHelper->getActivePolicies();
-                $now = new DateTime('now', new DateTimeZone('UTC'));
-                $nowStr = $now->format(DateTime::ISO8601);
-                if ($activePolicies['termsOfUse']) {
-                    $user->setAttribute(LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED, $nowStr);
-                }
-                if ($activePolicies['privacyPolicy']) {
-                    $user->setAttribute(LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED, $nowStr);
-                }
-                if ($activePolicies['agePolicy']) {
-                    $user->setAttribute(LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED, $nowStr);
-                }
-                if ($activePolicies['tradeConditions']) {
-                    $user->setAttribute(LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED, $nowStr);
-                }
-                if ($activePolicies['cancellationRightPolicy']) {
-                    $user->setAttribute(LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED, $nowStr);
-                }
-                $this->get('doctrine')->getManager()->flush();
+                return $this->redirectToRoute('home');
             }
-            if ($isLogin) {
-                $this->get('zikula_users_module.helper.access_helper')->login($user, isset($sessionVars['rememberme']) ? $sessionVars['rememberme'] : false);
-            }
-
-            return $this->redirectToRoute('home');
-        } elseif ($request->isMethod('GET')) {
-            $isLogin = $request->query->get('login', false);
-            $fieldErrors = [];
-        } else {
-            throw new AccessDeniedException();
         }
 
-        // If we are coming here from the login process, then there are certain things that must have been
-        // send along in the session variable. If not, then error.
-        if ($isLogin && !isset($sessionVars['authenticationMethod'])) {
-            throw new \Exception();
-        }
-
-        $policiesUid = $isLogin ? $userIdAttemptingToLogin : $currentUserApi->get('uid');
-        if (!$policiesUid || empty($policiesUid)) {
-            throw new \Exception();
-        }
-
-        if ($isLogin) {
-            // Pass along the session vars to updateAcceptance. We didn't want to just keep them in the session variable
-            // Legal_Controller_User_acceptPolicies because if we hit an exception or got redirected, then the data
-            // would have been orphaned, and it contains some sensitive information.
-            $request->getSession()->set(LegalConstant::SESSION_ACCEPT_POLICIES_VAR, $userIdAttemptingToLogin);
-        }
-
-        $templateParameters = [
-            'login'                    => $isLogin,
-            'policiesUid'              => $policiesUid,
-            'activePolicies'           => $acceptPoliciesHelper->getActivePolicies(),
-            'acceptedPolicies'         => /*isset($acceptedPolicies) ? $acceptedPolicies : */$acceptPoliciesHelper->getAcceptedPolicies($policiesUid),
-            'originalAcceptedPolicies' => isset($originalAcceptedPolicies) ? $originalAcceptedPolicies : $acceptPoliciesHelper->getAcceptedPolicies($policiesUid),
-            'fieldErrors'              => $fieldErrors,
-            'csrfToken'                => $csrfTokenHandler->generate(),
+        return $templateParameters = [
+            'login' => $login,
+            'form' => $form->createView(),
+            'activePolicies' => $acceptPoliciesHelper->getActivePolicies(),
+            'acceptedPolicies' => $acceptPoliciesHelper->getAcceptedPolicies($uid),
         ];
-
-        return $this->render('@'.LegalConstant::MODNAME.'/User/acceptPolicies.html.twig', $templateParameters);
     }
 }

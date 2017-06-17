@@ -1,3 +1,8 @@
+{% form_theme form with [
+'ZikulaFormExtensionBundle:Form:bootstrap_3_zikula_admin_layout.html.twig',
+'ZikulaFormExtensionBundle:Form:form_div_layout.html.twig'
+] %}
+
 {% set templateTitle = __('Site policies') %}
 {{ pageSetVar('title', templateTitle) }}
 <h2>{{ templateTitle }}</h2>
@@ -13,14 +18,16 @@
 
 <form id="legal_user_acceptpolicies" class="form-horizontal" action="{{ path('zikulalegalmodule_user_acceptpolicies') }}" method="post">
     <div>
-        <input type="hidden" id="acceptpolicies_csrftoken" name="csrftoken" value="{{ csrfToken }}" />
-        <input type="hidden" id="acceptpolicies_uid" name="acceptedpolicies_uid" value="{{ policiesUid }}" />
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
         <fieldset>
+            {{ form_row(form.acceptedpolicies_policies) }}
             {{ include('@ZikulaLegalModule/Include/acceptPolicies.html.twig') }}
         </fieldset>
         <div class="col-sm-offset-3 col-sm-9">
-            <button class="btn btn-success" type="submit" name="Save">{{ login ? __('Save and continue logging in') : __('Save') }}</button>
-            <a class="btn btn-danger" href="{{ pagevars.homepath }}" title="{{ __('Cancel') }}">{{ __('Cancel and logout') }}</a>
+            {{ form_widget(form.submit) }}
+            <a class="btn btn-danger" href="{{ path('home') }}" title="{{ __('Cancel') }}">{{ __('Cancel and logout') }}</a>
         </div>
+        {{ form_end(form) }}
     </div>
 </form>
