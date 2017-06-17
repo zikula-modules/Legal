@@ -11,21 +11,15 @@
 
 namespace Zikula\LegalModule\Controller;
 
-use DateTime;
-use DateTimeZone;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
-use Zikula\Core\Exception\FatalErrorException;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\AcceptPoliciesType;
-use Zikula\LegalModule\Form\Type\PolicyType;
-use Zikula\UsersModule\Entity\UserEntity;
 
 /**
  * Class UserController.
