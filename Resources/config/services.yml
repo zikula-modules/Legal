@@ -26,11 +26,12 @@ services:
           - "@twig"
           - "@translator.default"
           - "@jms_i18n_routing.router"
-          - "@zikula_core.common.csrf_token_handler"
           - "@zikula_users_module.current_user"
           - "@zikula_legal_module.accept_policies_helper"
-          - "@doctrine.orm.default_entity_manager"
           - "@=service('zikula_extensions_module.api.variable').getAll('ZikulaLegalModule')"
+          - "@form.factory"
+          - "@doctrine"
+          - "@zikula_permissions_module.api.permission"
         tags:
             - { name: kernel.event_subscriber }
 

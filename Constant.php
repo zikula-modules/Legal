@@ -25,6 +25,13 @@ class Constant
      */
     const MODNAME = 'ZikulaLegalModule';
 
+    const FORM_BLOCK_PREFIX = 'zikulalegalmodule_policy';
+
+    /**
+     * This key is used to 'disguise' the purpose of passing the UID in the session.
+     */
+    const FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY = 'kjh4kjgsdkjyf76r44hf9';
+
     /**
      * The module variable name indicating that the legal notice is active.
      *
@@ -164,11 +171,4 @@ class Constant
      * @var string
      */
     const ATTRIBUTE_EUCOOKIE_ACCEPTED = '_Legal_euCookieConfirmed';
-
-    /**
-     * Session variable name to force policy acceptance.
-     *
-     * @var string
-     */
-    const SESSION_ACCEPT_POLICIES_VAR = 'Legal_Controller_User_acceptPolicies';
 }
