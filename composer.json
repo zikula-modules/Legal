@@ -1,6 +1,6 @@
 {
     "name": "zikula/legal-module",
-    "version": "3.0.1",
+    "version": "3.1.0",
     "description": "Provides an interface for managing the site's legal documents.",
     "type": "zikula-module",
     "license": "LGPL-3.0+",
@@ -14,12 +14,12 @@
         "psr-4": { "Zikula\\LegalModule\\": "" }
     },
     "require": {
-        "php": ">5.4.0"
+        "php": ">5.5.9"
     },
     "extra": {
         "zikula": {
             "class": "Zikula\\LegalModule\\ZikulaLegalModule",
-            "core-compatibility": ">=1.4.3",
+            "core-compatibility": ">=1.5.0",
             "displayname": "Legal",
             "url": "legal",
             "oldnames": ["Legal"],
