@@ -33,7 +33,7 @@ class PolicyType extends AbstractType
 
         $builder
             ->add('acceptedpolicies_policies', CheckboxType::class, [
-                'data' => true,
+                'data' => false,
                 'help' => $translator->__('Check this box to indicate your acceptance of this site\'s policies.'),
                 'label' => $translator->__('Policies'),
                 'constraints' => $constraints,
