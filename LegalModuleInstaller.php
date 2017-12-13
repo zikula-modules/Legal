@@ -118,6 +118,8 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
             case '3.1.0':
                 // nothing
             case '3.1.1':
+                // nothing
+            case '3.1.2':
                 // future upgrades
 
                 // The following break should be the only one in the switch, and should appear immediately prior to the default case.

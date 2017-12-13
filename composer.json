@@ -1,6 +1,6 @@
 {
     "name": "zikula/legal-module",
-    "version": "3.1.1",
+    "version": "3.1.2",
     "description": "Provides an interface for managing the site's legal documents.",
     "type": "zikula-module",
     "license": "LGPL-3.0+",
