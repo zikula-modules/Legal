@@ -81,7 +81,7 @@ class ResetAgreementHelper
             LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
         ];
 
-        if ($groupId == 0) {
+        if (0 == $groupId) {
             $members = [];
         } else {
             $group = $this->groupRepository->find($groupId);
@@ -89,7 +89,7 @@ class ResetAgreementHelper
                 return false;
             }
             $members = $group->getUsers()->toArray();
-            if (count($members) == 0) {
+            if (0 == count($members)) {
                 return false;
             }
         }

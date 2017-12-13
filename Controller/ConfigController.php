@@ -80,7 +80,7 @@ class ConfigController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
                 foreach ($booleanVars as $booleanVar) {
-                    $formData[$booleanVar] = ($formData[$booleanVar] == true ? 1 : 0);
+                    $formData[$booleanVar] = (true == $formData[$booleanVar] ? 1 : 0);
                 }
 
                 $resetAgreementGroupId = -1;
