@@ -170,7 +170,7 @@ class LinkContainer implements LinkContainerInterface
     private function determineUrl($urlVar, $defaultRoute)
     {
         $customUrl = $this->variableApi->get(LegalConstant::MODNAME, $urlVar, '');
-        if ($customUrl != '') {
+        if ('' != $customUrl) {
             return $customUrl;
         }
 

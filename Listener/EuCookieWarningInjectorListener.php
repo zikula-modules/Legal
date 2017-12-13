@@ -90,13 +90,14 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         }
         $response = $event->getResponse();
         $request = $event->getRequest();
+
         try {
             $routeInfo = $this->router->match($request->getPathInfo());
         } catch (\Exception $e) {
             return;
         }
         $containsProhibitedRoute = in_array($routeInfo['_route'], ['_wdt', 'bazinga_jstranslation_js', 'fos_js_routing_js', 'zikulasearchmodule_search_opensearch']);
-        $containsProhibitedRoute = $containsProhibitedRoute || (strpos($routeInfo['_route'], '_profiler') !== false);
+        $containsProhibitedRoute = $containsProhibitedRoute || (false !== strpos($routeInfo['_route'], '_profiler'));
 
         // do not capture redirects or modify XML HTTP Requests or routing or toolbar requests
         if ($request->isXmlHttpRequest()
@@ -106,7 +107,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         }
 
         // is cookie set?
-        if ($request->cookies->has('cb-enabled') && $request->cookies->get('cb-enabled') == 'accepted') {
+        if ($request->cookies->has('cb-enabled') && 'accepted' == $request->cookies->get('cb-enabled')) {
             return;
         }
 

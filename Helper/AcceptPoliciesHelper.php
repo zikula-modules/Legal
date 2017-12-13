@@ -73,7 +73,7 @@ class AcceptPoliciesHelper
     {
         $termsOfUseActive = isset($this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] : false;
         $privacyPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] : false;
-        $agePolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE]) ? $this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE] != 0 : 0;
+        $agePolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE]) ? 0 != $this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE] : 0;
         $cancellationRightPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE] : false;
         $tradeConditionsActive = isset($this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE] : false;
 
