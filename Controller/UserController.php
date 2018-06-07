@@ -110,7 +110,11 @@ class UserController extends AbstractController
     {
         $doc = $this->renderDocument('privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
 
-        return new Response($doc);
+        $response = new Response($doc);
+
+        $response->headers->set('X-Robots-Tag', 'noindex');
+
+        return $response;
     }
 
     /**
@@ -258,9 +262,9 @@ class UserController extends AbstractController
                 $this->get('zikula_users_module.helper.access_helper')->login($userEntity);
 
                 return $this->redirectToRoute('zikulausersmodule_account_menu');
-            } else {
-                return $this->redirectToRoute('home');
             }
+
+            return $this->redirectToRoute('home');
         }
 
         return $templateParameters = [

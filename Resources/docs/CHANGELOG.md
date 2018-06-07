@@ -1,3 +1,15 @@
+3.1.2
+-----
+  * Set noindex header for privacy policy pages to avoid robots indexing them.
+
+3.1.1
+-----
+  * Bugfixes
+
+3.1.0
+-----
+  * Bugfixes
+
 3.0.0
 -----
   * Migrated to 2.0 module specification (e.g. switched to new controllers and Twig templates)
