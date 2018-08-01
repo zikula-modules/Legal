@@ -228,7 +228,7 @@ class UsersUiListener implements EventSubscriberInterface
         $event->setArgument('returnUrl', $this->router->generate('zikulalegalmodule_user_acceptpolicies'));
         $session = $this->requestStack->getMasterRequest()->getSession();
         $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $userObj->getUid());
-        $session->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.'));
+        $session->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', 'zikulalegalmodule'));
     }
 
     /**
