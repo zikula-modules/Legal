@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\ThemeModule\Api\PageAssetApi;
 use Zikula\ThemeModule\Engine\Asset;
@@ -43,11 +44,6 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     private $assetHelper;
 
     /**
-     * @var string
-     */
-    private $stylesheetOverride;
-
-    /**
      * @var PageAssetApi
      */
     private $pageAssetApi;
@@ -58,26 +54,31 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
     private $enabled;
 
     /**
+     * @var string
+     */
+    private $stylesheetOverride;
+
+    /**
      * Constructor.
      *
      * @param RouterInterface $router
      * @param Asset $assetHelper
-     * @param string $stylesheetOverride Custom path to css file (optional)
      * @param PageAssetApi $pageAssetApi
-     * @param bool $enabled
+     * @param VariableApiInterface $variableApi
+     * @param string $stylesheetOverride Custom path to css file (optional)
      */
     public function __construct(
         RouterInterface $router,
         Asset $assetHelper,
-        $stylesheetOverride = null,
         PageAssetApi $pageAssetApi,
-        $enabled
+        VariableApiInterface $variableApi,
+        $stylesheetOverride = null
     ) {
         $this->router = $router;
         $this->assetHelper = $assetHelper;
-        $this->stylesheetOverride = $stylesheetOverride;
         $this->pageAssetApi = $pageAssetApi;
-        $this->enabled = (bool) $enabled;
+        $this->enabled = (bool) $variableApi->get('ZikulaLegalModule', 'eucookie', 0);
+        $this->stylesheetOverride = $stylesheetOverride;
     }
 
     public function onKernelResponse(FilterResponseEvent $event)

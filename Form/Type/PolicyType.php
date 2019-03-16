@@ -16,26 +16,44 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
-use Zikula\Common\Translator\IdentityTranslator;
+use Zikula\Common\Translator\TranslatorInterface;
+use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\LegalModule\Constant;
 
 class PolicyType extends AbstractType
 {
+    use TranslatorTrait;
+
+    /**
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->setTranslator($translator);
+    }
+
+    /**
+     * @param TranslatorInterface $translator
+     */
+    public function setTranslator(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $translator = $options['translator'];
         $constraints = !$options['userEditAccess']
-            ? [new IsTrue(['message' => $translator->__('you must accept this site\'s policies')])]
+            ? [new IsTrue(['message' => $this->__('you must accept this site\'s policies')])]
             : [];
 
         $builder
             ->add('acceptedpolicies_policies', CheckboxType::class, [
                 'data' => false,
-                'help' => $translator->__('Check this box to indicate your acceptance of this site\'s policies.'),
-                'label' => $translator->__('Policies'),
+                'help' => $this->__('Check this box to indicate your acceptance of this site\'s policies.'),
+                'label' => $this->__('Policies'),
                 'constraints' => $constraints,
                 'required' => !$options['userEditAccess']
             ]);
@@ -55,7 +73,6 @@ class PolicyType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'translator' => new IdentityTranslator(),
             'userEditAccess' => false
         ]);
     }

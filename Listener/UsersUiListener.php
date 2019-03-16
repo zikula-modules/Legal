@@ -17,9 +17,10 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Twig_Environment;
+use Twig\Environment;
 use Zikula\Common\Translator\TranslatorInterface;
 use Zikula\Core\Event\GenericEvent;
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\PolicyType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
@@ -48,7 +49,7 @@ class UsersUiListener implements EventSubscriberInterface
     private $requestStack;
 
     /**
-     * @var Twig_Environment
+     * @var Environment
      */
     private $twig;
 
@@ -96,24 +97,24 @@ class UsersUiListener implements EventSubscriberInterface
      * Constructor.
      *
      * @param RequestStack $requestStack
-     * @param Twig_Environment $twig
+     * @param Environment $twig
      * @param TranslatorInterface $translator
      * @param RouterInterface $router
      * @param CurrentUserApiInterface $currentUserApi
+     * @param VariableApiInterface $variableApi
      * @param AcceptPoliciesHelper $acceptPoliciesHelper
-     * @param array $moduleVars
      * @param FormFactoryInterface $formFactory
      * @param RegistryInterface $registry
      * @param PermissionApiInterface $permissionApi
      */
     public function __construct(
         RequestStack $requestStack,
-        Twig_Environment $twig,
+        Environment $twig,
         TranslatorInterface $translator,
         RouterInterface $router,
         CurrentUserApiInterface $currentUserApi,
+        VariableApiInterface $variableApi,
         AcceptPoliciesHelper $acceptPoliciesHelper,
-        $moduleVars,
         FormFactoryInterface $formFactory,
         RegistryInterface $registry,
         PermissionApiInterface $permissionApi
@@ -123,8 +124,8 @@ class UsersUiListener implements EventSubscriberInterface
         $this->translator = $translator;
         $this->router = $router;
         $this->currentUserApi = $currentUserApi;
+        $this->moduleVars = $variableApi->getAll('ZikulaLegalModule');
         $this->acceptPoliciesHelper = $acceptPoliciesHelper;
-        $this->moduleVars = $moduleVars;
         $this->formFactory = $formFactory;
         $this->doctrine = $registry;
         $this->permissionApi = $permissionApi;
@@ -228,7 +229,7 @@ class UsersUiListener implements EventSubscriberInterface
         $event->setArgument('returnUrl', $this->router->generate('zikulalegalmodule_user_acceptpolicies'));
         $session = $this->requestStack->getMasterRequest()->getSession();
         $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $userObj->getUid());
-        $session->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.', 'zikulalegalmodule'));
+        $session->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.'));
     }
 
     /**
@@ -249,7 +250,6 @@ class UsersUiListener implements EventSubscriberInterface
             'error_bubbling' => true,
             'auto_initialize' => false,
             'mapped' => false,
-            'translator' => $this->translator,
             'userEditAccess' => $this->permissionApi->hasPermission('ZikulaUsersModule::', $uname . "::" . $uid, ACCESS_EDIT)
         ]);
         $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($uid);

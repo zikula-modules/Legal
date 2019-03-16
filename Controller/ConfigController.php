@@ -11,13 +11,16 @@
 
 namespace Zikula\LegalModule\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
+use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
+use Zikula\LegalModule\Form\Type\ConfigType;
+use Zikula\LegalModule\Helper\ResetAgreementHelper;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 
 /**
@@ -33,13 +36,18 @@ class ConfigController extends AbstractController
      * @Template("ZikulaLegalModule:Config:config.html.twig")
      *
      * @param Request $request
+     * @param GroupRepositoryInterface $groupRepository
+     * @param ResetAgreementHelper $resetAgreementHelper
      *
      * @throws AccessDeniedException Thrown if the user doesn't have admin access to the module
      *
      * @return array|RedirectResponse
      */
-    public function configAction(Request $request)
-    {
+    public function configAction(
+        Request $request,
+        GroupRepositoryInterface $groupRepository,
+        ResetAgreementHelper $resetAgreementHelper
+    ) {
         if (!$this->hasPermission(LegalConstant::MODNAME.'::', '::', ACCESS_ADMIN)) {
             throw new AccessDeniedException();
         }
@@ -64,19 +72,16 @@ class ConfigController extends AbstractController
         ];
 
         // get all user groups
-        $groups = $this->get('zikula_groups_module.group_repository')->findAll();
+        $groups = $groupRepository->findAll();
         foreach ($groups as $group) {
             $groupChoices[$group->getName()] = $group->getGid();
         }
 
-        $form = $this->createForm('Zikula\LegalModule\Form\Type\ConfigType',
-            $dataValues, [
-                'translator'   => $this->get('translator.default'),
-                'groupChoices' => $groupChoices,
-            ]
-        );
-
-        if ($form->handleRequest($request)->isValid()) {
+        $form = $this->createForm(ConfigType::class, $dataValues, [
+            'groupChoices' => $groupChoices,
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
                 foreach ($booleanVars as $booleanVar) {
@@ -93,8 +98,7 @@ class ConfigController extends AbstractController
                 $this->setVars($formData);
 
                 if ($resetAgreementGroupId != -1) {
-                    $resetHelper = $this->get('zikula_legal_module.reset_agreement_helper');
-                    $resetHelper->reset($resetAgreementGroupId);
+                    $resetAgreementHelper->reset($resetAgreementGroupId);
                 }
 
                 $this->addFlash('status', $this->__('Done! Module configuration updated.'));
@@ -107,7 +111,7 @@ class ConfigController extends AbstractController
         }
 
         return [
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ];
     }
 }

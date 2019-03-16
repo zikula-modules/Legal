@@ -2,61 +2,21 @@ parameters:
     euwarning.stylesheet: null
 
 services:
-    zikula_legal_module.container.link_container:
-        class: Zikula\LegalModule\Container\LinkContainer
-        arguments:
-          - "@translator.default"
-          - "@jms_i18n_routing.router"
-          - "@zikula_permissions_module.api.permission"
-          - "@zikula_extensions_module.api.variable"
-        tags:
-            - { name: zikula.link_container }
-
-    twig.extension.zikula_legal_module:
-        class: Zikula\LegalModule\Twig\TwigExtension
+    _defaults:
+        autowire: true
+        autoconfigure: true
         public: false
-        arguments: ["@twig"]
-        tags:
-            - { name: twig.extension }
+        bind:
+            $bundle: '@Zikula\LegalModule\ZikulaLegalModule'
 
-    zikula_legal_module.event_listener:
-        class: Zikula\LegalModule\Listener\UsersUiListener
-        arguments:
-          - "@request_stack"
-          - "@twig"
-          - "@translator.default"
-          - "@jms_i18n_routing.router"
-          - "@zikula_users_module.current_user"
-          - "@zikula_legal_module.accept_policies_helper"
-          - "@=service('zikula_extensions_module.api.variable').getAll('ZikulaLegalModule')"
-          - "@form.factory"
-          - "@doctrine"
-          - "@zikula_permissions_module.api.permission"
-        tags:
-            - { name: kernel.event_subscriber }
+    Zikula\LegalModule\:
+        resource: '../../*'
+        exclude: '../../{bootstrap.php,Tests,vendor}'
 
-    zikula_legal_module.eu_warning_listener:
-        class: Zikula\LegalModule\Listener\EuCookieWarningInjectorListener
-        arguments:
-          - "@router"
-          - "@zikula_core.common.theme.asset_helper"
-          - "%euwarning.stylesheet%"
-          - "@zikula_theme_module.api.page_asset"
-          - "@=service('zikula_extensions_module.api.variable').get('ZikulaLegalModule', 'eucookie', 0)"
-        tags:
-            - { name: kernel.event_subscriber }
+    Zikula\LegalModule\Helper\:
+        resource: '../../Helper/*'
+        lazy: true
 
-    zikula_legal_module.accept_policies_helper:
-        class: Zikula\LegalModule\Helper\AcceptPoliciesHelper
+    Zikula\LegalModule\Listener\EuCookieWarningInjectorListener:
         arguments:
-          - "@zikula_permissions_module.api.permission"
-          - "@zikula_users_module.current_user"
-          - "@zikula_users_module.user_repository"
-          - "@=service('zikula_extensions_module.api.variable').getAll('ZikulaLegalModule')"
-
-    zikula_legal_module.reset_agreement_helper:
-        class: Zikula\LegalModule\Helper\ResetAgreementHelper
-        arguments:
-          - "@zikula_users_module.user_attribute_repository"
-          - "@zikula_groups_module.group_repository"
-          - "@zikula_permissions_module.api.permission"
+          $stylesheetOverride: '%euwarning.stylesheet%'

@@ -11,41 +11,25 @@
 
 namespace Zikula\LegalModule\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\AcceptPoliciesType;
+use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
+use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
+use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
+use Zikula\UsersModule\Helper\AccessHelper;
 
 /**
  * Class UserController.
  */
 class UserController extends AbstractController
 {
-    /**
-     * @deprecated
-     * Route not needed here because method is legacy-only.
-     *
-     * Legal Module main user function.
-     *
-     * Redirects to the Terms of Use legal document.
-     *
-     * @return RedirectResponse
-     */
-    public function mainAction()
-    {
-        $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
-        if (empty($url)) {
-            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse');
-        }
-
-        return new RedirectResponse($url);
-    }
-
     /**
      * @Route("")
      *
@@ -110,11 +94,7 @@ class UserController extends AbstractController
     {
         $doc = $this->renderDocument('privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
 
-        $response = new Response($doc);
-
-        $response->headers->set('X-Robots-Tag', 'noindex');
-
-        return $response;
+        return new Response($doc);
     }
 
     /**
@@ -196,7 +176,7 @@ class UserController extends AbstractController
 
         if (!$this->getVar($activeFlagKey)) {
             // intentionally return non-Response
-            return $this->renderView('@'.LegalConstant::MODNAME.'/User/policyNotActive.html.twig');
+            return $this->renderView('@' . LegalConstant::MODNAME . '/User/policyNotActive.html.twig');
         }
 
         $customUrl = $this->getVar($customUrlKey, '');
@@ -204,7 +184,7 @@ class UserController extends AbstractController
             return $this->redirect($customUrl);
         }
 
-        $view = $this->renderView('@'.LegalConstant::MODNAME."/User/{$documentName}.html.twig");
+        $view = $this->renderView('@' . LegalConstant::MODNAME . '/User/' . $documentName . '.html.twig');
 
         // intentionally return non-Response
         return $view;
@@ -215,15 +195,24 @@ class UserController extends AbstractController
      * @Template("ZikulaLegalModule:User:acceptPolicies.html.twig")
      *
      * @param Request $request
+     * @param CurrentUserApiInterface $currentUserApi
+     * @param UserRepositoryInterface $userRepository
+     * @param AccessHelper $accessHelper
+     * @param AcceptPoliciesHelper $acceptPoliciesHelper
+     *
      * @return Response|array
      */
-    public function acceptPoliciesAction(Request $request)
-    {
+    public function acceptPoliciesAction(
+        Request $request,
+        CurrentUserApiInterface $currentUserApi,
+        UserRepositoryInterface $userRepository,
+        AccessHelper $accessHelper,
+        AcceptPoliciesHelper $acceptPoliciesHelper
+    ) {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
         $uid = $request->getSession()->get(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, null);
         $request->getSession()->remove(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY);
-        $currentUserApi = $this->get('zikula_users_module.current_user');
 
         if (isset($uid)) {
             $login = true;
@@ -232,14 +221,13 @@ class UserController extends AbstractController
             $uid = $currentUserApi->get('uid');
         }
 
-        $acceptPoliciesHelper = $this->get('zikula_legal_module.accept_policies_helper');
         $form = $this->createForm(AcceptPoliciesType::class, [
             'uid' => $uid,
             'login' => $login
         ]);
         if ($form->handleRequest($request)->isValid()) {
             $data = $form->getData();
-            $userEntity = $this->get('zikula_users_module.user_repository')->find($data['uid']);
+            $userEntity = $userRepository->find($data['uid']);
             $policiesToCheck = [
                 'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
                 'privacyPolicy' => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
@@ -259,12 +247,12 @@ class UserController extends AbstractController
             }
             $this->get('doctrine')->getManager()->flush();
             if ($data['acceptedpolicies_policies'] && $data['login']) {
-                $this->get('zikula_users_module.helper.access_helper')->login($userEntity);
+                $accessHelper->login($userEntity);
 
                 return $this->redirectToRoute('zikulausersmodule_account_menu');
+            } else {
+                return $this->redirectToRoute('home');
             }
-
-            return $this->redirectToRoute('home');
         }
 
         return $templateParameters = [

@@ -41,7 +41,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
             LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL    => '',
             LegalConstant::MODVAR_TRADECONDITIONS_URL            => '',
             LegalConstant::MODVAR_MINIMUM_AGE                    => 13,
-            LegalConstant::MODVAR_EUCOOKIE                       => 0,
+            LegalConstant::MODVAR_EUCOOKIE                       => 0
         ]);
 
         // Initialisation successful

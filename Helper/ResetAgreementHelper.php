@@ -23,6 +23,11 @@ use Zikula\UsersModule\Entity\RepositoryInterface\UserAttributeRepositoryInterfa
 class ResetAgreementHelper
 {
     /**
+     * @var PermissionApiInterface
+     */
+    private $permissionApi;
+
+    /**
      * @var UserAttributeRepositoryInterface
      */
     private $userAttributeRepository;
@@ -30,28 +35,23 @@ class ResetAgreementHelper
     /**
      * @var GroupRepositoryInterface
      */
-    protected $groupRepository;
-
-    /**
-     * @var PermissionApiInterface
-     */
-    private $permissionApi;
+    private $groupRepository;
 
     /**
      * ResetAgreementHelper constructor.
      *
+     * @param PermissionApiInterface $permissionApi
      * @param UserAttributeRepositoryInterface $attributeRepository
      * @param GroupRepositoryInterface $groupRepository
-     * @param PermissionApiInterface $permissionApi
      */
     public function __construct(
+        PermissionApiInterface $permissionApi,
         UserAttributeRepositoryInterface $attributeRepository,
-        GroupRepositoryInterface $groupRepository,
-        PermissionApiInterface $permissionApi
+        GroupRepositoryInterface $groupRepository
     ) {
+        $this->permissionApi = $permissionApi;
         $this->userAttributeRepository = $attributeRepository;
         $this->groupRepository = $groupRepository;
-        $this->permissionApi = $permissionApi;
     }
 
     /**

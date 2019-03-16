@@ -11,24 +11,26 @@
 
 namespace Zikula\LegalModule\Twig;
 
-use Twig_Environment;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
 /**
  * Twig extension class.
  */
-class TwigExtension extends \Twig_Extension
+class TwigExtension extends AbstractExtension
 {
     /**
-     * @var Twig_Environment
+     * @var Environment
      */
     private $twig;
 
     /**
      * Constructor.
      *
-     * @param Twig_Environment $twig The twig templating service
+     * @param Environment $twig The twig templating service
      */
-    public function __construct(Twig_Environment $twig)
+    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
     }
@@ -41,7 +43,7 @@ class TwigExtension extends \Twig_Extension
     public function getFunctions()
     {
         return [
-            new \Twig_SimpleFunction('zikulalegalmodule_inlineLink', [$this, 'inlineLink'], ['is_safe' => ['html']]),
+            new TwigFunction('zikulalegalmodule_inlineLink', [$this, 'inlineLink'], ['is_safe' => ['html']]),
         ];
     }
 

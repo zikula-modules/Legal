@@ -11,6 +11,7 @@
 
 namespace Zikula\LegalModule\Helper;
 
+use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
@@ -50,18 +51,18 @@ class AcceptPoliciesHelper
      * @param PermissionApiInterface $permissionApi
      * @param CurrentUserApiInterface $currentUserApi
      * @param UserRepositoryInterface $userRepository
-     * @param array $moduleVars
+     * @param VariableApiInterface $variableApi
      */
     public function __construct(
         PermissionApiInterface $permissionApi,
         CurrentUserApiInterface $currentUserApi,
         UserRepositoryInterface $userRepository,
-        $moduleVars // cannot typehint to array or fails on cache warmup
+        VariableApiInterface $variableApi
     ) {
         $this->permissionApi = $permissionApi;
         $this->currentUserApi = $currentUserApi;
         $this->userRepository = $userRepository;
-        $this->moduleVars = $moduleVars;
+        $this->moduleVars = $variableApi->getAll('ZikulaLegalModule');
     }
 
     /**
