@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -12,6 +13,8 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Listener;
 
+use DateTime;
+use DateTimeZone;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormFactory;
@@ -27,7 +30,6 @@ use Zikula\LegalModule\Form\Type\PolicyType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\AccessEvents;
-use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
 use Zikula\UsersModule\Event\UserFormAwareEvent;
@@ -42,7 +44,7 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * @var string
      */
-    const EVENT_KEY = 'module.legal.users_ui_handler';
+    private const EVENT_KEY = 'module.legal.users_ui_handler';
 
     /**
      * @var RequestStack
@@ -63,11 +65,6 @@ class UsersUiListener implements EventSubscriberInterface
      * @var RouterInterface
      */
     private $router;
-
-    /**
-     * @var CurrentUserApiInterface
-     */
-    private $currentUserApi;
 
     /**
      * @var AcceptPoliciesHelper
@@ -94,26 +91,11 @@ class UsersUiListener implements EventSubscriberInterface
      */
     protected $permissionApi;
 
-    /**
-     * Constructor.
-     *
-     * @param RequestStack $requestStack
-     * @param Environment $twig
-     * @param TranslatorInterface $translator
-     * @param RouterInterface $router
-     * @param CurrentUserApiInterface $currentUserApi
-     * @param VariableApiInterface $variableApi
-     * @param AcceptPoliciesHelper $acceptPoliciesHelper
-     * @param FormFactoryInterface $formFactory
-     * @param RegistryInterface $registry
-     * @param PermissionApiInterface $permissionApi
-     */
     public function __construct(
         RequestStack $requestStack,
         Environment $twig,
         TranslatorInterface $translator,
         RouterInterface $router,
-        CurrentUserApiInterface $currentUserApi,
         VariableApiInterface $variableApi,
         AcceptPoliciesHelper $acceptPoliciesHelper,
         FormFactoryInterface $formFactory,
@@ -124,7 +106,6 @@ class UsersUiListener implements EventSubscriberInterface
         $this->twig = $twig;
         $this->translator = $translator;
         $this->router = $router;
-        $this->currentUserApi = $currentUserApi;
         $this->moduleVars = $variableApi->getAll('ZikulaLegalModule');
         $this->acceptPoliciesHelper = $acceptPoliciesHelper;
         $this->formFactory = $formFactory;
@@ -149,12 +130,8 @@ class UsersUiListener implements EventSubscriberInterface
 
     /**
      * Responds to ui.view hook-like event notifications.
-     *
-     * @param GenericEvent $event The event that triggered this function call
-     *
-     * @return void
      */
-    public function uiView(GenericEvent $event)
+    public function uiView(GenericEvent $event): void
     {
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
@@ -184,18 +161,14 @@ class UsersUiListener implements EventSubscriberInterface
      * This handler is triggered by the 'user.login.veto' event.  It vetos (denies) a
      * login attempt if the users's Legal record is flagged to force the user to accept
      * one or more legal agreements.
-     *
-     * @param GenericEvent $event The event that triggered this handler
-     *
-     * @return void
      */
-    public function acceptPolicies(GenericEvent $event)
+    public function acceptPolicies(GenericEvent $event): void
     {
-        $termsOfUseActive = isset($this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] : false;
-        $privacyPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] : false;
+        $termsOfUseActive = $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] ?? false;
+        $privacyPolicyActive = $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] ?? false;
         $agePolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE]) ? 0 !== $this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE] : 0;
-        $cancellationRightPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE] : false;
-        $tradeConditionsActive = isset($this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE] : false;
+        $cancellationRightPolicyActive = $this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE] ?? false;
+        $tradeConditionsActive = $this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE] ?? false;
 
         if (!$termsOfUseActive && !$privacyPolicyActive && !$agePolicyActive && !$tradeConditionsActive && !$cancellationRightPolicyActive) {
             return;
@@ -228,15 +201,14 @@ class UsersUiListener implements EventSubscriberInterface
 
         $event->stopPropagation();
         $event->setArgument('returnUrl', $this->router->generate('zikulalegalmodule_user_acceptpolicies'));
-        $session = $this->requestStack->getMasterRequest()->getSession();
-        $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $userObj->getUid());
-        $session->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.'));
+        $session = null !== $this->requestStack->getMasterRequest() ? $this->requestStack->getMasterRequest()->getSession() : null;
+        if (null !== $session) {
+            $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $userObj->getUid());
+            $session->getFlashBag()->add('error', $this->translator->__('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.'));
+        }
     }
 
-    /**
-     * @param UserFormAwareEvent $event
-     */
-    public function amendForm(UserFormAwareEvent $event)
+    public function amendForm(UserFormAwareEvent $event): void
     {
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         if (array_sum($activePolicies) < 1) {
@@ -251,7 +223,7 @@ class UsersUiListener implements EventSubscriberInterface
             'error_bubbling' => true,
             'auto_initialize' => false,
             'mapped' => false,
-            'userEditAccess' => $this->permissionApi->hasPermission('ZikulaUsersModule::', $uname . "::" . $uid, ACCESS_EDIT)
+            'userEditAccess' => $this->permissionApi->hasPermission('ZikulaUsersModule::', $uname . '::' . $uid, ACCESS_EDIT)
         ]);
         $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($uid);
         $event
@@ -264,32 +236,30 @@ class UsersUiListener implements EventSubscriberInterface
         $this->translator->setDomain($originalDomain);
     }
 
-    /**
-     * @param UserFormDataEvent $event
-     */
-    public function editFormHandler(UserFormDataEvent $event)
+    public function editFormHandler(UserFormDataEvent $event): void
     {
         $userEntity = $event->getUserEntity();
         $formData = $event->getFormData(LegalConstant::FORM_BLOCK_PREFIX);
-        if (isset($formData)) {
-            $policiesToCheck = [
-                'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
-                'privacyPolicy' => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
-                'agePolicy' => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
-                'tradeConditions' => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
-                'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
-            ];
-            $nowUTC = new \DateTime('now', new \DateTimeZone('UTC'));
-            $nowUTCStr = $nowUTC->format(\DateTime::ISO8601);
-            $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
-            foreach ($policiesToCheck as $policyName => $acceptedVar) {
-                if ($formData['acceptedpolicies_policies'] && $activePolicies[$policyName]) {
-                    $userEntity->setAttribute($acceptedVar, $nowUTCStr);
-                } else {
-                    $userEntity->delAttribute($acceptedVar);
-                }
-            }
-            $this->doctrine->getManager()->flush();
+        if (!isset($formData)) {
+            return;
         }
+        $policiesToCheck = [
+            'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
+            'privacyPolicy' => LegalConstant::ATTRIBUTE_PRIVACYPOLICY_ACCEPTED,
+            'agePolicy' => LegalConstant::ATTRIBUTE_AGEPOLICY_CONFIRMED,
+            'tradeConditions' => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
+            'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
+        ];
+        $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
+        $nowUTCStr = $nowUTC->format(DateTime::ATOM);
+        $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
+        foreach ($policiesToCheck as $policyName => $acceptedVar) {
+            if ($formData['acceptedpolicies_policies'] && $activePolicies[$policyName]) {
+                $userEntity->setAttribute($acceptedVar, $nowUTCStr);
+            } else {
+                $userEntity->delAttribute($acceptedVar);
+            }
+        }
+        $this->doctrine->getManager()->flush();
     }
 }

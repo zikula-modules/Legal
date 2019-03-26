@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -12,6 +13,7 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Helper;
 
+use Exception;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
@@ -38,13 +40,6 @@ class ResetAgreementHelper
      */
     private $groupRepository;
 
-    /**
-     * ResetAgreementHelper constructor.
-     *
-     * @param PermissionApiInterface $permissionApi
-     * @param UserAttributeRepositoryInterface $attributeRepository
-     * @param GroupRepositoryInterface $groupRepository
-     */
     public function __construct(
         PermissionApiInterface $permissionApi,
         UserAttributeRepositoryInterface $attributeRepository,
@@ -58,20 +53,16 @@ class ResetAgreementHelper
     /**
      * Reset the agreement to the terms of use for a specific group of users, or all users.
      *
-     * @param int $groupId The group id; 0 = all groups
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
-     * @throws \Exception            Thrown in cases where expected data is not present or not in an expected form
-     *
-     * @return bool True if successfully reset, otherwise false
+     * @throws Exception Thrown in cases where expected data is not present or not in an expected form
      */
-    public function reset($groupId)
+    public function reset(int $groupId): bool
     {
         if (!$this->permissionApi->hasPermission(LegalConstant::MODNAME . '::', '::', ACCESS_ADMIN)) {
             throw new AccessDeniedException();
         }
         if (!is_numeric($groupId) || $groupId < 0) {
-            throw new \Exception();
+            throw new Exception();
         }
 
         $attributeNames = [
@@ -82,9 +73,8 @@ class ResetAgreementHelper
             LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
         ];
 
-        if (0 === $groupId) {
-            $members = [];
-        } else {
+        $members = [];
+        if (0 !== $groupId) {
             $group = $this->groupRepository->find($groupId);
             if (empty($group)) {
                 return false;

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -24,152 +25,155 @@ class Constant
      *
      * @var string
      */
-    const MODNAME = 'ZikulaLegalModule';
+    public const MODNAME = 'ZikulaLegalModule';
 
-    const FORM_BLOCK_PREFIX = 'zikulalegalmodule_policy';
+    /**
+     * The form data prefix
+     */
+    public const FORM_BLOCK_PREFIX = 'zikulalegalmodule_policy';
 
     /**
      * This key is used to 'disguise' the purpose of passing the UID in the session.
      */
-    const FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY = 'kjh4kjgsdkjyf76r44hf9';
+    public const FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY = 'kjh4kjgsdkjyf76r44hf9';
 
     /**
      * The module variable name indicating that the legal notice is active.
      *
      * @var string
      */
-    const MODVAR_LEGALNOTICE_ACTIVE = 'legalNoticeActive';
+    public const MODVAR_LEGALNOTICE_ACTIVE = 'legalNoticeActive';
 
     /**
      * The module variable name indicating that the terms of use is active.
      *
      * @var string
      */
-    const MODVAR_TERMS_ACTIVE = 'termsOfUseActive';
+    public const MODVAR_TERMS_ACTIVE = 'termsOfUseActive';
 
     /**
      * The module variable name indicating that the privacy policy is active.
      *
      * @var string
      */
-    const MODVAR_PRIVACY_ACTIVE = 'privacyPolicyActive';
+    public const MODVAR_PRIVACY_ACTIVE = 'privacyPolicyActive';
 
     /**
      * The module variable name indicating that the accessibility statement is active.
      *
      * @var string
      */
-    const MODVAR_ACCESSIBILITY_ACTIVE = 'accessibilityStatementActive';
+    public const MODVAR_ACCESSIBILITY_ACTIVE = 'accessibilityStatementActive';
 
     /**
      * The module variable name indicating that the trade conditions page is active.
      *
      * @var string
      */
-    const MODVAR_TRADECONDITIONS_ACTIVE = 'tradeConditionsActive';
+    public const MODVAR_TRADECONDITIONS_ACTIVE = 'tradeConditionsActive';
 
     /**
      * The module variable name indicating that the cancellation right policy page is active.
      *
      * @var string
      */
-    const MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE = 'cancellationRightPolicyActive';
+    public const MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE = 'cancellationRightPolicyActive';
 
     /**
      * The module variable name storing an optional url for the legal notice.
      *
      * @var string
      */
-    const MODVAR_LEGALNOTICE_URL = 'legalNoticeUrl';
+    public const MODVAR_LEGALNOTICE_URL = 'legalNoticeUrl';
 
     /**
      * The module variable name storing an optional url for the terms of use.
      *
      * @var string
      */
-    const MODVAR_TERMS_URL = 'termsOfUseUrl';
+    public const MODVAR_TERMS_URL = 'termsOfUseUrl';
 
     /**
      * The module variable name storing an optional url for the privacy policy.
      *
      * @var string
      */
-    const MODVAR_PRIVACY_URL = 'privacyPolicyUrl';
+    public const MODVAR_PRIVACY_URL = 'privacyPolicyUrl';
 
     /**
      * The module variable name storing an optional url for the accessibility guidelines.
      *
      * @var string
      */
-    const MODVAR_ACCESSIBILITY_URL = 'accessibilityStatementUrl';
+    public const MODVAR_ACCESSIBILITY_URL = 'accessibilityStatementUrl';
 
     /**
      * The module variable name storing an optional url for the trade conditions.
      *
      * @var string
      */
-    const MODVAR_TRADECONDITIONS_URL = 'tradeConditionsUrl';
+    public const MODVAR_TRADECONDITIONS_URL = 'tradeConditionsUrl';
 
     /**
      * The module variable name storing an optional url for the cancellation right policy.
      *
      * @var string
      */
-    const MODVAR_CANCELLATIONRIGHTPOLICY_URL = 'cancellationRightPolicyUrl';
+    public const MODVAR_CANCELLATIONRIGHTPOLICY_URL = 'cancellationRightPolicyUrl';
 
     /**
      * The module variable containing the minimum age.
      *
      * @var string
      */
-    const MODVAR_MINIMUM_AGE = 'minimumAge';
+    public const MODVAR_MINIMUM_AGE = 'minimumAge';
 
     /**
      * The module variable indicating that the EU cookie law complaince option is enabled.
      *
-     * @var int
+     * @var string
      */
-    const MODVAR_EUCOOKIE = 'eucookie';
+    public const MODVAR_EUCOOKIE = 'eucookie';
 
     /**
      * Users account record attribute key for terms of use acceptance.
      *
      * @var string
      */
-    const ATTRIBUTE_TERMSOFUSE_ACCEPTED = '_Legal_termsOfUseAccepted';
+    public const ATTRIBUTE_TERMSOFUSE_ACCEPTED = '_Legal_termsOfUseAccepted';
 
     /**
      * Users account record attribute key for terms of use acceptance.
      *
      * @var string
      */
-    const ATTRIBUTE_PRIVACYPOLICY_ACCEPTED = '_Legal_privacyPolicyAccepted';
+    public const ATTRIBUTE_PRIVACYPOLICY_ACCEPTED = '_Legal_privacyPolicyAccepted';
 
     /**
      * Users account record attribute key for age policy confirmation.
      *
      * @var string
      */
-    const ATTRIBUTE_AGEPOLICY_CONFIRMED = '_Legal_agePolicyConfirmed';
+    public const ATTRIBUTE_AGEPOLICY_CONFIRMED = '_Legal_agePolicyConfirmed';
 
     /**
      * Users account record attribute key for trade conditions acceptance.
      *
      * @var string
      */
-    const ATTRIBUTE_TRADECONDITIONS_ACCEPTED = '_Legal_tradeConditionsConfirmed';
+    public const ATTRIBUTE_TRADECONDITIONS_ACCEPTED = '_Legal_tradeConditionsConfirmed';
 
     /**
      * Users account record attribute key for cancellation right policy acceptance.
      *
      * @var string
      */
-    const ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED = '_Legal_cancellationRightPolicyConfirmed';
+    public const ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED = '_Legal_cancellationRightPolicyConfirmed';
 
     /**
      * Users account record attribute key for eu cookie acceptance.
      *
      * @var string
      */
-    const ATTRIBUTE_EUCOOKIE_ACCEPTED = '_Legal_euCookieConfirmed';
+    public const ATTRIBUTE_EUCOOKIE_ACCEPTED = '_Legal_euCookieConfirmed';
 }

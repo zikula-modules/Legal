@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -41,31 +42,19 @@ class LinkContainer implements LinkContainerInterface
      */
     private $variableApi;
 
-    /**
-     * LinkContainer constructor.
-     *
-     * @param TranslatorInterface $translator    Translator service instance
-     * @param RouterInterface     $router        RouterInterface service instance
-     * @param PermissionApiInterface $permissionApi PermissionApi service instance
-     * @param VariableApiInterface $variableApi   VariableApi service instance
-     */
-    public function __construct(TranslatorInterface $translator, RouterInterface $router, PermissionApiInterface $permissionApi, VariableApiInterface $variableApi)
-    {
+    public function __construct(
+        TranslatorInterface $translator,
+        RouterInterface $router,
+        PermissionApiInterface $permissionApi,
+        VariableApiInterface $variableApi
+    ) {
         $this->translator = $translator;
         $this->router = $router;
         $this->permissionApi = $permissionApi;
         $this->variableApi = $variableApi;
     }
 
-    /**
-     * get Links of any type for this extension
-     * required by the interface.
-     *
-     * @param string $type
-     *
-     * @return array
-     */
-    public function getLinks($type = LinkContainerInterface::TYPE_ADMIN)
+    public function getLinks(string $type = LinkContainerInterface::TYPE_ADMIN): array
     {
         $method = 'get'.ucfirst(mb_strtolower($type));
         if (method_exists($this, $method)) {
@@ -76,11 +65,9 @@ class LinkContainer implements LinkContainerInterface
     }
 
     /**
-     * get the Admin links for this extension.
-     *
-     * @return array
+     * Get the admin links for this extension.
      */
-    private function getAdmin()
+    private function getAdmin(): array
     {
         $links = [];
 
@@ -96,45 +83,43 @@ class LinkContainer implements LinkContainerInterface
     }
 
     /**
-     * get the User links for this extension.
-     *
-     * @return array
+     * Get the user links for this extension.
      */
-    private function getUser()
+    private function getUser(): array
     {
         $links = [];
 
-        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, false)) {
+        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_LEGALNOTICE_ACTIVE)) {
             $links[] = [
                 'text' => $this->translator->__('Legal notice', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_LEGALNOTICE_URL, 'legalnotice'),
             ];
         }
-        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE, false)) {
+        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TERMS_ACTIVE)) {
             $links[] = [
                 'text' => $this->translator->__('Terms of use', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_TERMS_URL, 'termsofuse'),
             ];
         }
-        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE, false)) {
+        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_PRIVACY_ACTIVE)) {
             $links[] = [
                 'text' => $this->translator->__('Privacy policy', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_PRIVACY_URL, 'privacypolicy'),
             ];
         }
-        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, false)) {
+        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE)) {
             $links[] = [
                 'text' => $this->translator->__('Trade conditions', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_TRADECONDITIONS_URL, 'tradeconditions'),
             ];
         }
-        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, false)) {
+        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE)) {
             $links[] = [
                 'text' => $this->translator->__('Cancellation right policy', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, 'cancellationrightpolicy'),
             ];
         }
-        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, false)) {
+        if ($this->variableApi->get(LegalConstant::MODNAME, LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE)) {
             $links[] = [
                 'text' => $this->translator->__('Accessibility statement', 'zikulalegalmodule'),
                 'url'  => $this->determineUrl(LegalConstant::MODVAR_ACCESSIBILITY_URL, 'accessibilitystatement'),
@@ -145,11 +130,9 @@ class LinkContainer implements LinkContainerInterface
     }
 
     /**
-     * get the Account links for this extension.
-     *
-     * @return array
+     * Get the account links for this extension.
      */
-    private function getAccount()
+    private function getAccount(): array
     {
         $links = [];
         $links[] = [
@@ -163,12 +146,8 @@ class LinkContainer implements LinkContainerInterface
 
     /**
      * Determine the URL for a certain user link.
-     *
-     * @param string $urlVar       Name of module var storing a possible custom url
-     * @param string $defaultRoute Suffix for route for default url
-     * @return string
      */
-    private function determineUrl($urlVar, $defaultRoute)
+    private function determineUrl(string $urlVar, string $defaultRoute): string
     {
         $customUrl = $this->variableApi->get(LegalConstant::MODNAME, $urlVar, '');
         if ('' !== $customUrl) {
@@ -178,12 +157,7 @@ class LinkContainer implements LinkContainerInterface
         return $this->router->generate('zikulalegalmodule_user_'.$defaultRoute);
     }
 
-    /**
-     * set the BundleName as required by the interface.
-     *
-     * @return string
-     */
-    public function getBundleName()
+    public function getBundleName(): string
     {
         return LegalConstant::MODNAME;
     }

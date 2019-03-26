@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -12,11 +13,14 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
@@ -24,6 +28,7 @@ use Zikula\LegalModule\Form\Type\AcceptPoliciesType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
+use Zikula\UsersModule\Entity\UserEntity;
 use Zikula\UsersModule\Helper\AccessHelper;
 
 /**
@@ -34,13 +39,10 @@ class UserController extends AbstractController
     /**
      * @Route("")
      *
-     * Legal Module main user function.
-     *
+     * Legal module main user function.
      * Redirects to the Terms of Use legal document.
-     *
-     * @return RedirectResponse
      */
-    public function indexAction()
+    public function indexAction(): RedirectResponse
     {
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
@@ -56,10 +58,8 @@ class UserController extends AbstractController
      * Display Legal notice.
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
-     *
-     * @return Response
      */
-    public function legalNoticeAction()
+    public function legalNoticeAction(): Response
     {
         $doc = $this->renderDocument('legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
 
@@ -72,10 +72,8 @@ class UserController extends AbstractController
      * Display Terms of Use
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
-     *
-     * @return Response
      */
-    public function termsofuseAction()
+    public function termsofuseAction(): Response
     {
         $doc = $this->renderDocument('termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
 
@@ -88,10 +86,8 @@ class UserController extends AbstractController
      * Display Privacy Policy
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
-     *
-     * @return Response
      */
-    public function privacyPolicyAction()
+    public function privacyPolicyAction(): Response
     {
         $doc = $this->renderDocument('privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
 
@@ -104,10 +100,8 @@ class UserController extends AbstractController
      * Display Accessibility statement
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
-     *
-     * @return Response
      */
-    public function accessibilitystatementAction()
+    public function accessibilitystatementAction(): Response
     {
         $doc = $this->renderDocument('accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
 
@@ -120,10 +114,8 @@ class UserController extends AbstractController
      * Display Cancellation right policy
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
-     *
-     * @return Response
      */
-    public function cancellationRightPolicyAction()
+    public function cancellationRightPolicyAction(): Response
     {
         $doc = $this->renderDocument('cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
 
@@ -136,10 +128,8 @@ class UserController extends AbstractController
      * Display Trade conditions
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
-     *
-     * @return Response
      */
-    public function tradeConditionsAction()
+    public function tradeConditionsAction(): Response
     {
         $doc = $this->renderDocument('tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
 
@@ -155,22 +145,12 @@ class UserController extends AbstractController
      * If no custom URL exists, then this function will render and return the appropriate template for the legal document, as
      * specified by $documentName. If the legal document
      *
-     * @param string $documentName  The "name" of the document, as specified by the names of the user and text template
-     *                              files in the format 'documentname.html.twig'
-     * @param string $activeFlagKey The string used to name the module variable that indicates whether this legal document is
-     *                              active or not; typically this is a constant from {@link LegalConstant}, such as
-     *                              {@link LegalConstant::MODVAR_LEGALNOTICE_ACTIVE}
-     * @param string $customUrlKey  The string used to name the module variable that contains a custom static URL for the
-     *                              legal document; typically this is a constant from {@link LegalConstant}, such as
-     *                              {@link LegalConstant::MODVAR_TERMS_URL}
-     *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      *
      * @return RedirectResponse|string HTML output string
      */
-    private function renderDocument($documentName, $activeFlagKey, $customUrlKey)
+    private function renderDocument(string $documentName, string $activeFlagKey, string $customUrlKey)
     {
-        // Security check
         if (!$this->hasPermission(LegalConstant::MODNAME.'::'.$documentName, '::', ACCESS_OVERVIEW)) {
             throw new AccessDeniedException();
         }
@@ -195,13 +175,8 @@ class UserController extends AbstractController
      * @Route("/acceptpolicies")
      * @Template("ZikulaLegalModule:User:acceptPolicies.html.twig")
      *
-     * @param Request $request
-     * @param CurrentUserApiInterface $currentUserApi
-     * @param UserRepositoryInterface $userRepository
-     * @param AccessHelper $accessHelper
-     * @param AcceptPoliciesHelper $acceptPoliciesHelper
-     *
      * @return Response|array
+     * @throws Exception
      */
     public function acceptPoliciesAction(
         Request $request,
@@ -212,10 +187,14 @@ class UserController extends AbstractController
     ) {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
-        $uid = $request->getSession()->get(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, null);
-        $request->getSession()->remove(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY);
+        $session = $request->getSession();
+        $uid = null;
+        if (null !== $session) {
+            $uid = $session->get(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY);
+            $session->remove(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY);
+        }
 
-        if (isset($uid)) {
+        if (null !== $uid) {
             $login = true;
         } else {
             $login = false;
@@ -228,6 +207,7 @@ class UserController extends AbstractController
         ]);
         if ($form->handleRequest($request)->isValid()) {
             $data = $form->getData();
+            /** @var UserEntity $userEntity */
             $userEntity = $userRepository->find($data['uid']);
             $policiesToCheck = [
                 'termsOfUse' => LegalConstant::ATTRIBUTE_TERMSOFUSE_ACCEPTED,
@@ -236,8 +216,8 @@ class UserController extends AbstractController
                 'tradeConditions' => LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED,
                 'cancellationRightPolicy' => LegalConstant::ATTRIBUTE_CANCELLATIONRIGHTPOLICY_ACCEPTED,
             ];
-            $nowUTC = new \DateTime('now', new \DateTimeZone('UTC'));
-            $nowUTCStr = $nowUTC->format(\DateTime::ISO8601);
+            $nowUTC = new DateTime('now', new DateTimeZone('UTC'));
+            $nowUTCStr = $nowUTC->format(DateTime::ATOM);
             $activePolicies = $acceptPoliciesHelper->getActivePolicies();
             foreach ($policiesToCheck as $policyName => $acceptedVar) {
                 if ($data['acceptedpolicies_policies'] && $activePolicies[$policyName]) {
@@ -256,7 +236,7 @@ class UserController extends AbstractController
             return $this->redirectToRoute('home');
         }
 
-        return $templateParameters = [
+        return [
             'login' => $login,
             'form' => $form->createView(),
             'activePolicies' => $acceptPoliciesHelper->getActivePolicies(),

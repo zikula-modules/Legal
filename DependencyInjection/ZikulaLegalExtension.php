@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -22,12 +23,6 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class ZikulaLegalExtension extends Extension
 {
-    /**
-     * Responds to the app.config configuration parameter.
-     *
-     * @param array            $configs
-     * @param ContainerBuilder $container
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, new FileLocator(realpath(__DIR__.'/../Resources/config')));

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Twig;
 
+use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -27,13 +28,14 @@ class TwigExtension extends AbstractExtension
     private $twig;
 
     /**
-     * Constructor.
-     *
-     * @param Environment $twig The twig templating service
+     * @var FilesystemLoader
      */
-    public function __construct(Environment $twig)
+    protected $twigLoader;
+
+    public function __construct(Environment $twig, FilesystemLoader $twigLoader)
     {
         $this->twig = $twig;
+        $this->twigLoader = $twigLoader;
     }
 
     /**
@@ -63,31 +65,21 @@ class TwigExtension extends AbstractExtension
      *      InlineLink/privacyPolicy.html.twig
      *      InlineLink/termsOfUse.html.twig
      *      InlineLink/tradeConditions.html.twig
-     *
-     * @param string $policy The unique string identifier of the policy type whose inline link is to be returned; required
-     * @param string $target The target for the generated link, such as "_blank" to open the policy in a new window; optional, default is blank (same effect as "_self")
-     *
-     * @return string The rendered template output for the specified policy type
      */
-    public function inlineLink($policy = '', $target = '')
+    public function inlineLink(string $policy = '', string $target = ''): string
     {
-        $defaultTemplate = '@ZikulaLegalModule/InlineLink/notFound.html.twig';
-
+        $templatePath = '@ZikulaLegalModule/InlineLink/';
         $templateParameters = [
-            'target' => $target,
+            'target' => $target
         ];
 
         if (!empty($policy)) {
-            try {
-                $output = $this->twig->render('@ZikulaLegalModule/InlineLink/'.$policy.'.html.twig', $templateParameters);
-
-                return $output;
-            } catch (\Exception $e) {
-                // template does not exist
-                return $this->twig->render($defaultTemplate, $templateParameters);
+            $template = $templatePath . $policy . '.html.twig';
+            if ($this->twigLoader->exists($template)) {
+                return $this->twig->render($template, $templateParameters);
             }
         }
 
-        return $this->twig->render($defaultTemplate, $templateParameters);
+        return $this->twig->render($templatePath . 'notFound.html.twig', $templateParameters);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -20,12 +21,7 @@ use Zikula\LegalModule\Constant as LegalConstant;
  */
 class LegalModuleInstaller extends AbstractExtensionInstaller
 {
-    /**
-     * Install the module.
-     *
-     * @return bool true if successful, false otherwise
-     */
-    public function install()
+    public function install(): bool
     {
         // Set default values for the module variables
         $this->setVars([
@@ -49,17 +45,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
         return true;
     }
 
-    /**
-     * Upgrade the module from a prior version.
-     *
-     * This function must consider all the released versions of the module!
-     * If the upgrade fails at some point, it returns the last upgraded version.
-     *
-     * @param string $oldVersion The version number string from which the upgrade starting
-     *
-     * @return bool|string True if the module is successfully upgraded to the current version; last valid version string or false if the upgrade fails
-     */
-    public function upgrade($oldVersion)
+    public function upgrade(string $oldVersion): bool
     {
         // Upgrade dependent on old version number
         switch ($oldVersion) {
@@ -132,12 +118,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
         return true;
     }
 
-    /**
-     * Delete the Legal module.
-     *
-     * @return bool True if successful; otherwise false
-     */
-    public function uninstall()
+    public function uninstall(): bool
     {
         $this->delVars();
 

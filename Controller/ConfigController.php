@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -12,10 +13,11 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
@@ -36,11 +38,8 @@ class ConfigController extends AbstractController
      * @Theme("admin")
      * @Template("ZikulaLegalModule:Config:config.html.twig")
      *
-     * @param Request $request
-     * @param GroupRepositoryInterface $groupRepository
-     * @param ResetAgreementHelper $resetAgreementHelper
-     *
      * @throws AccessDeniedException Thrown if the user doesn't have admin access to the module
+     * @throws Exception
      *
      * @return array|RedirectResponse
      */
@@ -108,7 +107,8 @@ class ConfigController extends AbstractController
                 $this->addFlash('status', $this->__('Operation cancelled.'));
             }
 
-            return $this->redirectToRoute('zikulalegalmodule_config_config'); // redirecting prevents values from being repeated in the form
+            // redirecting prevents values from being repeated in the form
+            return $this->redirectToRoute('zikulalegalmodule_config_config');
         }
 
         return [

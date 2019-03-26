@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -25,52 +26,37 @@ class PolicyType extends AbstractType
 {
     use TranslatorTrait;
 
-    /**
-     * @param TranslatorInterface $translator
-     */
     public function __construct(TranslatorInterface $translator)
     {
         $this->setTranslator($translator);
     }
 
-    /**
-     * @param TranslatorInterface $translator
-     */
-    public function setTranslator(TranslatorInterface $translator)
+    public function setTranslator(TranslatorInterface $translator): void
     {
         $this->translator = $translator;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $constraints = !$options['userEditAccess']
             ? [new IsTrue(['message' => $this->__('you must accept this site\'s policies')])]
-            : [];
+            : []
+        ;
 
-        $builder
-            ->add('acceptedpolicies_policies', CheckboxType::class, [
-                'data' => false,
-                'help' => $this->__('Check this box to indicate your acceptance of this site\'s policies.'),
-                'label' => $this->__('Policies'),
-                'constraints' => $constraints,
-                'required' => !$options['userEditAccess']
-            ]);
+        $builder->add('acceptedpolicies_policies', CheckboxType::class, [
+            'data' => false,
+            'help' => $this->__('Check this box to indicate your acceptance of this site\'s policies.'),
+            'label' => $this->__('Policies'),
+            'constraints' => $constraints,
+            'required' => !$options['userEditAccess']
+        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getBlockPrefix()
     {
         return Constant::FORM_BLOCK_PREFIX;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([

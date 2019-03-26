@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /*
  * This file is part of the Zikula package.
  *
@@ -12,6 +13,7 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Listener;
 
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -59,21 +61,12 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
      */
     private $stylesheetOverride;
 
-    /**
-     * Constructor.
-     *
-     * @param RouterInterface $router
-     * @param Asset $assetHelper
-     * @param PageAssetApi $pageAssetApi
-     * @param VariableApiInterface $variableApi
-     * @param string $stylesheetOverride Custom path to css file (optional)
-     */
     public function __construct(
         RouterInterface $router,
         Asset $assetHelper,
         PageAssetApi $pageAssetApi,
         VariableApiInterface $variableApi,
-        $stylesheetOverride = null
+        string $stylesheetOverride = null
     ) {
         $this->router = $router;
         $this->assetHelper = $assetHelper;
@@ -82,7 +75,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         $this->stylesheetOverride = $stylesheetOverride;
     }
 
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
         if (!$this->enabled) {
             return;
@@ -95,16 +88,16 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
 
         try {
             $routeInfo = $this->router->match($request->getPathInfo());
-        } catch (\Exception $e) {
+        } catch (Exception $exception) {
             return;
         }
         $containsProhibitedRoute = in_array($routeInfo['_route'], ['_wdt', 'bazinga_jstranslation_js', 'fos_js_routing_js', 'zikulasearchmodule_search_opensearch']);
         $containsProhibitedRoute = $containsProhibitedRoute || (false !== mb_strpos($routeInfo['_route'], '_profiler'));
 
         // do not capture redirects or modify XML HTTP Requests or routing or toolbar requests
-        if ($request->isXmlHttpRequest()
-            || $response->isRedirect()
-            || $containsProhibitedRoute) {
+        if ($containsProhibitedRoute
+            || $request->isXmlHttpRequest()
+            || $response->isRedirect()) {
             return;
         }
 
@@ -113,16 +106,13 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
             return;
         }
 
-        $this->injectWarning($request, $response);
+        $this->injectWarning();
     }
 
     /**
-     * Injects the warning into the Response.
-     *
-     * @param Request  $request  A Request instance
-     * @param Response $response A Response instance
+     * Injects the warning into the given Response.
      */
-    protected function injectWarning(Request $request, Response $response)
+    protected function injectWarning(): void
     {
         // add javascript to bottom of body - jquery is assumed to be present
         $path = $this->assetHelper->resolve('@' . LegalConstant::MODNAME . ':js/jquery.cookiebar/jquery.cookiebar.js');
