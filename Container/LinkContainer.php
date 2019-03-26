@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /*
  * This file is part of the Zikula package.
  *
@@ -66,9 +67,9 @@ class LinkContainer implements LinkContainerInterface
      */
     public function getLinks($type = LinkContainerInterface::TYPE_ADMIN)
     {
-        $method = 'get'.ucfirst(strtolower($type));
+        $method = 'get'.ucfirst(mb_strtolower($type));
         if (method_exists($this, $method)) {
-            return $this->$method();
+            return $this->{$method}();
         }
 
         return [];
@@ -170,7 +171,7 @@ class LinkContainer implements LinkContainerInterface
     private function determineUrl($urlVar, $defaultRoute)
     {
         $customUrl = $this->variableApi->get(LegalConstant::MODNAME, $urlVar, '');
-        if ('' != $customUrl) {
+        if ('' !== $customUrl) {
             return $customUrl;
         }
 

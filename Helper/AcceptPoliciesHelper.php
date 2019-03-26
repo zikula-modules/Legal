@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /*
  * This file is part of the Zikula package.
  *
@@ -15,8 +16,8 @@ use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
-use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Constant;
+use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
 use Zikula\UsersModule\Entity\UserEntity;
 
@@ -74,7 +75,7 @@ class AcceptPoliciesHelper
     {
         $termsOfUseActive = isset($this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] : false;
         $privacyPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] : false;
-        $agePolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE]) ? 0 != $this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE] : 0;
+        $agePolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE]) ? 0 !== $this->moduleVars[LegalConstant::MODVAR_MINIMUM_AGE] : 0;
         $cancellationRightPolicyActive = isset($this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE] : false;
         $tradeConditionsActive = isset($this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE]) ? $this->moduleVars[LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE] : false;
 
@@ -165,7 +166,7 @@ class AcceptPoliciesHelper
     public function getViewablePolicies($userId = null)
     {
         $currentUid = $this->currentUserApi->get('uid');
-        $isCurrentUser = !is_null($userId) && $userId == $currentUid;
+        $isCurrentUser = !is_null($userId) && $userId === $currentUid;
 
         return [
             'termsOfUse'              => $isCurrentUser ? true : $this->permissionApi->hasPermission('ZikulaLegalModule'.'::termsOfUse', '::', ACCESS_MODERATE),

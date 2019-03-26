@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /*
  * This file is part of the Zikula package.
  *
@@ -250,9 +251,9 @@ class UserController extends AbstractController
                 $accessHelper->login($userEntity);
 
                 return $this->redirectToRoute('zikulausersmodule_account_menu');
-            } else {
-                return $this->redirectToRoute('home');
             }
+
+            return $this->redirectToRoute('home');
         }
 
         return $templateParameters = [

@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /*
  * This file is part of the Zikula package.
  *
@@ -85,7 +86,7 @@ class ConfigController extends AbstractController
             if ($form->get('save')->isClicked()) {
                 $formData = $form->getData();
                 foreach ($booleanVars as $booleanVar) {
-                    $formData[$booleanVar] = (true == $formData[$booleanVar] ? 1 : 0);
+                    $formData[$booleanVar] = (true === $formData[$booleanVar] ? 1 : 0);
                 }
 
                 $resetAgreementGroupId = -1;
@@ -97,7 +98,7 @@ class ConfigController extends AbstractController
                 // save modvars
                 $this->setVars($formData);
 
-                if ($resetAgreementGroupId != -1) {
+                if ($resetAgreementGroupId !== -1) {
                     $resetAgreementHelper->reset($resetAgreementGroupId);
                 }
 

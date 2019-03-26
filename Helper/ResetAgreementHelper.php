@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /*
  * This file is part of the Zikula package.
  *
@@ -81,7 +82,7 @@ class ResetAgreementHelper
             LegalConstant::ATTRIBUTE_TRADECONDITIONS_ACCEPTED
         ];
 
-        if (0 == $groupId) {
+        if (0 === $groupId) {
             $members = [];
         } else {
             $group = $this->groupRepository->find($groupId);
@@ -89,7 +90,7 @@ class ResetAgreementHelper
                 return false;
             }
             $members = $group->getUsers()->toArray();
-            if (0 == count($members)) {
+            if (0 === count($members)) {
                 return false;
             }
         }
