@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 /*
  * This file is part of the Zikula package.
  *
@@ -98,7 +99,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
             return;
         }
         $containsProhibitedRoute = in_array($routeInfo['_route'], ['_wdt', 'bazinga_jstranslation_js', 'fos_js_routing_js', 'zikulasearchmodule_search_opensearch']);
-        $containsProhibitedRoute = $containsProhibitedRoute || (false !== strpos($routeInfo['_route'], '_profiler'));
+        $containsProhibitedRoute = $containsProhibitedRoute || (false !== mb_strpos($routeInfo['_route'], '_profiler'));
 
         // do not capture redirects or modify XML HTTP Requests or routing or toolbar requests
         if ($request->isXmlHttpRequest()
@@ -108,7 +109,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         }
 
         // is cookie set?
-        if ($request->cookies->has('cb-enabled') && 'accepted' == $request->cookies->get('cb-enabled')) {
+        if ($request->cookies->has('cb-enabled') && 'accepted' === $request->cookies->get('cb-enabled')) {
             return;
         }
 
