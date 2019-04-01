@@ -85,7 +85,7 @@ class AcceptPoliciesHelper
     /**
      * Helper method to determine acceptance / confirmation states for current user.
      */
-    private function determineAcceptanceState(int $uid, string $modVarName): bool
+    private function determineAcceptanceState(int $uid = null, string $modVarName = ''): bool
     {
         $acceptanceState = false;
 
