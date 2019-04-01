@@ -8,6 +8,7 @@ services:
         public: false
         bind:
             $bundle: '@Zikula\LegalModule\ZikulaLegalModule'
+            $twigLoader: '@twig.loader'
 
     Zikula\LegalModule\:
         resource: '../../*'
