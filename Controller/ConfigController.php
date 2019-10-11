@@ -97,7 +97,7 @@ class ConfigController extends AbstractController
                 // save modvars
                 $this->setVars($formData);
 
-                if ($resetAgreementGroupId !== -1) {
+                if (-1 !== $resetAgreementGroupId) {
                     $resetAgreementHelper->reset($resetAgreementGroupId);
                 }
 
