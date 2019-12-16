@@ -173,7 +173,7 @@ class UserController extends AbstractController
 
     /**
      * @Route("/acceptpolicies")
-     * @Template("ZikulaLegalModule:User:acceptPolicies.html.twig")
+     * @Template("@ZikulaLegalModule/User/acceptPolicies.html.twig")
      *
      * @return Response|array
      * @throws Exception
