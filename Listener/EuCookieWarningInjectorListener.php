@@ -15,8 +15,7 @@ namespace Zikula\LegalModule\Listener;
 
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\RouterInterface;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
@@ -74,7 +73,7 @@ class EuCookieWarningInjectorListener implements EventSubscriberInterface
         $this->stylesheetOverride = $stylesheetOverride;
     }
 
-    public function onKernelResponse(FilterResponseEvent $event): void
+    public function onKernelResponse(ResponseEvent $event): void
     {
         if (!$this->enabled) {
             return;
