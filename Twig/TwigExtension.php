@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Twig;
 
-use Symfony\Bundle\TwigBundle\Loader\FilesystemLoader;
+use Twig\Loader\LoaderInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -28,11 +28,11 @@ class TwigExtension extends AbstractExtension
     private $twig;
 
     /**
-     * @var FilesystemLoader
+     * @var LoaderInterface
      */
     protected $twigLoader;
 
-    public function __construct(Environment $twig, FilesystemLoader $twigLoader)
+    public function __construct(Environment $twig, LoaderInterface $twigLoader)
     {
         $this->twig = $twig;
         $this->twigLoader = $twigLoader;

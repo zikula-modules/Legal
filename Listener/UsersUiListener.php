@@ -15,7 +15,7 @@ namespace Zikula\LegalModule\Listener;
 
 use DateTime;
 use DateTimeZone;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -82,7 +82,7 @@ class UsersUiListener implements EventSubscriberInterface
     private $formFactory;
 
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     protected $doctrine;
 
@@ -99,7 +99,7 @@ class UsersUiListener implements EventSubscriberInterface
         VariableApiInterface $variableApi,
         AcceptPoliciesHelper $acceptPoliciesHelper,
         FormFactoryInterface $formFactory,
-        RegistryInterface $registry,
+        ManagerRegistry $registry,
         PermissionApiInterface $permissionApi
     ) {
         $this->requestStack = $requestStack;
