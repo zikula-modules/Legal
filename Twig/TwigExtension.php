@@ -12,9 +12,9 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Twig;
 
-use Twig\Loader\LoaderInterface;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
+use Twig\Loader\LoaderInterface;
 use Twig\TwigFunction;
 
 /**
