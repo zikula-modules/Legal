@@ -205,7 +205,7 @@ class UserController extends AbstractController
             'uid' => $uid,
             'login' => $login
         ]);
-        if ($form->handleRequest($request)->isValid()) {
+        if ($form->handleRequest($request) && $form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             /** @var UserEntity $userEntity */
             $userEntity = $userRepository->find($data['uid']);
