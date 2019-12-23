@@ -187,9 +187,8 @@ class UserController extends AbstractController
     ) {
         // Retrieve and delete any session variables being sent in by the log-in process before we give the function a chance to
         // throw an exception. We need to make sure no sensitive data is left dangling in the session variables.
-        $session = $request->getSession();
         $uid = null;
-        if (null !== $session) {
+        if ($request->hasSession() && ($session = $request->getSession())) {
             $uid = $session->get(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY);
             $session->remove(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY);
         }
