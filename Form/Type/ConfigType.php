@@ -49,26 +49,32 @@ class ConfigType extends AbstractType
         $builder
             ->add(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, CheckboxType::class, [
                 'label'    => $this->__('Legal notice'),
+                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_TERMS_ACTIVE, CheckboxType::class, [
                 'label'    => $this->__('Terms of use'),
+                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_PRIVACY_ACTIVE, CheckboxType::class, [
                 'label'    => $this->__('Privacy policy'),
+                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, CheckboxType::class, [
                 'label'    => $this->__('General terms and conditions of trade'),
+                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, CheckboxType::class, [
                 'label'    => $this->__('Cancellation right policy'),
+                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, CheckboxType::class, [
                 'label'    => $this->__('Accessibility statement'),
+                'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_LEGALNOTICE_URL, UrlType::class, [
@@ -97,6 +103,7 @@ class ConfigType extends AbstractType
             ])
             ->add(LegalConstant::MODVAR_EUCOOKIE, ChoiceType::class, [
                 'label'   => $this->__('Enable cookie warning for EU compliance'),
+                'label_attr' => ['class' => 'radio-custom'],
                 'choices' => [
                     $this->__('Yes') => 1,
                     $this->__('No')  => 0,
@@ -112,7 +119,6 @@ class ConfigType extends AbstractType
                     new LessThanOrEqual(99)
                 ],
                 'empty_data'  => 13,
-                'scale'       => 0,
                 'attr'        => [
                     'maxlength' => 2
                 ],

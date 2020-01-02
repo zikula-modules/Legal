@@ -1,69 +1,67 @@
-<div class="form-horizontal">
-    <fieldset>
-        <legend>{{ __('Site policies') }}</legend>
-        {% if activePolicies.termsOfUse and viewablePolicies.termsOfUse %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL')) %}
-            {% if policyUrl == '' %}
-                {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
-            {% endif %}
-            {% set policyName = __('Terms of use') %}
-            {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
-            <div class="form-group">
-                <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
-                <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.termsOfUse %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
-                </div>
-            </div>
+<fieldset>
+    <legend>{{ __('Site policies') }}</legend>
+    {% if activePolicies.termsOfUse and viewablePolicies.termsOfUse %}
+        {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL')) %}
+        {% if policyUrl == '' %}
+            {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
         {% endif %}
-        {% if activePolicies.privacyPolicy and viewablePolicies.privacyPolicy %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_PRIVACY_URL')) %}
-            {% if policyUrl == '' %}
-                {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
-            {% endif %}
-            {% set policyName = __('Privacy policy') %}
-            {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
-            <div class="form-group">
-                <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
-                <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.privacyPolicy %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
-                </div>
+        {% set policyName = __('Terms of use') %}
+        {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
+            <div class="col-md-9">
+                <span class="form-control-plaintext">{% if acceptedPolicies.termsOfUse %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
             </div>
+        </div>
+    {% endif %}
+    {% if activePolicies.privacyPolicy and viewablePolicies.privacyPolicy %}
+        {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_PRIVACY_URL')) %}
+        {% if policyUrl == '' %}
+            {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
         {% endif %}
-        {% if activePolicies.agePolicy and viewablePolicies.agePolicy %}
-            <div class="form-group">
-                <label class="col-sm-3 control-label">{{ __('Minimum age') }}</label>
-                <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.agePolicy %}{{ __f('Confirmed minimum age requirement (%s years of age) met.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}{% else %}{{ __('Minimum age requirement not confirmed.') }}{% endif %}</span>
-                </div>
+        {% set policyName = __('Privacy policy') %}
+        {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
+        <div class="form-group">
+            <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
+            <div class="col-md-9">
+                <span class="form-control-plaintext">{% if acceptedPolicies.privacyPolicy %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
             </div>
-        {% endif %}
-        {% if activePolicies.tradeConditions and viewablePolicies.tradeConditions %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL')) %}
-            {% if policyUrl == '' %}
-                {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
-            {% endif %}
-            {% set policyName = __('General terms and conditions of trade') %}
-            {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
-            <div class="form-group">
-                <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
-                <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.tradeConditions %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
-                </div>
+        </div>
+    {% endif %}
+    {% if activePolicies.agePolicy and viewablePolicies.agePolicy %}
+        <div class="form-group">
+            <label class="col-md-3 col-form-label">{{ __('Minimum age') }}</label>
+            <div class="col-md-9">
+                <span class="form-control-plaintext">{% if acceptedPolicies.agePolicy %}{{ __f('Confirmed minimum age requirement (%s years of age) met.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}{% else %}{{ __('Minimum age requirement not confirmed.') }}{% endif %}</span>
             </div>
+        </div>
+    {% endif %}
+    {% if activePolicies.tradeConditions and viewablePolicies.tradeConditions %}
+        {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL')) %}
+        {% if policyUrl == '' %}
+            {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
         {% endif %}
-        {% if activePolicies.cancellationRightPolicy and viewablePolicies.cancellationRightPolicy %}
-            {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL')) %}
-            {% if policyUrl == '' %}
-                {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
-            {% endif %}
-            {% set policyName = __('Cancellation right policy') %}
-            {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
-            <div class="form-group">
-                <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
-                <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.cancellationRightPolicy %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
-                </div>
+        {% set policyName = __('General terms and conditions of trade') %}
+        {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
+        <div class="form-group">
+            <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
+            <div class="col-md-9">
+                <span class="form-control-plaintext">{% if acceptedPolicies.tradeConditions %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
             </div>
+        </div>
+    {% endif %}
+    {% if activePolicies.cancellationRightPolicy and viewablePolicies.cancellationRightPolicy %}
+        {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL')) %}
+        {% if policyUrl == '' %}
+            {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
         {% endif %}
-    </fieldset>
-</div>
+        {% set policyName = __('Cancellation right policy') %}
+        {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
+        <div class="form-group">
+            <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
+            <div class="col-md-9">
+                <span class="form-control-plaintext">{% if acceptedPolicies.cancellationRightPolicy %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
+            </div>
+        </div>
+    {% endif %}
+</fieldset>

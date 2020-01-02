@@ -48,6 +48,7 @@ class AcceptPoliciesType extends AbstractType
                 'data' => true,
                 'help' => $this->__('Check this box to indicate your acceptance of this site\'s policies.'),
                 'label' => $this->__('Policies'),
+                'label_attr' => ['class' => 'switch-custom'],
                 'constraints' => [
                     new IsTrue(['message' => $this->__('you must accept this site\'s policies')])
                 ]
