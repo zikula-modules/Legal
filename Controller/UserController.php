@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Core\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
@@ -42,11 +43,11 @@ class UserController extends AbstractController
      * Legal module main user function.
      * Redirects to the Terms of Use legal document.
      */
-    public function indexAction(): RedirectResponse
+    public function indexAction(RouterInterface $router): RedirectResponse
     {
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
-            $url = $this->get('router')->generate('zikulalegalmodule_user_termsofuse');
+            $url = $router->generate('zikulalegalmodule_user_termsofuse');
         }
 
         return new RedirectResponse($url);
@@ -225,7 +226,7 @@ class UserController extends AbstractController
                     $userEntity->delAttribute($acceptedVar);
                 }
             }
-            $this->get('doctrine')->getManager()->flush();
+            $this->getDoctrine()->getManager()->flush();
             if ($data['acceptedpolicies_policies'] && $data['login']) {
                 $accessHelper->login($userEntity);
 
