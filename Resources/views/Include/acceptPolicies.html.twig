@@ -8,7 +8,7 @@
                 {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
             {% endif %}
             {% set policyName = __('Terms of use', 'zikulalegalmodule') %}
-            <li><a class="policy-link" data-toggle="modal" data-target="#modal-terms-of-use" href="{{ policyUrl }}">{{ policyName }}</a></li>
+            <li><a class="policy-link" data-toggle="modal" data-target="#modal-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
         {% endif %}
         {% if activePolicies.privacyPolicy|default and not acceptedPolicies.privacyPolicy|default %}
             {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_PRIVACY_URL')) %}
@@ -16,7 +16,7 @@
                 {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
             {% endif %}
             {% set policyName = __('Privacy policy', 'zikulalegalmodule') %}
-            <li><a class="policy-link" data-toggle="modal" data-target="#modal-privacy-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
+            <li><a class="policy-link" data-toggle="modal" data-target="#modal-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
         {% endif %}
         {% if activePolicies.agePolicy|default and not acceptedPolicies.agePolicy|default %}
             <li>{{ __f('You need to be %s years of age or older, in accordance with our minimum age requirement.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }, 'zikulalegalmodule') }}</li>
@@ -27,7 +27,7 @@
                 {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
             {% endif %}
             {% set policyName = __('General terms and conditions of trade', 'zikulalegalmodule') %}
-            <li><a class="policy-link" data-toggle="modal" data-target="#modal-general-terms-and-conditions-of-trade" href="{{ policyUrl }}">{{ policyName }}</a></li>
+            <li><a class="policy-link" data-toggle="modal" data-target="#modal-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
         {% endif %}
         {% if activePolicies.cancellationRightPolicy|default and not acceptedPolicies.cancellationRightPolicy|default %}
             {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_CANCELLATIONRIGHTPOLICY_URL')) %}
@@ -35,7 +35,7 @@
                 {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
             {% endif %}
             {% set policyName = __('Cancellation right policy', 'zikulalegalmodule') %}
-            <li><a class="policy-link" data-toggle="modal" data-target="#modal-cancellation-right-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
+            <li><a class="policy-link" data-toggle="modal" data-target="#modal-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
         {% endif %}
         </ul>
     </div>

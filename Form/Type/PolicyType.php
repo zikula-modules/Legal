@@ -44,9 +44,10 @@ class PolicyType extends AbstractType
         ;
 
         $builder->add('acceptedpolicies_policies', CheckboxType::class, [
+            'label' => $this->__('Policies'),
+            'label_attr' => ['class' => 'switch-custom'],
             'data' => false,
             'help' => $this->__('Check this box to indicate your acceptance of this site\'s policies.'),
-            'label' => $this->__('Policies'),
             'constraints' => $constraints,
             'required' => !$options['userEditAccess']
         ]);
