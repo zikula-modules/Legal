@@ -1,2 +1,2 @@
-{{ moduleHeader('user', __f('Legal notice for %s', { '%s': pagevars.title }), '', true, true) }}
+{{ moduleHeader('user', 'Legal notice for %s'|trans({ '%s': pagevars.title }), '', true, true) }}
 {{ include('@ZikulaLegalModule/' ~ app.request.locale ~ '/legalNotice.html.twig') }}

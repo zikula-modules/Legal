@@ -2,4 +2,4 @@
 {% if policyUrl == '' %}
     {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
 {% endif %}
-<a class="legal_inlinelink_cancellationrightpolicy" href="{{ policyUrl|e('html_attr') }}" target="{{ target|e('html_attr') }}">{{ __('Cancellation right policy') }}</a>
+<a class="legal_inlinelink_cancellationrightpolicy" href="{{ policyUrl|e('html_attr') }}" target="{{ target|e('html_attr') }}">{% trans %}Cancellation right policy{% endtrans %}</a>

@@ -2,4 +2,4 @@
 {% if policyUrl == '' %}
     {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
 {% endif %}
-<a class="legal_inlinelink_privacypolicy" href="{{ policyUrl|e('html_attr') }}" target="{{ target|e('html_attr') }}">{{ __('Privacy policy') }}</a>
+<a class="legal_inlinelink_privacypolicy" href="{{ policyUrl|e('html_attr') }}" target="{{ target|e('html_attr') }}">{% trans %}Privacy policy{% endtrans %}</a>

@@ -2,4 +2,4 @@
 {% if policyUrl == '' %}
     {% set policyUrl = path('zikulalegalmodule_user_accessibilitystatement') %}
 {% endif %}
-<a class="legal_inlinelink_accessibilitystatement" href="{{ policyUrl|e('html_attr') }}" target="{{ target|e('html_attr') }}">{{ __('Accessibility statement') }}</a>
+<a class="legal_inlinelink_accessibilitystatement" href="{{ policyUrl|e('html_attr') }}" target="{{ target|e('html_attr') }}">{% trans %}Accessibility statement{% endtrans %}</a>

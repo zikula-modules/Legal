@@ -1,2 +1,2 @@
-{{ moduleHeader('user', __f('Trade conditions for %s', { '%s': pagevars.title }), '', true, true) }}
+{{ moduleHeader('user', 'Trade conditions for %s'|trans({ '%s': pagevars.title }), '', true, true) }}
 {{ include('@ZikulaLegalModule/' ~ app.request.locale ~ '/tradeConditions.html.twig') }}
