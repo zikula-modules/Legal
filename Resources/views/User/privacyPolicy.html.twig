@@ -1,2 +1,2 @@
-{{ moduleHeader('user', __f('Privacy policy for %s', { '%s': pagevars.title }), '', true, true) }}
+{{ moduleHeader('user', 'Privacy policy for %s'|trans({ '%s': pagevars.title }), '', true, true) }}
 {{ include('@ZikulaLegalModule/' ~ app.request.locale ~ '/privacyPolicy.html.twig') }}

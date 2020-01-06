@@ -1,17 +1,17 @@
 <div class="form-horizontal">
     <fieldset>
-        <legend>{{ __('Site policies') }}</legend>
+        <legend>{% trans %}Site policies{% endtrans %}</legend>
         {% if activePolicies.termsOfUse and viewablePolicies.termsOfUse %}
             {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL')) %}
             {% if policyUrl == '' %}
                 {% set policyUrl = path('zikulalegalmodule_user_termsofuse') %}
             {% endif %}
-            {% set policyName = __('Terms of use') %}
+            {% set policyName = 'Terms of use'|trans %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
                 <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
                 <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.termsOfUse %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
+                    <span class="form-control-static">{% if acceptedPolicies.termsOfUse %}{% trans with { '%s': policyLink } %}'%s accepted.{% endtrans %}|raw{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
                 </div>
             </div>
         {% endif %}
@@ -20,20 +20,20 @@
             {% if policyUrl == '' %}
                 {% set policyUrl = path('zikulalegalmodule_user_privacypolicy') %}
             {% endif %}
-            {% set policyName = __('Privacy policy') %}
+            {% set policyName = 'Privacy policy'|trans %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
                 <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
                 <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.privacyPolicy %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
+                    <span class="form-control-static">{% if acceptedPolicies.privacyPolicy %}{% trans with { '%s': policyLink } %}%s accepted.{% endtrans %}|raw{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
                 </div>
             </div>
         {% endif %}
         {% if activePolicies.agePolicy and viewablePolicies.agePolicy %}
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{ __('Minimum age') }}</label>
+                <label class="col-sm-3 control-label">{% trans %}Minimum age{% endtrans %}</label>
                 <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.agePolicy %}{{ __f('Confirmed minimum age requirement (%s years of age) met.', { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) }) }}{% else %}{{ __('Minimum age requirement not confirmed.') }}{% endif %}</span>
+                    <span class="form-control-static">{% if acceptedPolicies.agePolicy %}{% trans with { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) } %}Confirmed minimum age requirement (%s years of age) met.{% endtrans %}{% else %}{% trans %}Minimum age requirement not confirmed.{% endtrans %}{% endif %}</span>
                 </div>
             </div>
         {% endif %}
@@ -42,12 +42,12 @@
             {% if policyUrl == '' %}
                 {% set policyUrl = path('zikulalegalmodule_user_tradeconditions') %}
             {% endif %}
-            {% set policyName = __('General terms and conditions of trade') %}
+            {% set policyName = 'General terms and conditions of trade'|trans %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
                 <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
                 <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.tradeConditions %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
+                    <span class="form-control-static">{% if acceptedPolicies.tradeConditions %}{% trans with { '%s': policyLink } %}%s accepted{% endtrans %}|raw{% else %}{% trans with { '%s': policyLink } %}%s not accepted.{% endtrans %}|raw{% endif %}</span>
                 </div>
             </div>
         {% endif %}
@@ -56,12 +56,12 @@
             {% if policyUrl == '' %}
                 {% set policyUrl = path('zikulalegalmodule_user_cancellationrightpolicy') %}
             {% endif %}
-            {% set policyName = __('Cancellation right policy') %}
+            {% set policyName = 'Cancellation right policy'|trans %}
             {% set policyLink = '<a class="legal_popup" href="' ~ policyUrl ~ '" target="_blank">' ~ policyName ~ '</a>' %}
             <div class="form-group">
                 <label class="col-sm-3 control-label">{{ policyName ~ ':' }}</label>
                 <div class="col-sm-9">
-                    <span class="form-control-static">{% if acceptedPolicies.cancellationRightPolicy %}{{ __f('%s accepted.', { '%s': policyLink })|raw }}{% else %}{{ __f('%s not accepted.', { '%s': policyLink })|raw }}{% endif %}</span>
+                    <span class="form-control-static">{% if acceptedPolicies.cancellationRightPolicy %}{% trans with { '%s': policyLink } %}%s accepted.{% endtrans %}|raw{% else %}{% trans with { '%s': policyLink } %}%s not accepted.{% endtrans %}|raw{% endif %}</span>
                 </div>
             </div>
         {% endif %}

@@ -1,5 +1,5 @@
 <fieldset>
-    <legend>{{ __('Site policies', 'zikulalegalmodule') }}</legend>
+    <legend>{% trans %}Site policies', 'zikulalegalmodule{% endtrans %}</legend>
     {{ form_row(form.zikulalegalmodule_policy.acceptedpolicies_policies) }}
     {{ include('@ZikulaLegalModule/Include/acceptPolicies.html.twig') }}
 </fieldset>
