@@ -46,15 +46,15 @@ class AcceptPoliciesType extends AbstractType
             ->add('login', HiddenType::class)
             ->add('acceptedpolicies_policies', CheckboxType::class, [
                 'data' => true,
-                'help' => $this->__('Check this box to indicate your acceptance of this site\'s policies.'),
-                'label' => $this->__('Policies'),
+                'help' => $this->trans('Check this box to indicate your acceptance of this site\'s policies.'),
+                'label' => $this->trans('Policies'),
                 'label_attr' => ['class' => 'switch-custom'],
                 'constraints' => [
-                    new IsTrue(['message' => $this->__('you must accept this site\'s policies')])
+                    new IsTrue(['message' => $this->trans('you must accept this site\'s policies')])
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => $login ? $this->__('Save and continue logging in') : $this->__('Save'),
+                'label' => $login ? $this->trans('Save and continue logging in') : $this->trans('Save'),
                 'icon' => 'fa-check',
                 'attr' => ['class' => 'btn-success']
             ])

@@ -68,7 +68,7 @@ class ConfigController extends AbstractController
 
         // build choices for user group selector
         $groupChoices = [
-            $this->__('All users') => 0,
+            $this->trans('All users') => 0,
         ];
 
         // get all user groups
@@ -101,10 +101,10 @@ class ConfigController extends AbstractController
                     $resetAgreementHelper->reset($resetAgreementGroupId);
                 }
 
-                $this->addFlash('status', $this->__('Done! Module configuration updated.'));
+                $this->addFlash('status', $this->trans('Done! Module configuration updated.'));
             }
             if ($form->get('cancel')->isClicked()) {
-                $this->addFlash('status', $this->__('Operation cancelled.'));
+                $this->addFlash('status', $this->trans('Operation cancelled.'));
             }
 
             // redirecting prevents values from being repeated in the form

@@ -39,15 +39,15 @@ class PolicyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $constraints = !$options['userEditAccess']
-            ? [new IsTrue(['message' => $this->__('you must accept this site\'s policies')])]
+            ? [new IsTrue(['message' => $this->trans('you must accept this site\'s policies')])]
             : []
         ;
 
         $builder->add('acceptedpolicies_policies', CheckboxType::class, [
-            'label' => $this->__('Policies'),
+            'label' => $this->trans('Policies'),
             'label_attr' => ['class' => 'switch-custom'],
             'data' => false,
-            'help' => $this->__('Check this box to indicate your acceptance of this site\'s policies.'),
+            'help' => $this->trans('Check this box to indicate your acceptance of this site\'s policies.'),
             'constraints' => $constraints,
             'required' => !$options['userEditAccess']
         ]);
