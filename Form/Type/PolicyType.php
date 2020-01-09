@@ -18,7 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
-use Zikula\Common\Translator\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\LegalModule\Constant;
 
@@ -29,11 +29,6 @@ class PolicyType extends AbstractType
     public function __construct(TranslatorInterface $translator)
     {
         $this->setTranslator($translator);
-    }
-
-    public function setTranslator(TranslatorInterface $translator): void
-    {
-        $this->translator = $translator;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
