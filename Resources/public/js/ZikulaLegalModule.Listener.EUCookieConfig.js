@@ -3,8 +3,8 @@
 ( function($) {
     $(document).ready(function() {
         $.cookieBar({
-            message: Translator.__('We use cookies to track usage and preferences.'),
-            acceptText: Translator.__('I Understand'),
+            message: Translator.trans('We use cookies to track usage and preferences.'),
+            acceptText: Translator.trans('I Understand'),
             element: '.navbar.fixed-top',
             append: true
         });
