@@ -1,7 +1,6 @@
-Legal
-=====
+## Legal
 
-**__Requires Zikula Core 1.5.0+__**
+**Requires Zikula Core 3.0.0+**
 
 This module provides a site with the ability to manage and display legal information such as terms of use
 and privacy policies. It also allows the site to require that these policies be accepted during registration
@@ -9,10 +8,10 @@ and/or log-in.
 
 This module also supports a simplistic age verification during registration.
 
-See src/modules/Legal/docs/CHANGELOG.markdown for version history information.
+See Resources/docs/CHANGELOG.markdown for version history information (*currently a bit outdated*).
 
-Supported Policies, statements, and registration requirements
--------------------------------------------------------------
+### Supported Policies, statements, and registration requirements
+
  * Age check
    * Check performed during registration, if active.
  * Terms of use
@@ -31,8 +30,3 @@ Supported Policies, statements, and registration requirements
  * Trade Conditions
    * User acceptance is required during registration, if active.
    * User acceptance is required during log-in, if active and not accepted during registration.
-
-Contributing to this module
-===========================
-
-Information on contributing to this module can be found on [this project's GitHub Wiki](https://github.com/zikula-modules/Legal/wiki).
