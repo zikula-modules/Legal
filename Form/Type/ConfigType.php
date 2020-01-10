@@ -23,8 +23,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
@@ -32,83 +30,76 @@ use Zikula\LegalModule\Constant as LegalConstant;
  */
 class ConfigType extends AbstractType
 {
-    use TranslatorTrait;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->setTranslator($translator);
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add(LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, CheckboxType::class, [
-                'label'    => $this->trans('Legal notice'),
+                'label'    => 'Legal notice',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_TERMS_ACTIVE, CheckboxType::class, [
-                'label'    => $this->trans('Terms of use'),
+                'label'    => 'Terms of use',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_PRIVACY_ACTIVE, CheckboxType::class, [
-                'label'    => $this->trans('Privacy policy'),
+                'label'    => 'Privacy policy',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, CheckboxType::class, [
-                'label'    => $this->trans('General terms and conditions of trade'),
+                'label'    => 'General terms and conditions of trade',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, CheckboxType::class, [
-                'label'    => $this->trans('Cancellation right policy'),
+                'label'    => 'Cancellation right policy',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, CheckboxType::class, [
-                'label'    => $this->trans('Accessibility statement'),
+                'label'    => 'Accessibility statement',
                 'label_attr' => ['class' => 'switch-custom'],
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_LEGALNOTICE_URL, UrlType::class, [
-                'label'    => $this->trans('Legal notice'),
+                'label'    => 'Legal notice',
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_TERMS_URL, UrlType::class, [
-                'label'    => $this->trans('Terms of use'),
+                'label'    => 'Terms of use',
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_PRIVACY_URL, UrlType::class, [
-                'label'    => $this->trans('Privacy policy'),
+                'label'    => 'Privacy policy',
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_TRADECONDITIONS_URL, UrlType::class, [
-                'label'    => $this->trans('General terms and conditions of trade'),
+                'label'    => 'General terms and conditions of trade',
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL, UrlType::class, [
-                'label'    => $this->trans('Cancellation right policy'),
+                'label'    => 'Cancellation right policy',
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_ACCESSIBILITY_URL, UrlType::class, [
-                'label'    => $this->trans('Accessibility statement'),
+                'label'    => 'Accessibility statement',
                 'required' => false
             ])
             ->add(LegalConstant::MODVAR_EUCOOKIE, ChoiceType::class, [
-                'label'   => $this->trans('Enable cookie warning for EU compliance'),
+                'label'   => 'Enable cookie warning for EU compliance',
                 'label_attr' => ['class' => 'radio-custom'],
                 'choices' => [
-                    $this->trans('Yes') => 1,
-                    $this->trans('No')  => 0,
+                    'Yes' => 1,
+                    'No'  => 0
                 ],
                 'expanded'    => true,
                 'multiple'    => false,
-                'help'        => $this->trans('Notice: This setting controls the EU cookie warning which is injected into the view and requires user assent.')
+                'help'        => 'Notice: This setting controls the EU cookie warning which is injected into the view and requires user assent.'
             ])
             ->add(LegalConstant::MODVAR_MINIMUM_AGE, IntegerType::class, [
-                'label'       => $this->trans('Minimum age permitted to register'),
+                'label'       => 'Minimum age permitted to register',
                 'constraints' => [
                     new GreaterThanOrEqual(0),
                     new LessThanOrEqual(99)
@@ -117,26 +108,26 @@ class ConfigType extends AbstractType
                 'attr'        => [
                     'maxlength' => 2
                 ],
-                'help'        => $this->trans('Enter a positive integer, or 0 for no age check.')
+                'help'        => 'Enter a positive integer, or 0 for no age check.'
             ])
             ->add('resetagreement', ChoiceType::class, [
-                'label'             => $this->trans('Reset user group\'s acceptance of site policies'),
+                'label'             => 'Reset user group\'s acceptance of site policies',
                 'choices'           => $options['groupChoices'],
                 'required'          => false,
                 'expanded'          => false,
                 'multiple'          => false,
-                'help'              => $this->trans('Leave blank to leave users unaffected.'),
-                'alert'             => [$this->trans('Notice: This setting resets the acceptance of the site policies for all users in this group. Next time they want to log-in, they will have to acknowledge their acceptance of them again, and will not be able to log-in if they do not. This action does not affect the main administrator account. You can perform the same operation for individual users by visiting the Users manager in the site admin panel.') => 'info']
+                'help'              => 'Leave blank to leave users unaffected.',
+                'alert'             => ['Notice: This setting resets the acceptance of the site policies for all users in this group. Next time they want to log-in, they will have to acknowledge their acceptance of them again, and will not be able to log-in if they do not. This action does not affect the main administrator account. You can perform the same operation for individual users by visiting the Users manager in the site admin panel.' => 'info']
             ])
             ->add('save', SubmitType::class, [
-                'label' => $this->trans('Save'),
+                'label' => 'Save',
                 'icon'  => 'fa-check',
                 'attr'  => [
                     'class' => 'btn btn-success'
                 ]
             ])
             ->add('cancel', SubmitType::class, [
-                'label' => $this->trans('Cancel'),
+                'label' => 'Cancel',
                 'icon'  => 'fa-times',
                 'attr'  => [
                     'class' => 'btn btn-default'

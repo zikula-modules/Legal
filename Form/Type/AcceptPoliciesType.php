@@ -19,19 +19,10 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\LegalModule\Constant;
 
 class AcceptPoliciesType extends AbstractType
 {
-    use TranslatorTrait;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->setTranslator($translator);
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $login = $builder->getData()['login'];
@@ -41,15 +32,15 @@ class AcceptPoliciesType extends AbstractType
             ->add('login', HiddenType::class)
             ->add('acceptedpolicies_policies', CheckboxType::class, [
                 'data' => true,
-                'help' => $this->trans('Check this box to indicate your acceptance of this site\'s policies.'),
-                'label' => $this->trans('Policies'),
+                'help' => 'Check this box to indicate your acceptance of this site\'s policies.',
+                'label' => 'Policies',
                 'label_attr' => ['class' => 'switch-custom'],
                 'constraints' => [
-                    new IsTrue(['message' => $this->trans('you must accept this site\'s policies')])
+                    new IsTrue(['message' => 'you must accept this site\'s policies'])
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => $login ? $this->trans('Save and continue logging in') : $this->trans('Save'),
+                'label' => $login ? 'Save and continue logging in' : 'Save',
                 'icon' => 'fa-check',
                 'attr' => ['class' => 'btn-success']
             ])

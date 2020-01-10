@@ -18,31 +18,22 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Zikula\Common\Translator\TranslatorTrait;
 use Zikula\LegalModule\Constant;
 
 class PolicyType extends AbstractType
 {
-    use TranslatorTrait;
-
-    public function __construct(TranslatorInterface $translator)
-    {
-        $this->setTranslator($translator);
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $constraints = !$options['userEditAccess']
-            ? [new IsTrue(['message' => $this->trans('you must accept this site\'s policies')])]
+            ? [new IsTrue(['message' => 'you must accept this site\'s policies'])]
             : []
         ;
 
         $builder->add('acceptedpolicies_policies', CheckboxType::class, [
-            'label' => $this->trans('Policies'),
+            'label' => 'Policies',
             'label_attr' => ['class' => 'switch-custom'],
             'data' => false,
-            'help' => $this->trans('Check this box to indicate your acceptance of this site\'s policies.'),
+            'help' => 'Check this box to indicate your acceptance of this site\'s policies.',
             'constraints' => $constraints,
             'required' => !$options['userEditAccess']
         ]);
