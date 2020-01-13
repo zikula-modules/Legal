@@ -24,7 +24,10 @@
             "url": "legal",
             "oldnames": ["Legal"],
             "capabilities": {
-                "admin": {"route": "zikulalegalmodule_config_config"},
+                "admin": {
+                    "route": "zikulalegalmodule_config_config",
+                    "icon": "fas fa-gavel"
+                },
                 "user": {"route": "zikulalegalmodule_user_termsofuse"}
             },
             "securityschema": {
