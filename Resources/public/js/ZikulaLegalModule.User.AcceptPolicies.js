@@ -9,7 +9,7 @@
             $('#modal-policy').modal('show');
         });
         $('#modal-policy').on('hidden.bs.modal', function (event) {
-            $('#modal-policy-body').html('<i class="fa fa-spin fa-cog fa-2x"></i>');
+            $('#modal-policy-body').html('<i class="fas fa-spin fa-cog fa-2x"></i>');
         });
     });
 })(jQuery);
