@@ -128,10 +128,7 @@ class ConfigType extends AbstractType
             ])
             ->add('cancel', SubmitType::class, [
                 'label' => 'Cancel',
-                'icon'  => 'fa-times',
-                'attr'  => [
-                    'class' => 'btn-default'
-                ]
+                'icon'  => 'fa-times'
             ])
         ;
     }
