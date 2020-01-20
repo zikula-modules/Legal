@@ -11,7 +11,7 @@ declare(strict_types=1);
  * file that was distributed with this source code.
  */
 
-namespace Zikula\AdminModule\Menu;
+namespace Zikula\LegalModule\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
@@ -117,6 +117,6 @@ class ExtensionMenu implements ExtensionMenuInterface
 
     public function getBundleName(): string
     {
-        return 'ZikulaAdminModule';
+        return 'ZikulaLegalModule';
     }
 }
