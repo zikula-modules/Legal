@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-9 offset-md-3">
-	    <p id="acceptpolicies_policies_info">{% trans %}Please click on the following links to read the corresponding documents.', 'zikulalegalmodule{% endtrans %}</p>
+	    <p id="acceptpolicies_policies_info">{% trans from 'zikulalegalmodule' %}Please click on the following links to read the corresponding documents.{% endtrans %}</p>
 	    <ul>
 	    {% if activePolicies.termsOfUse|default and not acceptedPolicies.termsOfUse|default %}
 	        {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TERMS_URL')) %}

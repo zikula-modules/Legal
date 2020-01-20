@@ -207,8 +207,8 @@ class UsersUiListener implements EventSubscriberInterface
         if (array_sum($activePolicies) < 1) {
             return;
         }
-        $originalDomain = $this->translator->getDomain();
-        $this->translator->setDomain('zikulalegalmodule');
+        /*$originalDomain = $this->translator->getDomain();
+        $this->translator->setDomain('zikulalegalmodule');*/
         $user = $event->getFormData();
         $uid = !empty($user['uid']) ? $user['uid'] : null;
         $uname = !empty($user['uname']) ? $user['uname'] : null;
@@ -226,7 +226,7 @@ class UsersUiListener implements EventSubscriberInterface
                 'acceptedPolicies' => $acceptedPolicies,
             ])
         ;
-        $this->translator->setDomain($originalDomain);
+        //$this->translator->setDomain($originalDomain);
     }
 
     public function editFormHandler(UserFormDataEvent $event): void
