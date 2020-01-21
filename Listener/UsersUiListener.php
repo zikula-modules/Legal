@@ -20,7 +20,6 @@ use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Zikula\Core\Event\GenericEvent;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
@@ -56,11 +55,6 @@ class UsersUiListener implements EventSubscriberInterface
     private $twig;
 
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
      * @var RouterInterface
      */
     private $router;
@@ -88,7 +82,6 @@ class UsersUiListener implements EventSubscriberInterface
     public function __construct(
         RequestStack $requestStack,
         Environment $twig,
-        TranslatorInterface $translator,
         RouterInterface $router,
         VariableApiInterface $variableApi,
         AcceptPoliciesHelper $acceptPoliciesHelper,
@@ -97,7 +90,6 @@ class UsersUiListener implements EventSubscriberInterface
     ) {
         $this->requestStack = $requestStack;
         $this->twig = $twig;
-        $this->translator = $translator;
         $this->router = $router;
         $this->moduleVars = $variableApi->getAll('ZikulaLegalModule');
         $this->acceptPoliciesHelper = $acceptPoliciesHelper;
@@ -197,7 +189,7 @@ class UsersUiListener implements EventSubscriberInterface
         $request = $this->requestStack->getMasterRequest();
         if ($request->hasSession() && ($session = $request->getSession())) {
             $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $userObj->getUid());
-            $session->getFlashBag()->add('error', $this->translator->trans('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.'));
+            $session->getFlashBag()->add('error', 'Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.');
         }
     }
 
@@ -207,8 +199,6 @@ class UsersUiListener implements EventSubscriberInterface
         if (array_sum($activePolicies) < 1) {
             return;
         }
-        /*$originalDomain = $this->translator->getDomain();
-        $this->translator->setDomain('zikulalegalmodule');*/
         $user = $event->getFormData();
         $uid = !empty($user['uid']) ? $user['uid'] : null;
         $uname = !empty($user['uname']) ? $user['uname'] : null;
@@ -226,7 +216,6 @@ class UsersUiListener implements EventSubscriberInterface
                 'acceptedPolicies' => $acceptedPolicies,
             ])
         ;
-        //$this->translator->setDomain($originalDomain);
     }
 
     public function editFormHandler(UserFormDataEvent $event): void

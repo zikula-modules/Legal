@@ -101,10 +101,10 @@ class ConfigController extends AbstractController
                     $resetAgreementHelper->reset($resetAgreementGroupId);
                 }
 
-                $this->addFlash('status', $this->trans('Done! Module configuration updated.'));
+                $this->addFlash('status', 'Done! Configuration updated.');
             }
             if ($form->get('cancel')->isClicked()) {
-                $this->addFlash('status', $this->trans('Operation cancelled.'));
+                $this->addFlash('status', 'Operation cancelled.');
             }
 
             // redirecting prevents values from being repeated in the form

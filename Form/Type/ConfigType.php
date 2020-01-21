@@ -23,6 +23,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Translation\Extractor\Annotation\Ignore;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**
@@ -112,7 +113,7 @@ class ConfigType extends AbstractType
             ])
             ->add('resetagreement', ChoiceType::class, [
                 'label'             => 'Reset user group\'s acceptance of site policies',
-                'choices'           => $options['groupChoices'],
+                'choices'           => /** @Ignore*/$options['groupChoices'],
                 'required'          => false,
                 'expanded'          => false,
                 'multiple'          => false,
