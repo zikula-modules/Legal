@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Zikula\Core\Controller\AbstractController;
+use Zikula\Bundle\CoreBundle\Controller\AbstractController;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\AcceptPoliciesType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;

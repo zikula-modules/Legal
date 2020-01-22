@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule;
 
-use Zikula\Core\AbstractModule;
+use Zikula\ExtensionsModule\Bundle\AbstractModule;
 
 /**
  * Legal module class.

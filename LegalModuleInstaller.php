@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule;
 
-use Zikula\Core\AbstractExtensionInstaller;
+use Zikula\ExtensionsModule\Installer\AbstractExtensionInstaller;
 use Zikula\LegalModule\Constant as LegalConstant;
 
 /**

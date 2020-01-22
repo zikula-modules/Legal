@@ -21,7 +21,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
-use Zikula\Core\Event\GenericEvent;
+use Zikula\Bundle\CoreBundle\Event\GenericEvent;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\PolicyType;
