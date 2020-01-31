@@ -23,7 +23,7 @@ Options:
 
 ## Config Customization
 
-To customize your own customization, you must override the JS file. Do so by copying the original JS from
+To create your own customization, you must override the JS file. Do so by copying the original JS from
 `/src/modules/zikula/legal-module/Resources/public/js/ZikulaLegalModule.Listener.EUCookieConfig.js`
 to 
 `/public/overrides/zikulalegalmodule/js/ZikulaLegalModule.Listener.EUCookieConfig.js`
