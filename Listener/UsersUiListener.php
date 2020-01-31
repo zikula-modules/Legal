@@ -108,7 +108,7 @@ class UsersUiListener implements EventSubscriberInterface
             UserEvents::DISPLAY_VIEW => ['uiView'],
             AccessEvents::LOGIN_VETO => ['acceptPolicies'],
             UserEvents::EDIT_FORM => ['amendForm', -256],
-            UserEvents::EDIT_FORM_HANDLE => ['editFormHandler'],
+            UserEvents::EDIT_FORM_HANDLE => ['editFormHandler']
         ];
     }
 
