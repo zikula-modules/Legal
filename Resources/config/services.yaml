@@ -7,7 +7,7 @@ services:
         autoconfigure: true
         public: false
         bind:
-            $bundle: '@Zikula\LegalModule\ZikulaLegalModule'
+            $extension: '@Zikula\LegalModule\ZikulaLegalModule'
             $twigLoader: '@twig.loader'
 
     Zikula\LegalModule\:
