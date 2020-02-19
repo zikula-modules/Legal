@@ -1,8 +1,8 @@
-# EU COOKIE COMPLIANCE
+# EU Cookie Compliance
 
-As of version 2.0.4, LegalModule now allows automatic display of an EU Cookie Compliance notice on your website.
-This must be manually enabled in the LegalModule admin settings. LegalModule uses the JS Script from
-https://www.primebox.co.uk/projects/jquery-cookiebar/ in order to implement this. More information is available on their
+The Legal extension allows automatic display of an EU Cookie Compliance notice on your website.
+This must be manually enabled in the Legal admin settings. This functionality uses the script from
+[jquery-cookiebar](https://www.primebox.co.uk/projects/jquery-cookiebar/) in order to implement this. More information is available on their
 website.
 
 A cookie is set on the users browser to indicate assent. This cookie expires after one year.
@@ -24,13 +24,13 @@ Options:
 ## Config Customization
 
 To create your own customization, you must override the JS file. Do so by copying the original JS from
-`/src/modules/zikula/legal-module/Resources/public/js/ZikulaLegalModule.Listener.EUCookieConfig.js`
+`/src/extensions/zikula/legal-module/Resources/public/js/ZikulaLegalModule.Listener.EUCookieConfig.js`
 to 
 `/public/overrides/zikulalegalmodule/js/ZikulaLegalModule.Listener.EUCookieConfig.js`
 
 Then alter the config options as you see fit. You can see the options in 
-`/src/modules/zikula/legal-module/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js`
+`/src/extensions/zikula/legal-module/Resources/public/js/jquery.cookiebar/jquery.cookiebar.js`
 
 ## Developer Info
 
-The JS and stylesheet are injected directly into the Response via an Event Listener (Listener/EuCookieWarningInjectorListener.php).
+The JS and stylesheet are injected directly into the Response via an Event Listener (`Listener/EuCookieWarningInjectorListener.php`).
