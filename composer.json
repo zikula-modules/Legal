@@ -28,7 +28,9 @@
                 "admin": {
                     "route": "zikulalegalmodule_config_config"
                 },
-                "user": {"route": "zikulalegalmodule_user_termsofuse"}
+                "user": {
+                    "route": "zikulalegalmodule_user_termsofuse"
+                }
             },
             "securityschema": {
                 "ZikulaLegalModule::": "::",
