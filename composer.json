@@ -14,7 +14,7 @@
         "psr-4": { "Zikula\\LegalModule\\": "" }
     },
     "require": {
-        "php": ">=7.2.0"
+        "php": ">=7.2.5"
     },
     "extra": {
         "zikula": {
@@ -23,10 +23,10 @@
             "displayname": "Legal",
             "url": "legal",
             "oldnames": ["Legal"],
+            "icon": "fas fa-gavel",
             "capabilities": {
                 "admin": {
-                    "route": "zikulalegalmodule_config_config",
-                    "icon": "fas fa-gavel"
+                    "route": "zikulalegalmodule_config_config"
                 },
                 "user": {"route": "zikulalegalmodule_user_termsofuse"}
             },
