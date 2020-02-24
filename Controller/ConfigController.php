@@ -13,23 +13,23 @@ declare(strict_types=1);
 
 namespace Zikula\LegalModule\Controller;
 
-use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Zikula\Bundle\CoreBundle\Controller\AbstractController;
 use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\ConfigType;
 use Zikula\LegalModule\Helper\ResetAgreementHelper;
+use Zikula\PermissionsModule\Annotation\PermissionCheck;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 
 /**
  * Class ConfigController.
  *
  * @Route("/config")
+ * @PermissionCheck("admin")
  */
 class ConfigController extends AbstractController
 {
@@ -38,9 +38,6 @@ class ConfigController extends AbstractController
      * @Template("@ZikulaLegalModule/Config/config.html.twig")
      * @Theme("admin")
      *
-     * @throws AccessDeniedException Thrown if the user doesn't have admin access to the module
-     * @throws Exception
-     *
      * @return array|RedirectResponse
      */
     public function configAction(
@@ -48,10 +45,6 @@ class ConfigController extends AbstractController
         GroupRepositoryInterface $groupRepository,
         ResetAgreementHelper $resetAgreementHelper
     ) {
-        if (!$this->hasPermission(LegalConstant::MODNAME.'::', '::', ACCESS_ADMIN)) {
-            throw new AccessDeniedException();
-        }
-
         $booleanVars = [
             LegalConstant::MODVAR_LEGALNOTICE_ACTIVE,
             LegalConstant::MODVAR_TERMS_ACTIVE,
