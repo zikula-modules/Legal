@@ -30,9 +30,9 @@ use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
+use Zikula\UsersModule\Event\UserAccountDisplayEvent;
 use Zikula\UsersModule\Event\UserFormPostCreatedEvent;
 use Zikula\UsersModule\Event\UserFormPostValidatedEvent;
-use Zikula\UsersModule\UserEvents;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -105,7 +105,7 @@ class UsersUiListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            UserEvents::DISPLAY_VIEW => ['uiView'],
+            UserAccountDisplayEvent::class => ['uiView'],
             AccessEvents::LOGIN_VETO => ['acceptPolicies'],
             UserFormPostCreatedEvent::class => ['amendForm', -256],
             UserFormPostValidatedEvent::class => ['editFormHandler']
@@ -115,17 +115,17 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Responds to ui.view hook-like event notifications.
      */
-    public function uiView(GenericEvent $event): void
+    public function uiView(UserAccountDisplayEvent $event): void
     {
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         $activePolicyCount = array_sum($activePolicies);
-        $user = $event->getSubject();
+        $user = $event->getUser();
         if (!isset($user) || empty($user) || $activePolicyCount < 1) {
             return;
         }
 
-        $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($user['uid']);
-        $viewablePolicies = $this->acceptPoliciesHelper->getViewablePolicies($user['uid']);
+        $acceptedPolicies = $this->acceptPoliciesHelper->getAcceptedPolicies($user->getUid());
+        $viewablePolicies = $this->acceptPoliciesHelper->getViewablePolicies($user->getUid());
         if (array_sum($viewablePolicies) < 1) {
             return;
         }
@@ -136,7 +136,7 @@ class UsersUiListener implements EventSubscriberInterface
             'acceptedPolicies' => $acceptedPolicies,
         ];
 
-        $event->data[self::EVENT_KEY] = $this->twig->render('@ZikulaLegalModule/UsersUI/view.html.twig', $templateParameters);
+        $event->addContent(self::EVENT_KEY, $this->twig->render('@ZikulaLegalModule/UsersUI/view.html.twig', $templateParameters));
     }
 
     /**
