@@ -30,9 +30,9 @@ use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
-use Zikula\UsersModule\Event\UserAccountDisplayEvent;
 use Zikula\UsersModule\Event\EditUserFormPostCreatedEvent;
 use Zikula\UsersModule\Event\EditUserFormPostValidatedEvent;
+use Zikula\UsersModule\Event\UserAccountDisplayEvent;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
