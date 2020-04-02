@@ -31,8 +31,8 @@ use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
 use Zikula\UsersModule\Event\UserAccountDisplayEvent;
-use Zikula\UsersModule\Event\UserFormPostCreatedEvent;
-use Zikula\UsersModule\Event\UserFormPostValidatedEvent;
+use Zikula\UsersModule\Event\EditUserFormPostCreatedEvent;
+use Zikula\UsersModule\Event\EditUserFormPostValidatedEvent;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -107,8 +107,8 @@ class UsersUiListener implements EventSubscriberInterface
         return [
             UserAccountDisplayEvent::class => ['uiView'],
             AccessEvents::LOGIN_VETO => ['acceptPolicies'],
-            UserFormPostCreatedEvent::class => ['amendForm', -256],
-            UserFormPostValidatedEvent::class => ['editFormHandler']
+            EditUserFormPostCreatedEvent::class => ['amendForm', -256],
+            EditUserFormPostValidatedEvent::class => ['editFormHandler']
         ];
     }
 
@@ -193,7 +193,7 @@ class UsersUiListener implements EventSubscriberInterface
         }
     }
 
-    public function amendForm(UserFormPostCreatedEvent $event): void
+    public function amendForm(EditUserFormPostCreatedEvent $event): void
     {
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         if (array_sum($activePolicies) < 1) {
@@ -218,7 +218,7 @@ class UsersUiListener implements EventSubscriberInterface
         ;
     }
 
-    public function editFormHandler(UserFormPostValidatedEvent $event): void
+    public function editFormHandler(EditUserFormPostValidatedEvent $event): void
     {
         $userEntity = $event->getUser();
         $formData = $event->getFormData(LegalConstant::FORM_BLOCK_PREFIX);
