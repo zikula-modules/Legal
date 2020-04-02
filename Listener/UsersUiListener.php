@@ -30,8 +30,8 @@ use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Entity\UserEntity;
-use Zikula\UsersModule\Event\UserFormAwareEvent;
-use Zikula\UsersModule\Event\UserFormDataEvent;
+use Zikula\UsersModule\Event\UserFormPostCreatedEvent;
+use Zikula\UsersModule\Event\UserFormPostValidatedEvent;
 use Zikula\UsersModule\UserEvents;
 
 /**
@@ -107,8 +107,8 @@ class UsersUiListener implements EventSubscriberInterface
         return [
             UserEvents::DISPLAY_VIEW => ['uiView'],
             AccessEvents::LOGIN_VETO => ['acceptPolicies'],
-            UserEvents::EDIT_FORM => ['amendForm', -256],
-            UserEvents::EDIT_FORM_HANDLE => ['editFormHandler']
+            UserFormPostCreatedEvent::class => ['amendForm', -256],
+            UserFormPostValidatedEvent::class => ['editFormHandler']
         ];
     }
 
@@ -193,7 +193,7 @@ class UsersUiListener implements EventSubscriberInterface
         }
     }
 
-    public function amendForm(UserFormAwareEvent $event): void
+    public function amendForm(UserFormPostCreatedEvent $event): void
     {
         $activePolicies = $this->acceptPoliciesHelper->getActivePolicies();
         if (array_sum($activePolicies) < 1) {
@@ -218,9 +218,9 @@ class UsersUiListener implements EventSubscriberInterface
         ;
     }
 
-    public function editFormHandler(UserFormDataEvent $event): void
+    public function editFormHandler(UserFormPostValidatedEvent $event): void
     {
-        $userEntity = $event->getUserEntity();
+        $userEntity = $event->getUser();
         $formData = $event->getFormData(LegalConstant::FORM_BLOCK_PREFIX);
         if (!isset($formData)) {
             return;
