@@ -30,7 +30,7 @@ use Zikula\UsersModule\Constant as UsersConstant;
 use Zikula\UsersModule\Event\EditUserFormPostCreatedEvent;
 use Zikula\UsersModule\Event\EditUserFormPostValidatedEvent;
 use Zikula\UsersModule\Event\UserAccountDisplayEvent;
-use Zikula\UsersModule\Event\UserPreSuccessLoginEvent;
+use Zikula\UsersModule\Event\UserPreLoginSuccessEvent;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -104,7 +104,7 @@ class UsersUiListener implements EventSubscriberInterface
     {
         return [
             UserAccountDisplayEvent::class => ['uiView'],
-            UserPreSuccessLoginEvent::class => ['acceptPolicies'],
+            UserPreLoginSuccessEvent::class => ['acceptPolicies'],
             EditUserFormPostCreatedEvent::class => ['amendForm', -256],
             EditUserFormPostValidatedEvent::class => ['editFormHandler']
         ];
@@ -140,11 +140,11 @@ class UsersUiListener implements EventSubscriberInterface
     /**
      * Vetoes (denies) a login attempt, and forces the user to accept policies.
      *
-     * This handler is triggered by the 'Zikula\UsersModule\Event\UserPreSuccessLoginEvent' event.  It vetoes (denies) a
+     * This handler is triggered by the 'Zikula\UsersModule\Event\UserPreLoginSuccessEvent' event.  It vetoes (denies) a
      * login attempt if the users's Legal record is flagged to force the user to accept
      * one or more legal agreements.
      */
-    public function acceptPolicies(UserPreSuccessLoginEvent $event): void
+    public function acceptPolicies(UserPreLoginSuccessEvent $event): void
     {
         $termsOfUseActive = $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] ?? false;
         $privacyPolicyActive = $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] ?? false;
