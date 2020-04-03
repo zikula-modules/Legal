@@ -21,18 +21,16 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Environment;
-use Zikula\Bundle\CoreBundle\Event\GenericEvent;
 use Zikula\ExtensionsModule\Api\ApiInterface\VariableApiInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\PolicyType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
-use Zikula\UsersModule\AccessEvents;
 use Zikula\UsersModule\Constant as UsersConstant;
-use Zikula\UsersModule\Entity\UserEntity;
 use Zikula\UsersModule\Event\EditUserFormPostCreatedEvent;
 use Zikula\UsersModule\Event\EditUserFormPostValidatedEvent;
 use Zikula\UsersModule\Event\UserAccountDisplayEvent;
+use Zikula\UsersModule\Event\UserPreSuccessfulLoginEvent;
 
 /**
  * Handles hook-like event notifications from log-in and registration for the acceptance of policies.
@@ -106,7 +104,7 @@ class UsersUiListener implements EventSubscriberInterface
     {
         return [
             UserAccountDisplayEvent::class => ['uiView'],
-            AccessEvents::LOGIN_VETO => ['acceptPolicies'],
+            UserPreSuccessfulLoginEvent::class => ['acceptPolicies'],
             EditUserFormPostCreatedEvent::class => ['amendForm', -256],
             EditUserFormPostValidatedEvent::class => ['editFormHandler']
         ];
@@ -140,13 +138,13 @@ class UsersUiListener implements EventSubscriberInterface
     }
 
     /**
-     * Vetos (denies) a login attempt, and forces the user to accept policies.
+     * Vetoes (denies) a login attempt, and forces the user to accept policies.
      *
-     * This handler is triggered by the 'user.login.veto' event.  It vetos (denies) a
+     * This handler is triggered by the 'Zikula\UsersModule\Event\UserPreSuccessfulLoginEvent' event.  It vetoes (denies) a
      * login attempt if the users's Legal record is flagged to force the user to accept
      * one or more legal agreements.
      */
-    public function acceptPolicies(GenericEvent $event): void
+    public function acceptPolicies(UserPreSuccessfulLoginEvent $event): void
     {
         $termsOfUseActive = $this->moduleVars[LegalConstant::MODVAR_TERMS_ACTIVE] ?? false;
         $privacyPolicyActive = $this->moduleVars[LegalConstant::MODVAR_PRIVACY_ACTIVE] ?? false;
@@ -158,15 +156,14 @@ class UsersUiListener implements EventSubscriberInterface
             return;
         }
 
-        /** @var UserEntity $userObj */
-        $userObj = $event->getSubject();
-        if (!isset($userObj) || $userObj->getUid() <= UsersConstant::USER_ID_ADMIN) {
+        $user = $event->getUser();
+        if (!isset($user) || $user->getUid() <= UsersConstant::USER_ID_ADMIN) {
             return;
         }
 
-        $attributeIsEmpty = function ($name) use ($userObj) {
-            if ($userObj->hasAttribute($name)) {
-                $v = $userObj->getAttributeValue($name);
+        $attributeIsEmpty = function ($name) use ($user) {
+            if ($user->hasAttribute($name)) {
+                $v = $user->getAttributeValue($name);
 
                 return empty($v);
             }
@@ -184,13 +181,13 @@ class UsersUiListener implements EventSubscriberInterface
         }
 
         $event->stopPropagation();
-        $event->setArgument('returnUrl', $this->router->generate('zikulalegalmodule_user_acceptpolicies'));
+        $event->setRedirectUrl($this->router->generate('zikulalegalmodule_user_acceptpolicies'));
 
         $request = $this->requestStack->getMasterRequest();
         if ($request->hasSession() && ($session = $request->getSession())) {
-            $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $userObj->getUid());
-            $session->getFlashBag()->add('error', 'Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.');
+            $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $user->getUid());
         }
+        $event->addFlash('Your log-in request was not completed. You must review and confirm your acceptance of one or more site policies prior to logging in.');
     }
 
     public function amendForm(EditUserFormPostCreatedEvent $event): void
