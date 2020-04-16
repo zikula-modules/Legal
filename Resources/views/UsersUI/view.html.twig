@@ -10,7 +10,7 @@
         <div class="form-group row">
             <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
             <div class="col-md-9">
-                <span class="form-control-plaintext">{% if acceptedPolicies.termsOfUse %}{% trans with { '%s': policyLink|raw } %}%s accepted{% endtrans %}{% else %}{% trans with { '%s': policyLink|raw } %}%s not accepted.{% endtrans %}{% endif %}</span>
+                <span class="form-control-plaintext">{% if acceptedPolicies.termsOfUse %}{% trans with { '%s%': policyLink|raw } %}%s% accepted{% endtrans %}{% else %}{% trans with { '%s%': policyLink|raw } %}%s% not accepted.{% endtrans %}{% endif %}</span>
             </div>
         </div>
     {% endif %}
@@ -24,7 +24,7 @@
         <div class="form-group">
             <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
             <div class="col-md-9">
-                <span class="form-control-plaintext">{% if acceptedPolicies.privacyPolicy %}{% trans with { '%s': policyLink|raw } %}'%s accepted.{% endtrans %}{% else %}{% trans with { '%s': policyLink|raw } %}%s not accepted.{% endtrans %}{% endif %}</span>
+                <span class="form-control-plaintext">{% if acceptedPolicies.privacyPolicy %}{% trans with { '%s%': policyLink|raw } %}'%s% accepted.{% endtrans %}{% else %}{% trans with { '%s%': policyLink|raw } %}%s% not accepted.{% endtrans %}{% endif %}</span>
             </div>
         </div>
     {% endif %}
@@ -32,7 +32,7 @@
         <div class="form-group">
             <label class="col-md-3 col-form-label">{% trans %}Minimum age{% endtrans %}</label>
             <div class="col-md-9">
-                <span class="form-control-plaintext">{% if acceptedPolicies.agePolicy %}{% trans with { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) } %}Confirmed minimum age requirement (%s years of age) met.{% endtrans %}{% else %}{% trans %}Minimum age requirement not confirmed.{% endtrans %}{% endif %}</span>
+                <span class="form-control-plaintext">{% if acceptedPolicies.agePolicy %}{% trans with { '%s%': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) } %}Confirmed minimum age requirement (%s% years of age) met.{% endtrans %}{% else %}{% trans %}Minimum age requirement not confirmed.{% endtrans %}{% endif %}</span>
             </div>
         </div>
     {% endif %}
@@ -46,7 +46,7 @@
         <div class="form-group">
             <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
             <div class="col-md-9">
-                <span class="form-control-plaintext">{% if acceptedPolicies.tradeConditions %}{% trans with { '%s': policyLink|raw } %}%s accepted.{% endtrans %}{% else %}{% trans with { '%s': policyLink|raw } %}%s not accepted.{% endtrans %}{% endif %}</span>
+                <span class="form-control-plaintext">{% if acceptedPolicies.tradeConditions %}{% trans with { '%s%': policyLink|raw } %}%s% accepted.{% endtrans %}{% else %}{% trans with { '%s%': policyLink|raw } %}%s% not accepted.{% endtrans %}{% endif %}</span>
             </div>
         </div>
     {% endif %}
@@ -60,7 +60,7 @@
         <div class="form-group">
             <label class="col-md-3 col-form-label">{{ policyName ~ ':' }}</label>
             <div class="col-md-9">
-                <span class="form-control-plaintext">{% if acceptedPolicies.cancellationRightPolicy %}{% trans with { '%s': policyLink|raw } %}%s accepted.{% endtrans %}{% else %}{% trans with { '%s': policyLink|raw } %}%s not accepted.{% endtrans %}{% endif %}</span>
+                <span class="form-control-plaintext">{% if acceptedPolicies.cancellationRightPolicy %}{% trans with { '%s%': policyLink|raw } %}%s% accepted.{% endtrans %}{% else %}{% trans with { '%s%': policyLink|raw } %}%s% not accepted.{% endtrans %}{% endif %}</span>
             </div>
         </div>
     {% endif %}

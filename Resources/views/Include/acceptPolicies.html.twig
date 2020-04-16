@@ -19,7 +19,7 @@
             <li><a class="policy-link" data-toggle="modal" data-target="#modal-privacy-policy" href="{{ policyUrl }}">{{ policyName }}</a></li>
         {% endif %}
         {% if activePolicies.agePolicy|default and not acceptedPolicies.agePolicy|default %}
-            <li>{% trans with { '%s': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) } from 'zikulalegalmodule' %}You need to be %s years of age or older, in accordance with our minimum age requirement.{% endtrans %}</li>
+            <li>{% trans with { '%s%': getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_MINIMUM_AGE'), 13) } from 'zikulalegalmodule' %}You need to be %s% years of age or older, in accordance with our minimum age requirement.{% endtrans %}</li>
         {% endif %}
         {% if activePolicies.tradeConditions|default and not acceptedPolicies.tradeConditions|default %}
             {% set policyUrl = getModVar(constant('Zikula\\LegalModule\\Constant::MODNAME'), constant('Zikula\\LegalModule\\Constant::MODVAR_TRADECONDITIONS_URL')) %}
