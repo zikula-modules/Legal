@@ -85,15 +85,15 @@ class AcceptPoliciesHelper
     /**
      * Helper method to determine acceptance / confirmation states for current user.
      */
-    private function determineAcceptanceState(int $uid = null, string $modVarName = ''): bool
+    private function determineAcceptanceState(int $uid = null, string $modVarName = ''): ?string
     {
-        $acceptanceState = false;
+        $acceptanceState = null;
 
         if (null !== $uid && !empty($uid) && is_numeric($uid) && $uid > 0) {
             if ($uid > Constant::USER_ID_ADMIN) {
                 /** @var UserEntity $user */
                 $user = $this->userRepository->find($uid);
-                $acceptanceState = $user->getAttributes()->containsKey($modVarName) ? $user->getAttributeValue($modVarName) : false;
+                $acceptanceState = $user->getAttributes()->containsKey($modVarName) ? $user->getAttributeValue($modVarName) : null;
             } else {
                 // The special users (uid == UsersConstant::USER_ID_ADMIN or UsersConstant::USER_ID_ANONYMOUS) have always accepted all policies.
                 $now = new \DateTime('now', new DateTimeZone('UTC'));
