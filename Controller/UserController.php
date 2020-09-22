@@ -43,7 +43,7 @@ class UserController extends AbstractController
      * Legal module main user function.
      * Redirects to the Terms of Use legal document.
      */
-    public function indexAction(RouterInterface $router): RedirectResponse
+    public function index(RouterInterface $router): RedirectResponse
     {
         $url = $this->getVar(LegalConstant::MODVAR_TERMS_URL, '');
         if (empty($url)) {
@@ -60,7 +60,7 @@ class UserController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      */
-    public function legalNoticeAction(): Response
+    public function legalNotice(): Response
     {
         $doc = $this->renderDocument('legalNotice', LegalConstant::MODVAR_LEGALNOTICE_ACTIVE, LegalConstant::MODVAR_LEGALNOTICE_URL);
 
@@ -74,7 +74,7 @@ class UserController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      */
-    public function termsofuseAction(): Response
+    public function termsOfUse(): Response
     {
         $doc = $this->renderDocument('termsOfUse', LegalConstant::MODVAR_TERMS_ACTIVE, LegalConstant::MODVAR_TERMS_URL);
 
@@ -88,7 +88,7 @@ class UserController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      */
-    public function privacyPolicyAction(): Response
+    public function privacyPolicy(): Response
     {
         $doc = $this->renderDocument('privacyPolicy', LegalConstant::MODVAR_PRIVACY_ACTIVE, LegalConstant::MODVAR_PRIVACY_URL);
 
@@ -102,7 +102,7 @@ class UserController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      */
-    public function accessibilitystatementAction(): Response
+    public function accessibilityStatement(): Response
     {
         $doc = $this->renderDocument('accessibilityStatement', LegalConstant::MODVAR_ACCESSIBILITY_ACTIVE, LegalConstant::MODVAR_ACCESSIBILITY_URL);
 
@@ -116,7 +116,7 @@ class UserController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      */
-    public function cancellationRightPolicyAction(): Response
+    public function cancellationRightPolicy(): Response
     {
         $doc = $this->renderDocument('cancellationRightPolicy', LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_ACTIVE, LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL);
 
@@ -130,7 +130,7 @@ class UserController extends AbstractController
      *
      * @throws AccessDeniedException Thrown if the user does not have the appropriate access level for the function
      */
-    public function tradeConditionsAction(): Response
+    public function tradeConditions(): Response
     {
         $doc = $this->renderDocument('tradeConditions', LegalConstant::MODVAR_TRADECONDITIONS_ACTIVE, LegalConstant::MODVAR_TRADECONDITIONS_URL);
 
@@ -179,7 +179,7 @@ class UserController extends AbstractController
      * @return Response|array
      * @throws Exception
      */
-    public function acceptPoliciesAction(
+    public function acceptPolicies(
         Request $request,
         CurrentUserApiInterface $currentUserApi,
         UserRepositoryInterface $userRepository,

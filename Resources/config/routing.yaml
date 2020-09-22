@@ -1,3 +1,0 @@
-zikulalegalmodule:
-    resource: "@ZikulaLegalModule/Controller"
-    type:     annotation
