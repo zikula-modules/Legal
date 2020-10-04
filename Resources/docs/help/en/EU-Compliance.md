@@ -17,7 +17,7 @@ Options:
 
 - Translation of notice and button text is available in default domain (`messages`).
 - Override of stylesheet is allowed:
-  Set a parameter value for `euwarning.stylesheet` in your `services_custom.yaml` file and it will be used.
+  Set a parameter value for `euwarning.stylesheet` in your `services.yaml` file and it will be used.
   Use full path from document root.
   Be sure to copy the existing stylesheet (`/Resources/public/js/jquery.cookiebar/jquery.cookiebar.css`)
 
