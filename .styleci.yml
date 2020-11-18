@@ -45,7 +45,7 @@ disabled:
   - no_blank_lines_after_throw
   - php_unit_fqcn_annotation
   - phpdoc_align
-  - phpdoc_no_empty_return
+#  - phpdoc_no_empty_return
   - phpdoc_scalar
   - phpdoc_separation
   - phpdoc_summary
