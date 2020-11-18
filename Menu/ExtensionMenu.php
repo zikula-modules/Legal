@@ -60,7 +60,7 @@ class ExtensionMenu implements ExtensionMenuInterface
     private function getAdmin(): ?ItemInterface
     {
         $menu = $this->factory->createItem('legalAdminMenu');
-        if ($this->permissionApi->hasPermission($this->getBundleName().'::', '::', ACCESS_ADMIN)) {
+        if ($this->permissionApi->hasPermission($this->getBundleName() . '::', '::', ACCESS_ADMIN)) {
             $menu->addChild('Settings', [
                 'route' => 'zikulalegalmodule_config_config',
             ])->setAttribute('icon', 'fas fa-wrench');

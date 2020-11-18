@@ -56,6 +56,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                     'privacypolicy'          => true,
                     'accessibilitystatement' => true,
                 ]);
+                // no break
             case '1.2':
             // Upgrade 1.2 -> 1.3
             // Nothing to do.
@@ -71,6 +72,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                 // Set the new module variable -- but if Users set it for us during its upgrade, then don't overwrite it
                 $this->setVar(LegalConstant::MODVAR_MINIMUM_AGE, $this->getVar(LegalConstant::MODVAR_MINIMUM_AGE, 0));
                 // Set up the new persistent event handler, and any other event-related features.
+                // no break
             case '2.0.0':
                 // Upgrade 2.0.0 -> 2.0.1
                 // add vars for new document types and optional custom urls
@@ -85,6 +87,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                     LegalConstant::MODVAR_CANCELLATIONRIGHTPOLICY_URL    => '',
                     LegalConstant::MODVAR_TRADECONDITIONS_URL            => '',
                 ]);
+                // no break
             case '2.0.1':
                 // Nothing to do.
             case '2.0.2':
@@ -92,6 +95,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                 // attributes migrated by Users mod
                 // @todo write upgrade for permissions?
                 $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
+                // no break
             case '2.1.0': //current version
                 // nothing
             case '2.1.1':

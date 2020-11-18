@@ -152,7 +152,7 @@ class UserController extends AbstractController
      */
     private function renderDocument(string $documentName, string $activeFlagKey, string $customUrlKey)
     {
-        if (!$this->hasPermission(LegalConstant::MODNAME.'::'.$documentName, '::', ACCESS_OVERVIEW)) {
+        if (!$this->hasPermission(LegalConstant::MODNAME . '::' . $documentName, '::', ACCESS_OVERVIEW)) {
             throw new AccessDeniedException();
         }
 
