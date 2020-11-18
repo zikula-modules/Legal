@@ -51,7 +51,7 @@ disabled:
   - phpdoc_summary
   - phpdoc_to_comment
   - pre_increment
-  - self_accessor
+#  - self_accessor
   - single_quote
   - trailing_comma_in_multiline_array
   - unalign_double_arrow
