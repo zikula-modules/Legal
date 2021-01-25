@@ -43,7 +43,7 @@ class AcceptPoliciesType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 /** @Ignore */
-                'label' => $login ? /** @Translate */'Save and continue logging in' : /** @Translate */'Save',
+                'label' => $login ? /** @Translate */ 'Save and continue logging in' : /** @Translate */ 'Save',
                 'icon' => 'fa-check',
                 'attr' => ['class' => 'btn-success']
             ])

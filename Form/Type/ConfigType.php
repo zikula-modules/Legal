@@ -113,7 +113,7 @@ class ConfigType extends AbstractType
             ])
             ->add('resetagreement', ChoiceType::class, [
                 'label'             => 'Reset user group\'s acceptance of site policies',
-                'choices'           => /** @Ignore*/$options['groupChoices'],
+                'choices'           => /** @Ignore*/ $options['groupChoices'],
                 'required'          => false,
                 'expanded'          => false,
                 'multiple'          => false,
