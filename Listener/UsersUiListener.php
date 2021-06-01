@@ -183,7 +183,7 @@ class UsersUiListener implements EventSubscriberInterface
         $event->stopPropagation();
         $event->setRedirectUrl($this->router->generate('zikulalegalmodule_user_acceptpolicies'));
 
-        $request = $this->requestStack->getMasterRequest();
+        $request = $this->requestStack->getMainRequest();
         if ($request->hasSession() && ($session = $request->getSession())) {
             $session->set(LegalConstant::FORCE_POLICY_ACCEPTANCE_SESSION_UID_KEY, $user->getUid());
         }
