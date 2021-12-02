@@ -15,6 +15,7 @@ namespace Zikula\LegalModule\Controller;
 
 use DateTime;
 use DateTimeZone;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -181,6 +182,7 @@ class UserController extends AbstractController
      */
     public function acceptPolicies(
         Request $request,
+        ManagerRegistry $doctrine,
         CurrentUserApiInterface $currentUserApi,
         UserRepositoryInterface $userRepository,
         AccessHelper $accessHelper,
@@ -226,7 +228,7 @@ class UserController extends AbstractController
                     $userEntity->delAttribute($acceptedVar);
                 }
             }
-            $this->getDoctrine()->getManager()->flush();
+            $doctrine->getManager()->flush();
             if ($data['acceptedpolicies_policies'] && $data['login']) {
                 $accessHelper->login($userEntity);
 
