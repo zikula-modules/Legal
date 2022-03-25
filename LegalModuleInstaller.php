@@ -96,7 +96,7 @@ class LegalModuleInstaller extends AbstractExtensionInstaller
                 // @todo write upgrade for permissions?
                 $this->setVar(LegalConstant::MODVAR_EUCOOKIE, 0);
                 // no break
-            case '2.1.0': //current version
+            case '2.1.0': // current version
                 // nothing
             case '2.1.1':
                 // nothing
