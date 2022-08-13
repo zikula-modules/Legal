@@ -9,7 +9,7 @@ A cookie is set on the users browser to indicate assent. This cookie expires aft
 
 Notice:
 
-- The current positioning of the notice is based on the Core's ZikulaBootstrapTheme and the positioning MUST
+- The current positioning of the notice is based on the Core's ZikulaDefaultTheme and the positioning MUST
   be adjusted if a different theme is used (because it is configured to append the `.navbar.fixed-top` element.)
   See below for customizing.
 
