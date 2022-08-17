@@ -33,9 +33,6 @@ use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
 use Zikula\UsersModule\Entity\UserEntity;
 use Zikula\UsersModule\Helper\AccessHelper;
 
-/**
- * Class UserController.
- */
 class UserController extends AbstractController
 {
     /**

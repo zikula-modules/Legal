@@ -22,7 +22,6 @@
             "core-compatibility": ">=3.0.0",
             "displayname": "Legal",
             "url": "legal",
-            "oldnames": ["Legal"],
             "icon": "fas fa-gavel",
             "capabilities": {
                 "admin": {

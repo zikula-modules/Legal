@@ -26,8 +26,6 @@ use Zikula\PermissionsModule\Annotation\PermissionCheck;
 use Zikula\ThemeModule\Engine\Annotation\Theme;
 
 /**
- * Class ConfigController.
- *
  * @Route("/config")
  * @PermissionCheck("admin")
  */
