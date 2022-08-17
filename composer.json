@@ -19,7 +19,6 @@
     "extra": {
         "zikula": {
             "class": "Zikula\\LegalModule\\ZikulaLegalModule",
-            "core-compatibility": ">=3.0.0",
             "displayname": "Legal",
             "url": "legal",
             "icon": "fas fa-gavel",
