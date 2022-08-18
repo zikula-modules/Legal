@@ -20,8 +20,8 @@ use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
 use Zikula\UsersModule\Constant;
-use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
 use Zikula\UsersModule\Entity\UserEntity;
+use Zikula\UsersModule\Repository\UserRepositoryInterface;
 
 /**
  * Helper class to process acceptance of policies.

@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Zikula\Bundle\CoreBundle\Controller\AbstractController;
-use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
+use Zikula\GroupsModule\Repository\GroupRepositoryInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\ConfigType;
 use Zikula\LegalModule\Helper\ResetAgreementHelper;

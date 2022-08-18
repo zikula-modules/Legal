@@ -29,9 +29,9 @@ use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\LegalModule\Form\Type\AcceptPoliciesType;
 use Zikula\LegalModule\Helper\AcceptPoliciesHelper;
 use Zikula\UsersModule\Api\ApiInterface\CurrentUserApiInterface;
-use Zikula\UsersModule\Entity\RepositoryInterface\UserRepositoryInterface;
 use Zikula\UsersModule\Entity\UserEntity;
 use Zikula\UsersModule\Helper\AccessHelper;
+use Zikula\UsersModule\Repository\UserRepositoryInterface;
 
 class UserController extends AbstractController
 {

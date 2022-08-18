@@ -15,10 +15,10 @@ namespace Zikula\LegalModule\Helper;
 
 use Exception;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Zikula\GroupsModule\Entity\RepositoryInterface\GroupRepositoryInterface;
+use Zikula\GroupsModule\Repository\GroupRepositoryInterface;
 use Zikula\LegalModule\Constant as LegalConstant;
 use Zikula\PermissionsModule\Api\ApiInterface\PermissionApiInterface;
-use Zikula\UsersModule\Entity\RepositoryInterface\UserAttributeRepositoryInterface;
+use Zikula\UsersModule\Repository\UserAttributeRepositoryInterface;
 
 /**
  * Helper class for resetting agreements of users.
