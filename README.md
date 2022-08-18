@@ -1,4 +1,8 @@
-## Legal
+# Back in core
+
+Legal has been included into the [core repository](https://github.com/zikula/core/).
+
+# Legal
 
 **Requires Zikula Core 3.0.0+**
 
